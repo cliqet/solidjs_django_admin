@@ -38,3 +38,7 @@ In the root directory, run
 ./devops/prod/deploy_prod.sh
 ```
 Modify the directories according to your environments. 
+
+### Screenshots
+#### Login
+<img width="1333" alt="Screenshot 2025-01-27 at 12 26 57 PM" src="https://github.com/user-attachments/assets/49d07907-33cc-41ad-a8c4-5045773536f5" />

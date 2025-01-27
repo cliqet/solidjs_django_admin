@@ -5,6 +5,9 @@
   # Required string: The domain of the api <domain>/api/v1
   api_domain = ""
 
+  # Required string: The base domain of the api without /api/v1
+  api_root_domain = ""
+
   # Required string: Valid values are dev or prod
   environment = "dev"
 

@@ -19,6 +19,7 @@ export default defineConfig(() => {
       __DOMAIN__: `"${appConfig.application.domain}"`,
       __ENVIRONMENT__: `"${appConfig.application.environment}"`,
       __API_DOMAIN__: `"${appConfig.application.api_domain}"`,
+      __API_ROOT_DOMAIN__: `"${appConfig.application.api_root_domain}"`,
       __TURNSTILE_SITEKEY__: `"${appConfig.integration.turnstile.site_key}"`
     },
     resolve: {

@@ -1,6 +1,8 @@
 [application]
+  domain = "http://localhost"
   api_root_domain = "http://localhost:8000"
   api_domain = "http://localhost:8000/api/v1"
+  environment = "dev"
 
 [integration]
   [integration.turnstile]

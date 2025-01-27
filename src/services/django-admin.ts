@@ -1,0 +1,134 @@
+import { noSessionClient, sessionClient } from "src/hooks/useFetch";
+
+export async function getApps(): Promise<any> {
+  const { appList } = await sessionClient.fetch({
+    method: "GET",
+    urlSegment: "/django-admin/apps",
+  });
+
+  return appList;
+}
+
+export async function getModelFields(appLabel: string, modelName: string): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "GET",
+    urlSegment: `/django-admin/model-fields/${appLabel}/${modelName}`,
+  });
+  return response;
+}
+
+export async function getModelAdminSettings(appLabel: string, modelName: string): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "GET",
+    urlSegment: `/django-admin/model-admin-settings/${appLabel}/${modelName}`,
+  });
+  return response;
+}
+
+export async function getModelFieldsEdit(appLabel: string, modelName: string, pk: string): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "GET",
+    urlSegment: `/django-admin/model-fields/${appLabel}/${modelName}/${pk}`,
+  });
+  return response;
+}
+
+export async function getModelRecord(appLabel: string, modelName: string, pk: string): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "GET",
+    urlSegment: `/django-admin/model/${appLabel}/${modelName}/${pk}`,
+  });
+  return response;
+}
+
+
+export async function changeRecord(appLabel: string, modelName: string, pk: string, bodyData: any): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "POST",
+    urlSegment: `/django-admin/change-record/${appLabel}/${modelName}/${pk}`,
+    useFormDataHeaders: true,
+    body: bodyData
+  });
+  return response;
+}
+
+export async function addRecord(appLabel: string, modelName: string, bodyData: any): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "POST",
+    urlSegment: `/django-admin/add-record/${appLabel}/${modelName}`,
+    useFormDataHeaders: true,
+    body: bodyData
+  });
+  return response;
+}
+
+export async function applyCustomAction(
+  appLabel: string, 
+  modelName: string,
+  func: string,
+  bodyData: any
+): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "POST",
+    urlSegment: `/django-admin/model-listview-action/${appLabel}/${modelName}/${func}`,
+    body: bodyData
+  });
+  return response;
+}
+
+export async function getModelListview(
+  appLabel: string, 
+  modelName: string,
+  limit: number,
+  offset: number,
+  filters: string,
+  searchTerm: string,
+): Promise<any> {
+  let url = `/django-admin/model-listview/${appLabel}/${modelName}?limit=${limit}&offset=${offset}${filters}`;
+  if (searchTerm) {
+    url += `&custom_search=${searchTerm}`;
+  }
+
+  const response = await sessionClient.fetch({
+    method: "GET",
+    urlSegment: url,
+  });
+  return response;
+}
+
+export async function getInlineListview(
+  appLabel: string, 
+  modelName: string,
+  limit: number,
+  offset: number,
+  inlineClass: string
+): Promise<any> {
+  const url = `/django-admin/inline-listview/${appLabel}/${modelName}?limit=${limit}&offset=${offset}&inline_class=${inlineClass}`;
+
+  const response = await sessionClient.fetch({
+    method: "GET",
+    urlSegment: url,
+  });
+  return response;
+}
+
+export async function getModelDocs(): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "GET",
+    urlSegment: '/model-docs',
+  });
+  return response;
+}
+
+export async function verifyCloudflareToken(
+  token: string, 
+): Promise<any> {
+  const response = await noSessionClient.fetch({
+    method: "POST",
+    urlSegment: '/django-admin/verify-cloudflare-token',
+    body: {
+      token
+    }
+  });
+  return response;
+}

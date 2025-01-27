@@ -1,0 +1,8 @@
+[application]
+  api_root_domain = "http://localhost:8000"
+  api_domain = "http://localhost:8000/api/v1"
+
+[integration]
+  [integration.turnstile]
+    site_key = "0x4AAAAAAA6OmrZPoBLWqLhx"
+    # site_key = "2x00000000000000000000BB"  # always blocks dummy key

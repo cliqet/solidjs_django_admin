@@ -1,0 +1,14 @@
+[application]
+  # Required string: The domain of the application
+  domain = ""
+
+  # Required string: The domain of the api <domain>/api/v1
+  api_domain = ""
+
+  # Required string: Valid values are dev or prod
+  environment = "dev"
+
+[integration]
+  [integration.turnstile]
+    # Required String: Cloudflare sitekey
+    site_key = ""

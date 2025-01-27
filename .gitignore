@@ -1,0 +1,11 @@
+node_modules
+dist
+
+# Mac Files
+.DS_Store
+
+# IDEs
+.vscode
+
+backups/
+backups/*

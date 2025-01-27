@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+  solid_django_admin:
+    container_name: solid_django_admin
+    build:
+      context: .
+      dockerfile: devops/prod/Dockerfile
+    restart: always
+    ports:
+      - '80:80'

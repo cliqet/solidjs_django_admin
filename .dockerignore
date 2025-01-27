@@ -1,0 +1,13 @@
+/dist
+/.vscode
+/node_modules
+
+.DS_Store
+
+.gitignore
+README.md
+.env.example
+deploy_staging.sh
+deploy_prod.sh
+docker-compose-staging.yml
+docker-compose-prod.yml

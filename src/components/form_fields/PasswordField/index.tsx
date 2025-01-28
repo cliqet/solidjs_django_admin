@@ -89,6 +89,7 @@ const PasswordField: Component<PasswordFieldProps> = (props) => {
             }}
             onInput={(e) => onPasswordUpdated(e)}
             onInvalid={(e) => {
+              e.preventDefault();
               if (props.inputProps.required) {
                 const target = e.target as HTMLInputElement;
                 props.onInvalid(
@@ -117,6 +118,7 @@ const PasswordField: Component<PasswordFieldProps> = (props) => {
             }}
             onInput={(e) => onPasswordUpdated(e)}
             onInvalid={(e) => {
+              e.preventDefault();
               if (props.inputProps.required) {
                 const target = e.target as HTMLInputElement;
                 props.onInvalid(

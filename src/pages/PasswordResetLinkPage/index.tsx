@@ -1,16 +1,20 @@
-import { useParams } from "@solidjs/router";
+import { useNavigate, useParams } from "@solidjs/router";
 import { createSignal, onMount, Show } from "solid-js";
 import FieldErrorMessage from "src/components/form_fields/FieldErrorMessage";
 import Label from "src/components/form_fields/Label";
 import PasswordField from "src/components/form_fields/PasswordField";
 import { useAppContext } from "src/context/sessionContext";
+import { nonAuthRoute } from "src/hooks/useAdminRoute";
 import {
   buildFieldStateOnFieldChange,
   buildFieldStateOnFocus,
   updateFieldStateOnInvalidFields,
 } from "src/hooks/useModelAdmin";
 import { FieldsInFormStateType } from "src/models/django-admin";
-import { verifyPasswordResetLink } from "src/services/django-admin";
+import {
+  resetPasswordViaLink,
+  verifyPasswordResetLink,
+} from "src/services/django-admin";
 
 const initialState = {
   password: {
@@ -29,6 +33,7 @@ const initialState = {
 
 const PasswordResetLinkPage = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const { appState, setAppState } = useAppContext();
   const [isValidLink, setIsValidLink] = createSignal(false);
   const [isDataReady, setIsDataReady] = createSignal(false);
@@ -73,7 +78,26 @@ const PasswordResetLinkPage = () => {
 
   const onReset = async (e: Event) => {
     e.preventDefault();
-    console.log("state is", formFieldState());
+
+    try {
+      const response = await resetPasswordViaLink(
+        params.uidb64,
+        params.token,
+        formFieldState().password.value
+      );
+      if (response.success) {
+        setAppState("toastState", "isShowing", true);
+        setAppState("toastState", "message", response.message);
+        setAppState("toastState", "type", "success");
+        setAppState("toastState", "persist", true);
+
+        navigate(nonAuthRoute.loginView);
+      }
+    } catch (err: any) {
+      setAppState("toastState", "isShowing", true);
+      setAppState("toastState", "message", err.message);
+      setAppState("toastState", "type", "danger");
+    }
   };
 
   const handleFieldChangeValue = (value: string, fieldName: string) => {

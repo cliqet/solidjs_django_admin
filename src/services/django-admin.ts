@@ -153,3 +153,18 @@ export async function verifyPasswordResetLink(
   });
   return response;
 }
+
+export async function resetPasswordViaLink(
+  uidb64: string,
+  token: string,
+  password: string
+): Promise<any> {
+  const response = await noSessionClient.fetch({
+    method: "POST",
+    urlSegment: `/users/reset-password-via-link/${uidb64}/${token}`,
+    body: {
+      password
+    }
+  });
+  return response;
+}

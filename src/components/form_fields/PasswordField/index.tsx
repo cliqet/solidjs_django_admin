@@ -1,5 +1,9 @@
 import { Component, createSignal, JSX, Show } from "solid-js";
 import Label from "../Label";
+import { sendPasswordResetLink } from "src/services/django-admin";
+import { useParams } from "@solidjs/router";
+import { useAppContext } from "src/context/sessionContext";
+import { scrollToTopForm } from "src/hooks/useUI";
 
 type PasswordFieldProps = {
   inputProps: {
@@ -14,6 +18,8 @@ type PasswordFieldProps = {
 };
 
 const PasswordField: Component<PasswordFieldProps> = (props) => {
+  const params = useParams();
+  const { setAppState } = useAppContext();
   const [passwordState, setPasswordState] = createSignal({
     hasMinLength: false,
     hasOneDigit: false,
@@ -63,12 +69,32 @@ const PasswordField: Component<PasswordFieldProps> = (props) => {
     }
   };
 
+  const emailPasswordReset = async () => {
+    try {
+      const response = await sendPasswordResetLink(params.pk);
+      if (response.success) {
+        setAppState('toastState', 'isShowing', true);
+        setAppState('toastState', 'type', 'success');
+        setAppState('toastState', 'message', response.message);
+
+        scrollToTopForm("change-model-form");
+      }
+    } catch (err: any) {
+      setAppState('toastState', 'isShowing', true);
+      setAppState('toastState', 'type', 'danger');
+      setAppState('toastState', 'message', err.message);
+
+      scrollToTopForm("change-model-form");
+    }
+  }
+
   return (
     <>
       <Show when={props.isEditMode && !isChangingOnEdit()}>
         <div>
           <span class="text-white mr-3">*************</span>
-          <button onClick={() => setIsChangingOnEdit(true)} class="button">Change Password</button>
+          <button onClick={() => setIsChangingOnEdit(true)} class="button mr-3">Change Password</button>
+          <span onClick={emailPasswordReset} class="text-white text-sm underline cursor-pointer">Email Password Reset</span>
         </div>
       </Show>
 

@@ -1,5 +1,6 @@
 export const nonAuthRoute = {
   loginView: '/login',
+  passwordResetLink: '/users/reset/:uidb64/:token',
 }
 
 export const authRoute = {

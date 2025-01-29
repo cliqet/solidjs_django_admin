@@ -132,3 +132,39 @@ export async function verifyCloudflareToken(
   });
   return response;
 }
+
+export async function sendPasswordResetLink(
+  uid: string, 
+): Promise<any> {
+  const response = await noSessionClient.fetch({
+    method: "GET",
+    urlSegment: `/users/send-password-reset-link/${uid}`,
+  });
+  return response;
+}
+
+export async function verifyPasswordResetLink(
+  uidb64: string,
+  token: string 
+): Promise<any> {
+  const response = await noSessionClient.fetch({
+    method: "GET",
+    urlSegment: `/users/verify-password-reset-link/${uidb64}/${token}`,
+  });
+  return response;
+}
+
+export async function resetPasswordViaLink(
+  uidb64: string,
+  token: string,
+  password: string
+): Promise<any> {
+  const response = await noSessionClient.fetch({
+    method: "POST",
+    urlSegment: `/users/reset-password-via-link/${uidb64}/${token}`,
+    body: {
+      password
+    }
+  });
+  return response;
+}

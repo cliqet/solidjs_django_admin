@@ -16,6 +16,7 @@ const App = lazy(() => import('src/App'));
 const Demo = lazy(() => import('src/pages/Demo'));
 const LoginPage = lazy(() => import('src/pages/LoginPage'));
 const NotFoundPage = lazy(() => import('src/pages/NotFoundPage'));
+const PasswordResetLinkPage = lazy(() => import('src/pages/PasswordResetLinkPage'));
 
 const AddModelPage = lazy(() => import('src/pages/AddModelPage'));
 const ViewChangeModelPage = lazy(() => import('src/pages/ViewChangeModelPage'));
@@ -51,7 +52,11 @@ render(
 
         <Route path="/" component={NoAuthLayout}>
           <Route path={nonAuthRoute.loginView} component={LoginPage}></Route>
+          <Route path={nonAuthRoute.passwordResetLink} component={PasswordResetLinkPage}></Route>
+
+          {/** Delete this when starting a new project */}
           <Route path="/demo" component={Demo}></Route>
+          
           <Route path="*" component={NotFoundPage}></Route>
         </Route>
       </Router>

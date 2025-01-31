@@ -115,7 +115,7 @@ export async function getInlineListview(
 export async function getModelDocs(): Promise<any> {
   const response = await sessionClient.fetch({
     method: "GET",
-    urlSegment: '/model-docs',
+    urlSegment: '/django-admin/model-docs',
   });
   return response;
 }
@@ -138,7 +138,7 @@ export async function sendPasswordResetLink(
 ): Promise<any> {
   const response = await noSessionClient.fetch({
     method: "GET",
-    urlSegment: `/users/send-password-reset-link/${uid}`,
+    urlSegment: `/django-admin/users/send-password-reset-link/${uid}`,
   });
   return response;
 }
@@ -149,7 +149,7 @@ export async function verifyPasswordResetLink(
 ): Promise<any> {
   const response = await noSessionClient.fetch({
     method: "GET",
-    urlSegment: `/users/verify-password-reset-link/${uidb64}/${token}`,
+    urlSegment: `/django-admin/users/verify-password-reset-link/${uidb64}/${token}`,
   });
   return response;
 }
@@ -161,7 +161,7 @@ export async function resetPasswordViaLink(
 ): Promise<any> {
   const response = await noSessionClient.fetch({
     method: "POST",
-    urlSegment: `/users/reset-password-via-link/${uidb64}/${token}`,
+    urlSegment: `/django-admin/users/reset-password-via-link/${uidb64}/${token}`,
     body: {
       password
     }

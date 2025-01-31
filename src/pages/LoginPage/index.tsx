@@ -143,7 +143,6 @@ const LoginPage = () => {
         new URLSearchParams(location.search).get("redirect") || "/dashboard";
       navigate(redirectPath, { replace: true });
     } catch (err: any) {
-
       if (err.status === 400) {
         setAppState("toastState", {
           ...appState.toastState,
@@ -152,13 +151,18 @@ const LoginPage = () => {
           type: "danger",
         });
         setIsButtonHidden(true);
-      }
-
-      if (err.status === 401) {
+      } else if (err.status === 401) {
         setAppState("toastState", {
           ...appState.toastState,
           isShowing: true,
           message: "You have provided an incorrect email / password",
+          type: "danger",
+        });
+      } else {
+        setAppState("toastState", {
+          ...appState.toastState,
+          isShowing: true,
+          message: "Something went wrong. Please try again",
           type: "danger",
         });
       }

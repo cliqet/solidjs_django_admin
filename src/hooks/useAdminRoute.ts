@@ -9,6 +9,8 @@ export const authRoute = {
   viewChangeModelView: '/:appLabel/:modelName/:pk/change',
   listModelView: '/:appLabel/:modelName',
   documentationView: '/model-docs',
+  settingsView: '/settings',
+  queuesView: '/settings/queues',
 
   // For demo only
   customCountryProfileChangeView: '/custom-change/:modelName/:pk/change',

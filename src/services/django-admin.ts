@@ -168,3 +168,11 @@ export async function resetPasswordViaLink(
   });
   return response;
 }
+
+export async function getWorkerQueues(): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "GET",
+    urlSegment: "/django-admin/get-worker-queues",
+  });
+  return response;
+}

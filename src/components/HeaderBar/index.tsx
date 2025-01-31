@@ -153,6 +153,7 @@ const HeaderBar = () => {
                   <ul class="py-1" role="none">
                     <li>
                       <span
+                        onClick={() => navigate(dashboardRoute(authRoute.settingsView))}
                         class="block cursor-pointer px-4 py-2 text-xs text-white hover:bg-gray-500"
                         role="menuitem"
                       >

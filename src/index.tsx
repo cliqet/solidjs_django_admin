@@ -22,6 +22,8 @@ const AddModelPage = lazy(() => import('src/pages/AddModelPage'));
 const ViewChangeModelPage = lazy(() => import('src/pages/ViewChangeModelPage'));
 const ListModelViewPage = lazy(() => import('src/pages/ListModelViewPage'));
 const DocumentationPage = lazy(() => import('src/pages/DocumentationPage'));
+const SettingsPage = lazy(() => import('src/pages/SettingsPage'));
+const QueuesPage = lazy(() => import('src/pages/QueuesPage'));
 
 // For Demo only of custom change link page
 const CustomCountryProfileChangePage = lazy(() => import('src/pages/CustomCountryProfileChangePage'));
@@ -48,6 +50,8 @@ render(
           <Route path={authRoute.viewChangeModelView} component={ViewChangeModelPage}></Route>
           <Route path={authRoute.listModelView} component={ListModelViewPage}></Route>
           <Route path={authRoute.documentationView} component={DocumentationPage}></Route>
+          <Route path={authRoute.settingsView} component={SettingsPage}></Route>
+          <Route path={authRoute.queuesView} component={QueuesPage}></Route>
         </Route>
 
         <Route path="/" component={NoAuthLayout}>

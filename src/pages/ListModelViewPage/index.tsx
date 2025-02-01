@@ -34,6 +34,7 @@ import AngleDown from "src/assets/icons/angle-down";
 import AngleUp from "src/assets/icons/angle-up";
 import InlineTable from "src/components/InlineTable";
 import DynamicExtraInline from "src/components/extra_inlines/DynamicExtraInline";
+import ActionModalMessage from "src/components/ActionModalMessage";
 
 type FilterCheckboxType = {
   field: string;
@@ -51,16 +52,6 @@ type FilterStateType = {
 };
 
 const NO_ACTION = "-";
-
-const DeleteModalMessage = () => {
-  return (
-    <div class="w-3/4 p-3 mx-auto">
-      <h3 class="text-white">
-        Are you sure you want to delete these record/s?
-      </h3>
-    </div>
-  );
-};
 
 const ListModelViewPage = () => {
   const params = useParams();
@@ -315,7 +306,7 @@ const ListModelViewPage = () => {
       return;
     }
 
-    if (currentAction() === "delete_listview") {
+    if (currentAction() !== NO_ACTION) {
       setIsModalOpen(true);
 
       // Return a promise that resolves based on user action
@@ -741,7 +732,7 @@ const ListModelViewPage = () => {
           modalEvent={(modalEvent) => {
             onModalEvent(modalEvent);
           }}
-          modalBody={<DeleteModalMessage />}
+          modalBody={<ActionModalMessage action={currentAction()} />}
         />
       </Show>
     </Show>

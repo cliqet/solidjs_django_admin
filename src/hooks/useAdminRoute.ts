@@ -12,6 +12,7 @@ export const authRoute = {
   settingsView: '/settings',
   queuesView: '/settings/queues',
   queuesFieldListView: '/settings/queues/:queueName/:field',
+  viewChangeJobView: '/settings/queues/:queueName/:field/:jobId',
 
   // For demo only
   customCountryProfileChangeView: '/custom-change/:modelName/:pk/change',

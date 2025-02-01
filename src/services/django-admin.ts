@@ -186,3 +186,14 @@ export async function getFailedJobs(
   });
   return response;
 }
+
+export async function getQueuedJob(
+  queueName: string,
+  jobId: string
+): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "GET",
+    urlSegment: `/django-admin/worker-jobs/${queueName}/${jobId}`,
+  });
+  return response;
+}

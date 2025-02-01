@@ -18,9 +18,9 @@ import {
 } from "src/hooks/useAdminRoute";
 import { ListviewDataType } from "src/components/ListModelViewTable";
 import Modal from "src/components/Modal";
-import CheckboxField from "src/components/form_fields/CheckboxField";
 import AngleDown from "src/assets/icons/angle-down";
 import AngleUp from "src/assets/icons/angle-up";
+import ActionModalMessage from "src/components/ActionModalMessage";
 
 type FilterCheckboxType = {
   field: string;
@@ -32,25 +32,10 @@ type FilterCheckboxType = {
   }[];
 };
 
-type FilterStateType = {
-  checkboxes: FilterCheckboxType[];
-  pageFilters: { [key: string]: any[] };
-};
-
 const NO_ACTION = "-";
 
 type QueueFieldListViewType = ListviewDataType & {
   table_fields: string[];
-};
-
-const DeleteModalMessage = () => {
-  return (
-    <div class="w-3/4 p-3 mx-auto">
-      <h3 class="text-white">
-        Are you sure you want to delete these record/s?
-      </h3>
-    </div>
-  );
 };
 
 const QueuesFieldListViewPage = () => {
@@ -64,7 +49,7 @@ const QueuesFieldListViewPage = () => {
     createSignal<UserPermissionsType | null>(null);
   const [isDataReady, setIsDataReady] = createSignal(false);
   const [searchTerm, setSearchTerm] = createSignal("");
-  const [pageLimit, setPageLimit] = createSignal(2);
+  const [pageLimit, setPageLimit] = createSignal(20);
   const [pageOffset, setPageOffset] = createSignal(0);
   const [currentPage, setCurrentPage] = createSignal(1);
 
@@ -176,7 +161,7 @@ const QueuesFieldListViewPage = () => {
     return [
       { selected: true, value: NO_ACTION, label: "----------" },
       { selected: false, value: "delete", label: "Delete" },
-      { selected: false, value: "requeue_all", label: "Requeue" },
+      { selected: false, value: "requeue", label: "Requeue" },
     ];
   };
 
@@ -223,7 +208,7 @@ const QueuesFieldListViewPage = () => {
       return;
     }
 
-    if (currentAction() === "delete_listview") {
+    if (currentAction() !== NO_ACTION) {
       setIsModalOpen(true);
 
       // Return a promise that resolves based on user action
@@ -542,7 +527,7 @@ const QueuesFieldListViewPage = () => {
           modalEvent={(modalEvent) => {
             onModalEvent(modalEvent);
           }}
-          modalBody={<DeleteModalMessage />}
+          modalBody={<ActionModalMessage action={currentAction()} />}
         />
       </Show>
     </Show>

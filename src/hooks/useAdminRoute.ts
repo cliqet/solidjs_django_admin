@@ -11,6 +11,7 @@ export const authRoute = {
   documentationView: '/model-docs',
   settingsView: '/settings',
   queuesView: '/settings/queues',
+  queuesFieldListView: '/settings/queues/:queueName/:field',
 
   // For demo only
   customCountryProfileChangeView: '/custom-change/:modelName/:pk/change',

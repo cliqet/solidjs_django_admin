@@ -1,6 +1,8 @@
-import { A } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import { createSignal, For, onMount, Show } from "solid-js";
-import { authRoute, dashboardRoute } from "src/hooks/useAdminRoute";
+import { useAppContext } from "src/context/sessionContext";
+import { authRoute, dashboardRoute, nonAuthRoute } from "src/hooks/useAdminRoute";
+import { handleFetchError } from "src/hooks/useModelAdmin";
 import { getWorkerQueues } from "src/services/django-admin";
 
 type QueueStatFieldType = {
@@ -11,16 +13,18 @@ type QueueStatFieldType = {
 
 type QueueType = {
   fields: QueueStatFieldType[];
+  name: string;
 };
 
 const QueuesPage = () => {
   const [queues, setQueues] = createSignal<QueueType[]>([]);
   const [isDataReady, setIsDataReady] = createSignal(false);
+  const navigate = useNavigate();
+  const { setAppState } = useAppContext();
 
-  const renderQueueStatField = (fieldObj: QueueStatFieldType) => {
+  const renderQueueStatField = (queueName: string, fieldObj: QueueStatFieldType) => {
     if (
       [
-        "name",
         "oldest_job_timestamp",
         "host",
         "port",
@@ -37,7 +41,7 @@ const QueuesPage = () => {
       return (
         <A 
             class="underline" 
-            href={`${dashboardRoute(authRoute.queuesView)}/${fieldObj.field}`}
+            href={`${dashboardRoute(authRoute.queuesView)}/${queueName}/${fieldObj.field}`}
         >
           {fieldObj.value}
         </A>
@@ -51,7 +55,14 @@ const QueuesPage = () => {
       setQueues(responseQueues.queues);
       setIsDataReady(true);
 
-    } catch (err: any) {}
+    } catch (err: any) {
+        const handler = handleFetchError(err);
+      if (handler.shouldNavigate) {
+        navigate(nonAuthRoute.loginView);
+      } else {
+        setAppState("toastState", handler.newToastState);
+      }
+    }
   });
 
   return (
@@ -65,7 +76,7 @@ const QueuesPage = () => {
               <ul class="text-sm font-medium text-center text-white divide-x rounded-lg sm:flex divide-gray-600 rtl:divide-x-reverse">
                 <li class="w-full">
                   <span class="inline-block w-full p-4 rounded-ss-lg focus:outline-none bg-gray-700">
-                    Statistics
+                    NAME: {queue.name}
                   </span>
                 </li>
               </ul>
@@ -76,7 +87,7 @@ const QueuesPage = () => {
                       {(field, j) => (
                         <div class="flex flex-col items-center justify-center">
                           <dt class="mb-2 text-lg font-bold">
-                            {renderQueueStatField(field)}
+                            {renderQueueStatField(queue.name, field)}
                           </dt>
                           <dd class="text-gray-400 text-center">
                             {field.label}

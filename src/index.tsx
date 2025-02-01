@@ -24,6 +24,7 @@ const ListModelViewPage = lazy(() => import('src/pages/ListModelViewPage'));
 const DocumentationPage = lazy(() => import('src/pages/DocumentationPage'));
 const SettingsPage = lazy(() => import('src/pages/SettingsPage'));
 const QueuesPage = lazy(() => import('src/pages/QueuesPage'));
+const QueuesFieldListViewPage = lazy(() => import('src/pages/QueuesFieldListViewPage'));
 
 // For Demo only of custom change link page
 const CustomCountryProfileChangePage = lazy(() => import('src/pages/CustomCountryProfileChangePage'));
@@ -52,6 +53,7 @@ render(
           <Route path={authRoute.documentationView} component={DocumentationPage}></Route>
           <Route path={authRoute.settingsView} component={SettingsPage}></Route>
           <Route path={authRoute.queuesView} component={QueuesPage}></Route>
+          <Route path={authRoute.queuesFieldListView} component={QueuesFieldListViewPage}></Route>
         </Route>
 
         <Route path="/" component={NoAuthLayout}>

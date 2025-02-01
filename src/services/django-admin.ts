@@ -172,7 +172,17 @@ export async function resetPasswordViaLink(
 export async function getWorkerQueues(): Promise<any> {
   const response = await sessionClient.fetch({
     method: "GET",
-    urlSegment: "/django-admin/get-worker-queues",
+    urlSegment: "/django-admin/worker-queues",
+  });
+  return response;
+}
+
+export async function getFailedJobs(
+  queueName: string,
+): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "GET",
+    urlSegment: `/django-admin/worker-failed-jobs/${queueName}`,
   });
   return response;
 }

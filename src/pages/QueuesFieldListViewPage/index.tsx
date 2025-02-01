@@ -1,39 +1,26 @@
 import SearchInput from "src/components/SearchInput";
-import ListModelViewTable, {
-  TableEventType,
-  TableMetatdataType,
-} from "src/components/ListModelViewTable";
 import SelectField from "src/components/form_fields/SelectField";
-import { useNavigate, useParams } from "@solidjs/router";
-import { createEffect, createSignal, For, onMount, Show } from "solid-js";
-import {
-  applyCustomAction,
-  getModelAdminSettings,
-  getModelFields,
-  getModelListview,
-} from "src/services/django-admin";
-import {
-  initialModelAdminSettings,
-  ModelAdminSettingsType,
-  ModelFieldsObjType,
-} from "src/models/django-admin";
+import { A, useNavigate, useParams } from "@solidjs/router";
+import { createSignal, For, onMount, Show } from "solid-js";
+import { applyCustomAction, getFailedJobs } from "src/services/django-admin";
 import { UserPermissionsType } from "src/models/user";
 import { getUserPermissions } from "src/services/users";
 import { useAppContext } from "src/context/sessionContext";
 import {
+  formatDateString,
   handleFetchError,
-  hasAddModelPermission,
-  hasChangeModelPermission,
   hasViewModelPermission,
 } from "src/hooks/useModelAdmin";
-import { nonAuthRoute } from "src/hooks/useAdminRoute";
+import {
+  authRoute,
+  dashboardRoute,
+  nonAuthRoute,
+} from "src/hooks/useAdminRoute";
 import { ListviewDataType } from "src/components/ListModelViewTable";
 import Modal from "src/components/Modal";
 import CheckboxField from "src/components/form_fields/CheckboxField";
 import AngleDown from "src/assets/icons/angle-down";
 import AngleUp from "src/assets/icons/angle-up";
-import InlineTable from "src/components/InlineTable";
-import DynamicExtraInline from "src/components/extra_inlines/DynamicExtraInline";
 
 type FilterCheckboxType = {
   field: string;
@@ -52,6 +39,10 @@ type FilterStateType = {
 
 const NO_ACTION = "-";
 
+type QueueFieldListViewType = ListviewDataType & {
+  table_fields: string[];
+};
+
 const DeleteModalMessage = () => {
   return (
     <div class="w-3/4 p-3 mx-auto">
@@ -66,19 +57,14 @@ const QueuesFieldListViewPage = () => {
   const params = useParams();
   const navigate = useNavigate();
   const { appState, setAppState } = useAppContext();
-  const [listviewData, setListviewData] = createSignal<ListviewDataType | null>(
-    null
-  );
-  const [modelFields, setModelFields] = createSignal<ModelFieldsObjType | null>(
-    null
-  );
-  const [modelAdminSettings, setModelAdminSettings] =
-    createSignal<ModelAdminSettingsType>(initialModelAdminSettings);
+  const [listviewData, setListviewData] =
+    createSignal<QueueFieldListViewType | null>(null);
+  const [currentResults, setCurrentResults] = createSignal<any[]>([]);
   const [userPermissions, setUserPermissions] =
     createSignal<UserPermissionsType | null>(null);
   const [isDataReady, setIsDataReady] = createSignal(false);
   const [searchTerm, setSearchTerm] = createSignal("");
-  const [pageLimit, setPageLimit] = createSignal(0);
+  const [pageLimit, setPageLimit] = createSignal(2);
   const [pageOffset, setPageOffset] = createSignal(0);
   const [currentPage, setCurrentPage] = createSignal(1);
 
@@ -86,37 +72,11 @@ const QueuesFieldListViewPage = () => {
   const [currentAction, setCurrentAction] = createSignal(NO_ACTION);
   const [rowsSelected, setRowsSelected] = createSignal<string[]>([]);
 
-  // This will hold state of the checked filters
-  const [filterState, setFilterState] = createSignal<FilterStateType | null>(
-    null
-  );
   const [isModalOpen, setIsModalOpen] = createSignal(false);
-  const [isFilterOpen, setIsFilterOpen] = createSignal(false);
   const [isParentTableOpen, setIsParentTableOpen] = createSignal(true);
   let modalEventPromise: (event: string) => void;
-
-  const resetFilters = () => {
-    // Set initial filter state
-    let initialFilterState: FilterStateType = {
-      checkboxes: [],
-      pageFilters: {},
-    };
-    const checkboxesState: FilterCheckboxType[] =
-      modelAdminSettings().table_filters.map((filter) => {
-        const filterValues = filter.values.map((fieldValue) => {
-          return {
-            ...fieldValue,
-            checked: true,
-            checkboxId: `${filter.field}-${fieldValue.value}`,
-          };
-        });
-        return { field: filter.field, values: filterValues };
-      });
-
-    initialFilterState.checkboxes = checkboxesState;
-    initialFilterState.pageFilters = {};
-    setFilterState(initialFilterState);
-  };
+  let checkboxAllRef: HTMLInputElement;
+  let checkboxRowRefs: HTMLInputElement[] = new Array(length).fill(null);
 
   const resetState = () => {
     setRowsSelected([]);
@@ -124,63 +84,64 @@ const QueuesFieldListViewPage = () => {
     setCurrentPage(1);
     setPageOffset(0);
     setSearchTerm("");
-    resetFilters();
   };
 
-  const buildFilterUrlString = () => {
-    let filterUrl = "";
-    if (!filterState()?.pageFilters) {
-      return filterUrl;
+  const getDynamicListData = async (queueName: string, field: string) => {
+    if (field === "failed_jobs") {
+      return getFailedJobs(queueName);
+    }
+  };
+
+  const pageTitle = (queueName: string, field: string) => {
+    if (field === "failed_jobs") {
+      return "Failed Jobs";
+    }
+  };
+
+  const setDynamicListData = (
+    queueName: string,
+    field: string,
+    response: any
+  ) => {
+    if (field === "failed_jobs") {
+      setListviewData(response.failed_jobs);
+      setCurrentResults(response.failed_jobs.results);
+    }
+  };
+
+  const renderTableData = (fieldName: string, value: any, id: string) => {
+    if (!["id", "callable"].includes(fieldName)) {
+      return <span>{formatDateString(value)}</span>;
     }
 
-    Object.keys(filterState()?.pageFilters as {}).forEach((key) => {
-      filterUrl += `&${key}=${JSON.stringify(filterState()?.pageFilters[key])}`;
-    });
-    return filterUrl;
+    if (fieldName === "id") {
+      return (
+        <A
+          href={`${dashboardRoute(authRoute.queuesView)}/${params.queueName}/${
+            params.field
+          }/${id}`}
+          class="underline"
+        >
+          {value}
+        </A>
+      );
+    }
+
+    return <span>{value}</span>;
   };
 
-  // const getListviewData = async () => {
-  //   // Get paginated data
-  //   return await getModelListview(
-  //     params.appLabel,
-  //     params.modelName,
-  //     pageLimit(),
-  //     pageOffset(),
-  //     buildFilterUrlString(),
-  //     searchTerm()
-  //   );
-  // };
-
-  createEffect(async () => {
+  onMount(async () => {
     try {
       setIsDataReady(false);
 
-      // Setup model fields and model admin settings
-      // const modelFieldsData = await getModelFields(
-      //   params.appLabel,
-      //   params.modelName
-      // );
-      // setModelFields(modelFieldsData.fields);
-
-      // const modelAdminSettingsData = await getModelAdminSettings(
-      //   params.appLabel,
-      //   params.modelName
-      // );
-      // setModelAdminSettings(modelAdminSettingsData.model_admin_settings);
-
-      // Setup page limit
-      // setPageLimit(modelAdminSettingsData.model_admin_settings.list_per_page);
+      const response = await getDynamicListData(params.queueName, params.field);
+      setDynamicListData(params.queueName, params.field, response);
 
       // Setup permissions
       const permissionsData = await getUserPermissions(
         appState.user?.uid as string
       );
       setUserPermissions(permissionsData.permissions);
-
-      // Get paginated data
-      // const listviewResponse = await getListviewData();
-      // setListviewData(listviewResponse);
-
       setIsDataReady(true);
     } catch (err: any) {
       const handler = handleFetchError(err);
@@ -192,83 +153,30 @@ const QueuesFieldListViewPage = () => {
     }
   });
 
-  // createEffect(() => {
-  //   if (params.appLabel && params.modelName) {
-  //     resetFilters();
-  //   }
-  // });
+  const onSearch = (term: string) => {
+    setSearchTerm(term);
 
-  // createEffect(async () => {
-  //   if (pageLimit() && pageOffset()) {
-  //     // Get paginated data
-  //     const listviewResponse = await getListviewData();
-  //     setListviewData(listviewResponse);
-  //   }
-  // });
+    let currentListviewResults: any[] = [...(listviewData()?.results as any[])];
 
-  // createEffect(async () => {
-  //   // Get paginated data
-  //   const listviewResponse = await getListviewData();
-  //   setListviewData(listviewResponse);
-  // });
-
-  const getTableEvent = (
-    tableEvent: TableEventType,
-    metadata: TableMetatdataType
-  ) => {
-    let rowsSelectedCopy = [...rowsSelected()];
-
-    if (tableEvent === "rowSelectAll") {
-      if (metadata.rowsSelected && metadata.rowsSelected[0].isChecked) {
-        rowsSelectedCopy = metadata.rowsSelected.map((row) => {
-          return row.id;
-        });
-      } else {
-        rowsSelectedCopy = [];
-      }
+    if (searchTerm()) {
+      currentListviewResults = currentResults().filter((item) => {
+        return (
+          item.id.toLowerCase().includes(searchTerm().toLowerCase()) ||
+          item.callable.toLowerCase().includes(searchTerm().toLowerCase())
+        );
+      }) as any[];
     }
 
-    if (tableEvent === "rowSelect") {
-      rowsSelectedCopy = [...rowsSelected()];
-      const rowSelected = metadata.rowSelected;
-
-      let isExisting = false;
-      let indexToRemove = -1;
-      rowsSelectedCopy.forEach((rowId, i) => {
-        // if the row selected is currently on the list but is unchecked, remove it
-        if (rowSelected?.id === rowId && !rowSelected.isChecked) {
-          isExisting = true;
-          indexToRemove = i;
-        }
-      });
-
-      if (!isExisting) {
-        rowsSelectedCopy.push(rowSelected?.id as string);
-      } else {
-        if (indexToRemove > -1) {
-          rowsSelectedCopy.splice(indexToRemove, 1);
-        }
-      }
-    }
-
-    setRowsSelected(rowsSelectedCopy);
-  };
-
-  const onSearch = (searchTerm: string) => {
-    setSearchTerm(searchTerm);
+    setCurrentPage(1);
+    setPageOffset(0);
+    setCurrentResults(currentListviewResults);
   };
 
   const customActions = () => {
-    const actions = modelAdminSettings().custom_actions.map((action) => {
-      return {
-        selected: false,
-        value: action.func,
-        label: action.label,
-      };
-    });
     return [
       { selected: true, value: NO_ACTION, label: "----------" },
-      ...actions,
+      { selected: false, value: "delete", label: "Delete" },
+      { selected: false, value: "requeue_all", label: "Requeue" },
     ];
   };
 
@@ -331,123 +239,77 @@ const QueuesFieldListViewPage = () => {
     }
   };
 
-  const updateCheckbox = (id: string, checkState: boolean) => {
-    const checkboxEl = document.getElementById(id) as HTMLInputElement;
-    checkboxEl.checked = checkState;
-  };
+  const onRowCheckAll = () => {
+    let checkboxRowsSelected: string[] = [];
 
-  const onFilterBy = (
-    field: string,
-    value: string | number | null,
-    isChecked: boolean,
-    checkboxId: string,
-    isAll: boolean
-  ) => {
-    let newFilterState: FilterStateType = {
-      ...(filterState() as FilterStateType),
-    };
-
-    // Check if checkbox selected is All
-    if (isAll) {
-      newFilterState.checkboxes?.forEach((checkbox, i) => {
-        // Find the field first which will have the group of filter values
-        // Then check all the ones in the group if All is checked
-        if (checkbox.field === field && isChecked) {
-          newFilterState.pageFilters[field] = [];
-          checkbox.values.forEach((checkboxValue, j) => {
-            newFilterState.checkboxes[i].values[j].checked = true;
-            updateCheckbox(`${checkbox.field}-${checkboxValue.value}`, true);
-          });
-        }
-
-        // If All is unchecked
-        if (checkbox.field === field && !isChecked) {
-          checkbox.values.forEach((checkboxValue, j) => {
-            newFilterState.checkboxes[i].values[j].checked = false;
-            updateCheckbox(`${checkbox.field}-${checkboxValue.value}`, false);
-          });
-        }
+    if (!checkboxAllRef.checked) {
+      checkboxRowRefs.forEach((checkbox) => {
+        checkbox.checked = false;
       });
-      // When anything but All is the checkbox
     } else {
-      newFilterState.checkboxes?.forEach((checkbox, i) => {
-        // If checked, just update the one checked
-        if (checkbox.field === field && isChecked) {
-          checkbox.values.forEach((checkboxValue, j) => {
-            if (checkboxValue.checkboxId === checkboxId) {
-              newFilterState.checkboxes[i].values[j].checked = true;
-              updateCheckbox(`${checkbox.field}-${checkboxValue.value}`, true);
-            }
-          });
-        }
-
-        // If unchecked, make sure All checkbox is unchecked
-        if (checkbox.field === field && !isChecked) {
-          checkbox.values.forEach((checkboxValue, j) => {
-            if (
-              checkboxValue.checkboxId === checkboxId ||
-              checkboxValue.label === "All"
-            ) {
-              newFilterState.checkboxes[i].values[j].checked = false;
-              updateCheckbox(`${checkbox.field}-${checkboxValue.value}`, false);
-            }
-          });
-        }
+      checkboxRowRefs.forEach((checkbox) => {
+        checkbox.checked = true;
+        checkboxRowsSelected.push(checkbox.id);
       });
     }
 
-    // Set the page filters
-    let newPageFilters: { [key: string]: any[] } = {};
-    newFilterState.checkboxes.forEach((checkbox) => {
-      checkbox.values.forEach((checkboxValue) => {
-        if (checkboxValue.label !== "All" && checkboxValue.checked) {
-          if (!newPageFilters[checkbox.field]) {
-            newPageFilters[checkbox.field] = [];
-          }
-          newPageFilters[checkbox.field].push(checkboxValue.value);
-        }
-      });
+    setRowsSelected([...checkboxRowsSelected]);
+  };
+
+  const onRowCheck = (e: Event) => {
+    const checkbox = e.target as HTMLInputElement;
+    const isChecked = checkbox.checked;
+    let checkboxRowsSelected: string[] = [...rowsSelected()];
+
+    let isExisting = false;
+    let indexToRemove = -1;
+    checkboxRowsSelected.forEach((rowId, i) => {
+      // if the row selected is currently on the list but is unchecked, remove it
+      if (checkbox.id === rowId && !isChecked) {
+        isExisting = true;
+        indexToRemove = i;
+      }
     });
 
-    newFilterState.pageFilters = newPageFilters;
-    setFilterState(newFilterState);
+    if (!isExisting && isChecked) {
+      checkboxRowsSelected.push(checkbox.id);
+    } 
+
+    if (indexToRemove > -1) {
+      checkboxRowsSelected.splice(indexToRemove, 1);
+    }
   };
 
   return (
     <Show when={isDataReady()}>
       <Show
-        when={
-          hasViewModelPermission(
-            userPermissions() as UserPermissionsType,
-            'django_rq',
-            'queue'
-          )
-        }
+        when={hasViewModelPermission(
+          userPermissions() as UserPermissionsType,
+          "django_rq",
+          "queue"
+        )}
       >
         <div class="flex justify-between p-1 items-center mb-2">
           <h1 class="text-xl text-white">
-            Jobs in {params.queueName} queue
+            {pageTitle(params.queueName, params.field)} in {params.queueName}{" "}
+            queue
           </h1>
         </div>
 
         {/** Search */}
-        {/* <Show when={modelAdminSettings().search_fields.length > 0}>
-          <div class="p-2 border border-slate-300 rounded-md mb-2">
-            <SearchInput
-              onSearchClick={(searchTerm) => onSearch(searchTerm)}
-              onClearSearch={(searchTerm) => onSearch(searchTerm)}
-              inputProps={{
-                id: "table-search",
-                placeholder: "Search here...",
-                required: true,
-                value: searchTerm(),
-              }}
-            />
-            <p class="text-white text-xs my-2">
-              {modelAdminSettings().search_help_text}
-            </p>
-          </div>
-        </Show> */}
+        <div class="p-2 border border-slate-300 rounded-md mb-2">
+          <SearchInput
+            onSearchClick={(searchTerm) => onSearch(searchTerm)}
+            onClearSearch={(searchTerm) => onSearch(searchTerm)}
+            inputProps={{
+              id: "table-search",
+              placeholder: "Search here...",
+              required: true,
+              value: searchTerm(),
+            }}
+          />
+          <p class="text-white text-xs my-2">Search by id, callable</p>
+        </div>
 
         {/** Actions */}
         <div class="p-2 border border-slate-300 rounded-md mb-2">
@@ -468,82 +330,12 @@ const QueuesFieldListViewPage = () => {
           </div>
         </div>
 
-        {/** Filters */}
-        {/* <Show when={modelAdminSettings().list_filter.length > 0}>
-          <div class="p-2 border border-slate-300 rounded-md mb-2 flex-col">
-            <div class="mb-2 flex justify-between">
-              <span class="text-white text-sm">Filters</span>
-              <Show when={isFilterOpen()}>
-                <span
-                  onClick={() => setIsFilterOpen(false)}
-                  class="cursor-pointer"
-                >
-                  <AngleUp width={5} height={5} />
-                </span>
-              </Show>
-              <Show when={!isFilterOpen()}>
-                <span
-                  onClick={() => setIsFilterOpen(true)}
-                  class="cursor-pointer"
-                >
-                  <AngleDown width={5} height={5} />
-                </span>
-              </Show>
-            </div>
-            <Show when={filterState()}>
-              <div
-                classList={{
-                  hidden: !isFilterOpen(),
-                  visible: isFilterOpen(),
-                }}
-              >
-                <For each={filterState()?.checkboxes}>
-                  {(filterField, i) => (
-                    <>
-                      <hr class="mb-3" />
-                      <h4 class="font-semibold text-white text-sm mb-2">
-                        By {filterField.field.toUpperCase()}
-                      </h4>
-                      <div class="flex flex-wrap gap-5 mb-2">
-                        <For each={filterField.values}>
-                          {(filterValue, j) => (
-                            <div>
-                              <CheckboxField
-                                inputProps={{
-                                  id: `${filterValue.checkboxId}`,
-                                }}
-                                checked={filterValue.checked}
-                                onChangeValue={(isChecked, fieldName) => {
-                                  onFilterBy(
-                                    filterField.field,
-                                    filterValue.value,
-                                    isChecked,
-                                    filterValue.checkboxId,
-                                    filterValue.label === "All"
-                                  );
-                                }}
-                              />
-                              <span class="ml-2 text-white text-sm">
-                                {filterValue.label}
-                              </span>
-                            </div>
-                          )}
-                        </For>
-                      </div>
-                    </>
-                  )}
-                </For>
-              </div>
-            </Show>
-          </div>
-        </Show> */}
-
         {/** Table */}
         <div class="p-2 border border-slate-300 rounded-md mb-2">
           <div class="flex-col mb-2">
             <div class="flex justify-between">
               <h3 class="text-lg text-white">
-                Jobs
+                {pageTitle(params.queueName, params.field)}
               </h3>
               <Show when={isParentTableOpen()}>
                 <span
@@ -564,51 +356,110 @@ const QueuesFieldListViewPage = () => {
             </div>
             <div class="flex items-center justify-center">
               <span class="text-white text-sm">
-                Page {currentPage()}: Total of {listviewData()?.count} records
+                Page {currentPage()}: Total of {currentResults().length} records
               </span>
             </div>
           </div>
           <div
             classList={{
-              "hidden": !isParentTableOpen(),
-              "visible": isParentTableOpen()
+              hidden: !isParentTableOpen(),
+              visible: isParentTableOpen(),
             }}
           >
-            <Show when={(listviewData()?.count as number) === 0}>
+            <Show when={currentResults().length === 0}>
               <div>
                 <h3 class="text-white text-lg flex items-center justify-center">
                   No records
                 </h3>
               </div>
             </Show>
-            {/* <Show when={(listviewData()?.count as number) > 0}>
-              <ListModelViewTable
-                appLabel={params.appLabel}
-                modelName={params.modelName}
-                ordering={modelAdminSettings().ordering}
-                listdisplayFields={modelAdminSettings().list_display}
-                listdisplayLinks={modelAdminSettings().list_display_links}
-                customChangeLink={modelAdminSettings().custom_change_link}
-                listviewData={listviewData() as ListviewDataType}
-                modelFields={modelFields() as ModelFieldsObjType}
-                onTableEvent={(tableEvent, metadata) =>
-                  getTableEvent(tableEvent, metadata)
-                }
-              />
-            </Show> */}
+
+            <Show when={currentResults().length > 0}>
+              <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table class="w-full text-sm text-left rtl:text-right table-auto">
+                  <thead class="text-xs text-white uppercase bg-custom-primary">
+                    <tr>
+                      <th scope="col" class="p-4">
+                        <div class="flex items-center">
+                          <input
+                            id="checkbox-all"
+                            ref={checkboxAllRef!}
+                            type="checkbox"
+                            onChange={onRowCheckAll}
+                            class="w-4 h-4 text-custom-primary bg-gray-100 border-white rounded focus:ring-custom-primary-lighter"
+                          />
+                          <label for="checkbox-all-search" class="sr-only">
+                            checkbox
+                          </label>
+                        </div>
+                      </th>
+                      <For each={listviewData()?.table_fields}>
+                        {(fieldName, fieldIndex) => (
+                          <th scope="col" class="px-6 py-3">
+                            {fieldName.toUpperCase()}
+                          </th>
+                        )}
+                      </For>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <For
+                      each={currentResults().slice(
+                        pageOffset(),
+                        pageOffset() + pageLimit()
+                      )}
+                    >
+                      {(record, i) => (
+                        <tr class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600">
+                          <td class="w-4 px-4 py-2">
+                            <div class="flex items-center">
+                              <input
+                                id={record.id}
+                                ref={checkboxRowRefs[i()]}
+                                onClick={onRowCheck}
+                                type="checkbox"
+                                class="w-4 h-4 text-custom-primary rounded focus:ring-custom-primary-lighter focus:ring-2 bg-gray-700 border-gray-600"
+                              />
+                              <label
+                                for="checkbox-table-search-1"
+                                class="sr-only"
+                              >
+                                checkbox
+                              </label>
+                            </div>
+                          </td>
+                          <For each={listviewData()?.table_fields}>
+                            {(fieldName, fieldIndex) => (
+                              <td class="px-6 py-2 text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
+                                {renderTableData(
+                                  fieldName,
+                                  record[fieldName],
+                                  record.id
+                                )}
+                              </td>
+                            )}
+                          </For>
+                        </tr>
+                      )}
+                    </For>
+                  </tbody>
+                </table>
+              </div>
+            </Show>
           </div>
         </div>
 
         {/** Table Pagination */}
-        {/* <div 
+        <div
           class="p-2 border border-slate-300 rounded-md mb-2"
           classList={{
-            "hidden": !isParentTableOpen(),
-            "visible": isParentTableOpen()
+            hidden: !isParentTableOpen(),
+            visible: isParentTableOpen(),
           }}
         >
           <div class="flex items-center justify-center">
-            <Show when={listviewData()?.previous}>
+            <Show when={currentPage() > 1}>
               <button
                 onClick={() => {
                   setPageOffset(0);
@@ -619,10 +470,10 @@ const QueuesFieldListViewPage = () => {
                 First
               </button>
             </Show>
-            <Show when={listviewData()?.previous}>
+            <Show when={currentPage() > 1}>
               <button
                 onClick={() => {
-                  setPageOffset((prev) => prev - 10);
+                  setPageOffset((prev) => prev - pageLimit());
                   setCurrentPage((prev) => prev - 1);
                 }}
                 class="button"
@@ -630,10 +481,10 @@ const QueuesFieldListViewPage = () => {
                 Previous
               </button>
             </Show>
-            <Show when={listviewData()?.next}>
+            <Show when={currentResults().length > currentPage() * pageLimit()}>
               <button
                 onClick={() => {
-                  setPageOffset((prev) => prev + 10);
+                  setPageOffset((prev) => prev + pageLimit());
                   setCurrentPage((prev) => prev + 1);
                 }}
                 class="button"
@@ -641,19 +492,17 @@ const QueuesFieldListViewPage = () => {
                 Next
               </button>
             </Show>
-            <Show when={listviewData()?.next}>
+            <Show when={currentResults().length > currentPage() * pageLimit()}>
               <button
                 onClick={() => {
                   let lastPage;
                   const remainderRecords =
-                    (listviewData()?.count as number) % pageLimit();
+                    currentResults().length % pageLimit();
                   if (remainderRecords === 0) {
-                    lastPage = (listviewData()?.count as number) / pageLimit();
+                    lastPage = currentResults().length / pageLimit();
                   } else {
                     lastPage =
-                      Math.floor(
-                        (listviewData()?.count as number) / pageLimit()
-                      ) + 1;
+                      Math.floor(currentResults().length / pageLimit()) + 1;
                   }
                   setPageOffset(lastPage * pageLimit() - pageLimit());
                   setCurrentPage(lastPage);
@@ -666,10 +515,10 @@ const QueuesFieldListViewPage = () => {
           </div>
           <div class="flex items-center justify-center">
             <span class="text-white text-sm">
-              Page {currentPage()}: Total of {listviewData()?.count} records
+              Page {currentPage()}: Total of {currentResults().length} records
             </span>
           </div>
-        </div> */}
+        </div>
       </Show>
 
       {/** No Permissions */}
@@ -677,8 +526,8 @@ const QueuesFieldListViewPage = () => {
         when={
           !hasViewModelPermission(
             userPermissions() as UserPermissionsType,
-            'django_rq',
-            'queue'
+            "django_rq",
+            "queue"
           )
         }
       >

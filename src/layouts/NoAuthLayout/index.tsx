@@ -20,7 +20,7 @@ const NoAuthLayout: Component<NoAuthLayoutProps> = (props) => {
 
   onMount(() => {
     const token = localStorage.getItem(LOCAL_STORAGE_KEYS.token);
-    console.log('token', token);
+
     if (token) {
       try {
         const tokenPayload: User = jwtDecode(token);

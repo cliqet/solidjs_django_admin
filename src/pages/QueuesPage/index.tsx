@@ -1,7 +1,22 @@
 import { A, useNavigate } from "@solidjs/router";
-import { createSignal, For, onMount, Show } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  For,
+  onCleanup,
+  onMount,
+  Show,
+} from "solid-js";
+import RefreshIcon from "src/assets/icons/refresh-icon";
+import CheckboxField from "src/components/form_fields/CheckboxField";
+import InputTypeField from "src/components/form_fields/InputTypeField";
+import SelectField from "src/components/form_fields/SelectField";
 import { useAppContext } from "src/context/sessionContext";
-import { authRoute, dashboardRoute, nonAuthRoute } from "src/hooks/useAdminRoute";
+import {
+  authRoute,
+  dashboardRoute,
+  nonAuthRoute,
+} from "src/hooks/useAdminRoute";
 import { handleFetchError } from "src/hooks/useModelAdmin";
 import { getWorkerQueues } from "src/services/django-admin";
 
@@ -16,21 +31,31 @@ type QueueType = {
   name: string;
 };
 
+const REFRESH_UNITS = {
+  SECONDS: "seconds",
+  MINUTES: "minutes",
+};
+
 const QueuesPage = () => {
   const [queues, setQueues] = createSignal<QueueType[]>([]);
   const [isDataReady, setIsDataReady] = createSignal(false);
+  const [isAutoRefresh, setIsAutoRefresh] = createSignal(false);
+  const [refreshNumber, setRefreshNumber] = createSignal("1");
+  const [didRefresh, setDidRefresh] = createSignal(false);
+  const [refreshNumberSeconds, setRefreshNumberSeconds] = createSignal(60);
+  const [refreshUnit, setRefreshUnit] = createSignal(REFRESH_UNITS.MINUTES);
   const navigate = useNavigate();
   const { setAppState } = useAppContext();
+  let intervalId: NodeJS.Timeout | null;
 
-  const renderQueueStatField = (queueName: string, fieldObj: QueueStatFieldType) => {
+  const renderQueueStatField = (
+    queueName: string,
+    fieldObj: QueueStatFieldType
+  ) => {
     if (
-      [
-        "oldest_job_timestamp",
-        "host",
-        "port",
-        "db",
-        "scheduler_pid",
-      ].includes(fieldObj.field)
+      ["oldest_job_timestamp", "host", "port", "db", "scheduler_pid"].includes(
+        fieldObj.field
+      )
     ) {
       if (!fieldObj.value) {
         return <span>-</span>;
@@ -39,9 +64,11 @@ const QueuesPage = () => {
       }
     } else {
       return (
-        <A 
-            class="underline" 
-            href={`${dashboardRoute(authRoute.queuesView)}/${queueName}/${fieldObj.field}`}
+        <A
+          class="underline"
+          href={`${dashboardRoute(authRoute.queuesView)}/${queueName}/${
+            fieldObj.field
+          }`}
         >
           {fieldObj.value}
         </A>
@@ -54,9 +81,8 @@ const QueuesPage = () => {
       const responseQueues = await getWorkerQueues();
       setQueues(responseQueues.queues);
       setIsDataReady(true);
-
     } catch (err: any) {
-        const handler = handleFetchError(err);
+      const handler = handleFetchError(err);
       if (handler.shouldNavigate) {
         navigate(nonAuthRoute.loginView);
       } else {
@@ -65,11 +91,125 @@ const QueuesPage = () => {
     }
   });
 
+  const showRefreshText = () => {
+    setDidRefresh(true);
+
+    // Set a timeout to hide the text after 1 second
+    const showRefreshTextTimeout = setTimeout(() => {
+      setDidRefresh(false); // Hide the refresh text
+    }, 300);
+
+    return () => clearTimeout(showRefreshTextTimeout);
+  };
+
+  // Auto-refresh logic
+  createEffect(() => {
+    let refreshNumberRate = +refreshNumber();
+    if (refreshUnit() === REFRESH_UNITS.MINUTES) {
+      refreshNumberRate *= 60;
+      setRefreshNumberSeconds(refreshNumberRate);
+    } else {
+      setRefreshNumberSeconds(refreshNumberRate);
+    }
+
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+
+    if (isAutoRefresh()) {
+      intervalId = setInterval(async () => {
+        try {
+          const responseQueues = await getWorkerQueues();
+          setQueues(responseQueues.queues);
+          showRefreshText();
+        } catch (err: any) {
+          if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+          }
+
+          const handler = handleFetchError(err);
+          if (handler.shouldNavigate) {
+            navigate(nonAuthRoute.loginView);
+          } else {
+            setAppState("toastState", handler.newToastState);
+          }
+        }
+      }, refreshNumberRate * 1000);
+    }
+  });
+
   return (
     <div class="flex-col justify-between p-1 items-center">
       <h1 class="text-xl text-white mb-5">Queues</h1>
 
       <Show when={isDataReady()}>
+        <div class="flex">
+          <div class="flex items-center justify-end w-1/2">
+            <Show when={didRefresh()}>
+              <span class="text-white text-xs text-nowrap mr-3">Refreshed</span>
+            </Show>
+          </div>
+          <div class="flex items-center justify-end w-1/2 gap-3">
+            <Show when={!isAutoRefresh()}>
+              <span class="cursor-pointer">
+                <RefreshIcon width={5} height={5} />
+              </span>
+            </Show>
+
+            <span class="text-white text-sm text-nowrap">Refresh Rate:</span>
+
+            <Show when={isAutoRefresh()}>
+              <InputTypeField
+                onFocus={() => {}}
+                onInvalid={() => {}}
+                onChangeValue={(value: string, fieldName: string) => {
+                  setRefreshNumber(value);
+                }}
+                isInvalid={false}
+                inputProps={{
+                  type: "number",
+                  id: "refresh-number",
+                  pattern: "d*",
+                  value: refreshNumber(),
+                }}
+              />
+              <SelectField
+                onChangeValue={(value, fieldName) => {
+                  setRefreshUnit(value);
+                }}
+                selectProps={{
+                  id: "refresh-unit",
+                }}
+                options={[
+                  {
+                    selected: false,
+                    value: REFRESH_UNITS.SECONDS,
+                    label: "Second/s",
+                  },
+                  {
+                    selected: true,
+                    value: REFRESH_UNITS.MINUTES,
+                    label: "Minute/s",
+                  },
+                ]}
+              />
+            </Show>
+
+            <span class="text-white text-sm text-nowrap">Auto Refresh</span>
+            <CheckboxField
+              inputProps={{
+                id: "refresh-checkbox",
+              }}
+              checked={false}
+              onChangeValue={(value: boolean, fieldName: string) => {
+                setIsAutoRefresh(value);
+              }}
+            />
+          </div>
+        </div>
+
         <For each={queues()}>
           {(queue, i) => (
             <div class="w-full border rounded-lg shadow-sm bg-gray-800 border-gray-700 my-5">

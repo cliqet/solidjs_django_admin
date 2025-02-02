@@ -1,17 +1,15 @@
 import { useParams, useNavigate } from "@solidjs/router";
-import { createSignal, createEffect, Show, onMount } from "solid-js";
+import { createSignal, Show, onMount, For } from "solid-js";
 import {
   hasViewOnlyModelPermission,
-  hasAppPermission,
   handleFetchError,
 } from "src/hooks/useModelAdmin";
 import { useAppContext } from "src/context/sessionContext";
-import ViewModelForm from "src/components/ViewModelForm";
 import { UserPermissionsType } from "src/models/user";
-import ChangeModelForm from "src/components/ChangeModelForm";
 import { nonAuthRoute } from "src/hooks/useAdminRoute";
 import { getUserPermissions } from "src/services/users";
 import { getQueuedJob } from "src/services/django-admin";
+import Label from "src/components/form_fields/Label";
 
 type JobType = {
   id: string;
@@ -46,7 +44,6 @@ const ViewChangeQueuedJobPage = () => {
 
       const response = await getQueuedJob(params.queueName, params.jobId);
       setJob(response.job);
-      console.log(response.job);
 
       // Setup permissions
       const permissionsData = await getUserPermissions(
@@ -65,8 +62,28 @@ const ViewChangeQueuedJobPage = () => {
     }
   });
 
+  const renderFieldValue = (value: any) => {
+    if (
+      value === null ||
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "boolean"
+    ) {
+      return value;
+    }
+
+    return JSON.stringify(value);
+  };
+
+  const toTitleCase = (str: string) => {
+    return str
+      .split("_") // Split the string by underscores
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize the first letter of each word
+      .join(" "); // Join the words with a space
+  };
+
   return (
-    <Show when={isDataReady()}>
+    <Show when={isDataReady() && job()}>
       <Show
         when={
           !hasViewOnlyModelPermission(
@@ -86,29 +103,44 @@ const ViewChangeQueuedJobPage = () => {
           "queue"
         )}
       >
-        <h1 class="text-white">Job Detail {params.jobId}</h1>
-        {/* <ViewModelForm
-          appLabel={params.appLabel}
-          modelName={params.modelName}
-          pk={params.pk}
-          modelAdminSettings={modelAdminSettings()}
-          modelFields={modelFields()}
-        /> */}
-      </Show>
+        <div>
+          <h1 class="text-xl font-bold text-slate-200">
+            {toTitleCase(params.field)}
+          </h1>
 
-      {/* <ChangeModelForm
-          appLabel={params.appLabel}
-          modelName={params.modelName}
-          pk={params.pk}
-          modelAdminSettings={modelAdminSettings()}
-          modelFields={modelFields()}
-          setModelFields={setModelFields}
-          canChange={hasChangeModelPermission(
-            userPermissions() as UserPermissionsType,
-            params.appLabel,
-            params.modelName
-          )}
-        /> */}
+          <div class="mt-3">
+            <div>
+              <div class="bg-custom-primary p-2 rounded-t-md my-3">
+                <h3 class="text-white">Fields</h3>
+              </div>
+              <div class="w-1/2">
+                <For each={Object.keys(job() as JobType)}>
+                  {(fieldKey, j) => (
+                    <>
+                      <div class="p-1 my-2">
+                        <Label for={fieldKey} text={fieldKey.toUpperCase()} />
+                        <span class="text-white">
+                          {renderFieldValue(job()?.[fieldKey as keyof JobType])}
+                        </span>
+                      </div>
+                      <hr class="border-t-1 border-slate-400 mb-3" />
+                    </>
+                  )}
+                </For>
+              </div>
+
+              <div>
+                <button type="submit" class="button-danger">
+                  Delete
+                </button>
+                <button type="submit" class="button">
+                  Requeue
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Show>
     </Show>
   );
 };

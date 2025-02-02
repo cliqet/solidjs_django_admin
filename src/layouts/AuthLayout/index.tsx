@@ -21,6 +21,7 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
 
   onMount(() => {
     const token = localStorage.getItem(LOCAL_STORAGE_KEYS.token);
+
     if (token) {
       try {
         const tokenPayload: User = jwtDecode(token);

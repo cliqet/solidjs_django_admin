@@ -83,6 +83,11 @@ const QueuesFieldListViewPage = () => {
     }
   };
 
+  /**
+   * 
+   * In case we want to have the other fields as well later on. For now,
+   * failed jobs is the important one
+   */
   const setDynamicListData = (
     queueName: string,
     field: string,

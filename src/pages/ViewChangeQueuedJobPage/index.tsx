@@ -6,9 +6,9 @@ import {
 } from "src/hooks/useModelAdmin";
 import { useAppContext } from "src/context/sessionContext";
 import { UserPermissionsType } from "src/models/user";
-import { nonAuthRoute } from "src/hooks/useAdminRoute";
+import { authRoute, dashboardRoute, nonAuthRoute } from "src/hooks/useAdminRoute";
 import { getUserPermissions } from "src/services/users";
-import { getQueuedJob } from "src/services/django-admin";
+import { getQueuedJob, requeueJob } from "src/services/django-admin";
 import Label from "src/components/form_fields/Label";
 
 type JobType = {
@@ -82,6 +82,22 @@ const ViewChangeQueuedJobPage = () => {
       .join(" "); // Join the words with a space
   };
 
+  const onRequeue = async () => {
+    try {
+      const response = await requeueJob(params.queueName, params.jobId);
+      if (response.success) {
+        setAppState('toastState', 'isShowing', true);
+        setAppState('toastState', 'type', 'success');
+        setAppState('toastState', 'message', response.message);
+        navigate(`${dashboardRoute(authRoute.queuesView)}/${params.queueName}/${params.field}`);
+      }
+    } catch (err: any) {
+      setAppState('toastState', 'isShowing', true);
+      setAppState('toastState', 'type', 'danger');
+      setAppState('toastState', 'message', err.message);
+    }
+  }
+
   return (
     <Show when={isDataReady() && job()}>
       <Show
@@ -133,7 +149,7 @@ const ViewChangeQueuedJobPage = () => {
                 <button type="submit" class="button-danger">
                   Delete
                 </button>
-                <button type="submit" class="button">
+                <button type="submit" class="button" onClick={onRequeue}>
                   Requeue
                 </button>
               </div>

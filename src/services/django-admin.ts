@@ -197,3 +197,18 @@ export async function getQueuedJob(
   });
   return response;
 }
+
+export async function requeueJob(
+  queueName: string,
+  jobId: string
+): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "POST",
+    urlSegment: `/django-admin/worker-jobs/requeue`,
+    body: {
+      queue_name: queueName,
+      job_id: jobId
+    }
+  });
+  return response;
+}

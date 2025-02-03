@@ -3,7 +3,6 @@ import {
   createEffect,
   createSignal,
   For,
-  onCleanup,
   onMount,
   Show,
 } from "solid-js";
@@ -52,27 +51,20 @@ const QueuesPage = () => {
     queueName: string,
     fieldObj: QueueStatFieldType
   ) => {
-    if (
-      ["oldest_job_timestamp", "host", "port", "db", "scheduler_pid"].includes(
-        fieldObj.field
-      )
-    ) {
-      if (!fieldObj.value) {
-        return <span>-</span>;
-      } else {
-        return <span>{fieldObj.value}</span>;
-      }
+    if (fieldObj.field === 'failed_jobs') {
+      return <A
+        class="underline"
+        href={`${dashboardRoute(authRoute.queuesView)}/${queueName}/${
+          fieldObj.field
+        }`}
+      >
+        {fieldObj.value}
+      </A>
     } else {
-      return (
-        <A
-          class="underline"
-          href={`${dashboardRoute(authRoute.queuesView)}/${queueName}/${
-            fieldObj.field
-          }`}
-        >
-          {fieldObj.value}
-        </A>
-      );
+      if (fieldObj.value === null) {
+        return <span>-</span>;
+      }
+      return <span>{fieldObj.value}</span>;
     }
   };
 
@@ -140,6 +132,21 @@ const QueuesPage = () => {
     }
   });
 
+  const onManualRefresh = async () => {
+    try {
+      const responseQueues = await getWorkerQueues();
+      setQueues(responseQueues.queues);
+      setIsDataReady(true);
+    } catch (err: any) {
+      const handler = handleFetchError(err);
+      if (handler.shouldNavigate) {
+        navigate(nonAuthRoute.loginView);
+      } else {
+        setAppState("toastState", handler.newToastState);
+      }
+    }
+  }
+
   return (
     <div class="flex-col justify-between p-1 items-center">
       <h1 class="text-xl text-white mb-5">Queues</h1>
@@ -153,7 +160,7 @@ const QueuesPage = () => {
           </div>
           <div class="flex items-center justify-end w-1/2 gap-3">
             <Show when={!isAutoRefresh()}>
-              <span class="cursor-pointer">
+              <span class="cursor-pointer" onClick={onManualRefresh}>
                 <RefreshIcon width={5} height={5} />
               </span>
             </Show>

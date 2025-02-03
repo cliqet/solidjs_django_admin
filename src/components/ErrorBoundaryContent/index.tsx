@@ -9,7 +9,7 @@ const ErrorBoundaryContent: Component<ErrorBoundaryContentProps> = (props) => {
     const errorDetails = stackLines[1] || "Unknown source";
     const lineNumberMatch = errorDetails.match(/:(\d+):(\d+)/);
     const lineNumber = lineNumberMatch ? lineNumberMatch[1] : "Unknown line number";
-
+    console.log('error boundary')
     return (
         <div class="w-full h-full">
             <p class="text-white">Ooops, an error occured. Please refresh the page</p>

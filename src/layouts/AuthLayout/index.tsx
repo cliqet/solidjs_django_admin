@@ -25,14 +25,16 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
     if (token) {
       try {
         const tokenPayload: User = jwtDecode(token);
-        setAppState('user', {...tokenPayload});
+        setAppState("user", { ...tokenPayload });
       } catch (err) {
-        navigate(`${nonAuthRoute.loginView}?redirect=${encodeURI(location.pathname)}`);
+        navigate(
+          `${nonAuthRoute.loginView}?redirect=${encodeURI(location.pathname)}`
+        );
         setAppState("toastState", {
           ...appState.toastState,
           isShowing: true,
           message: "Invalid token",
-          type: "danger"
+          type: "danger",
         });
         localStorage.clear();
       }
@@ -41,28 +43,33 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
         ...appState.toastState,
         isShowing: true,
         message: "Please sign in to access dashboard",
-        type: "danger"
+        type: "danger",
       });
-      navigate(`${nonAuthRoute.loginView}?redirect=${encodeURI(location.pathname)}`);
+      navigate(
+        `${nonAuthRoute.loginView}?redirect=${encodeURI(location.pathname)}`
+      );
     }
   });
 
   return (
-    <div class="h-screen flex flex-col overflow-hidden">
-      <HeaderBar />
+    <ErrorBoundary
+      fallback={(err, reset) => <ErrorBoundaryContent error={err} />}
+    >
+      <div class="h-screen flex flex-col overflow-hidden bg-gray-800">
+        <HeaderBar />
 
-      <div class="pt-20 flex flex-1 overflow-hidden">
-        <SideBar />
-        <div id="auth-main" class="border-l border-gray-700 container px-4 pt-4 pb-20 flex-1 overflow-auto bg-gray-800">
-          <ErrorBoundary fallback={(err, reset) => (
-            <ErrorBoundaryContent error={err} />
-          )}>
+        <div class="pt-20 flex flex-1 overflow-hidden">
+          <SideBar />
+          <div
+            id="auth-main"
+            class="border-l border-gray-700 container px-4 pt-4 pb-20 flex-1 overflow-auto bg-gray-800"
+          >
             <ToastAlert />
             {props.children}
-          </ErrorBoundary>
+          </div>
         </div>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 };
 

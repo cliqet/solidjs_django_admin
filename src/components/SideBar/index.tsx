@@ -34,7 +34,7 @@ type AppSettingsType = {
 const SideBar = () => {
   const [apps, setApps] = createSignal<AppSettingsType[]>([]);
   const [userPermissions, setUserPermissions] = createSignal<UserPermissionsType | null>(null);
-  const { appState } = useAppContext();
+  const { appState, setAppState } = useAppContext();
 
   createEffect(async () => {
     try {
@@ -45,7 +45,11 @@ const SideBar = () => {
       // get user permissions
       const permissionResponse = await getUserPermissions(appState.user?.uid as string);
       setUserPermissions(permissionResponse.permissions);
-    } catch (err) {}
+    } catch (err: any) {
+      setAppState('toastState', 'isShowing', true);
+      setAppState('toastState', 'message', err.message ?? 'Something went wrong. Please refresh the page');
+      setAppState('toastState', 'type', 'danger');
+    }
   });
 
   return (

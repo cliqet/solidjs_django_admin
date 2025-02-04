@@ -52,5 +52,8 @@ Modify the directories according to your environments.
 #### Documentation 
 <img width="1345" alt="Screenshot 2025-01-27 at 12 47 07 PM" src="https://github.com/user-attachments/assets/377ae640-49c0-4cbb-88ec-85649c8067a0" />
 
+### Queue Management
+<img width="1042" alt="Screenshot 2025-02-03 at 5 29 58 PM" src="https://github.com/user-attachments/assets/70146293-8cfe-4285-903d-d4221c717bbf" />
+
 
 

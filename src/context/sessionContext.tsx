@@ -19,7 +19,8 @@ export type ToastState = {
     message: string,        // message to show on Toast
     type: ToastType,        // type of toast
     isShowing: boolean,     // whether toast is shown
-    persist?: boolean       // whether toast is persisted when unmounted from another component
+    persist?: boolean,      // whether toast is persisted when unmounted from another component
+    isHtmlMessage?: boolean  // whether message is html string or plain string
 }
 
 export type AppStoreType = {
@@ -37,7 +38,8 @@ export default createStore<AppStoreType>({
         isShowing: false,
         message: "",
         type: "success",
-        persist: false
+        persist: false,
+        isHtmlMessage: false,
     },
 });
 
@@ -50,7 +52,8 @@ const initialAppContext: AppStoreType = {
     isShowing: false,
     message: "",
     type: "success",
-    persist: false
+    persist: false,
+    isHtmlMessage: false,
   },
 };
 

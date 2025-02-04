@@ -2,7 +2,7 @@ import SearchInput from "src/components/SearchInput";
 import SelectField from "src/components/form_fields/SelectField";
 import { A, useNavigate, useParams } from "@solidjs/router";
 import { createSignal, For, onMount, Show } from "solid-js";
-import { applyCustomAction, getFailedJobs } from "src/services/django-admin";
+import { applyCustomAction, deleteJobs, getFailedJobs, requeueJobs } from "src/services/django-admin";
 import { UserPermissionsType } from "src/models/user";
 import { getUserPermissions } from "src/services/users";
 import { useAppContext } from "src/context/sessionContext";
@@ -22,17 +22,11 @@ import AngleDown from "src/assets/icons/angle-down";
 import AngleUp from "src/assets/icons/angle-up";
 import ActionModalMessage from "src/components/ActionModalMessage";
 
-type FilterCheckboxType = {
-  field: string;
-  values: {
-    value: string | number | null;
-    label: string;
-    checked: boolean;
-    checkboxId: string;
-  }[];
-};
-
-const NO_ACTION = "-";
+const BULK_ACTION = {
+  NO_ACTION: '-',
+  DELETE: 'delete',
+  REQUEUE: 'requeue',
+}
 
 type QueueFieldListViewType = ListviewDataType & {
   table_fields: string[];
@@ -54,7 +48,7 @@ const QueuesFieldListViewPage = () => {
   const [currentPage, setCurrentPage] = createSignal(1);
 
   // - means no action selected
-  const [currentAction, setCurrentAction] = createSignal(NO_ACTION);
+  const [currentAction, setCurrentAction] = createSignal(BULK_ACTION.NO_ACTION);
   const [rowsSelected, setRowsSelected] = createSignal<string[]>([]);
 
   const [isModalOpen, setIsModalOpen] = createSignal(false);
@@ -63,12 +57,15 @@ const QueuesFieldListViewPage = () => {
   let checkboxAllRef: HTMLInputElement;
   let checkboxRowRefs: HTMLInputElement[] = new Array(length).fill(null);
 
-  const resetState = () => {
+  const resetState = async () => {
     setRowsSelected([]);
     setCurrentAction("");
     setCurrentPage(1);
     setPageOffset(0);
     setSearchTerm("");
+
+    const response = await getDynamicListData(params.queueName, params.field);
+    setDynamicListData(params.queueName, params.field, response);
   };
 
   const getDynamicListData = async (queueName: string, field: string) => {
@@ -164,9 +161,9 @@ const QueuesFieldListViewPage = () => {
 
   const customActions = () => {
     return [
-      { selected: true, value: NO_ACTION, label: "----------" },
-      { selected: false, value: "delete", label: "Delete" },
-      { selected: false, value: "requeue", label: "Requeue" },
+      { selected: true, value: BULK_ACTION.NO_ACTION, label: "----------" },
+      { selected: false, value: BULK_ACTION.DELETE, label: "Delete" },
+      { selected: false, value: BULK_ACTION.REQUEUE, label: "Requeue" },
     ];
   };
 
@@ -174,20 +171,27 @@ const QueuesFieldListViewPage = () => {
     setCurrentAction(action);
   };
 
+  const dynamicBulkAction = (action: string) => {
+    if (action === BULK_ACTION.DELETE) {
+      return deleteJobs(params.queueName, rowsSelected());
+    }
+    if (action === BULK_ACTION.REQUEUE) {
+      return requeueJobs(params.queueName, rowsSelected());
+    }
+  }
+
   const onConfirmedAction = async () => {
     try {
-      const response = await applyCustomAction(
-        params.appLabel,
-        params.modelName,
-        currentAction(),
-        { payload: rowsSelected() }
-      );
+      const response = await dynamicBulkAction(currentAction());
 
       setAppState("toastState", "isShowing", true);
       setAppState("toastState", "type", "success");
       setAppState("toastState", "message", response.message);
+      setAppState("toastState", "isHtmlMessage", true);
 
       resetState();
+
+
     } catch (err: any) {
       const handler = handleFetchError(err);
       if (handler.shouldNavigate) {
@@ -213,7 +217,7 @@ const QueuesFieldListViewPage = () => {
       return;
     }
 
-    if (currentAction() !== NO_ACTION) {
+    if (currentAction() !== BULK_ACTION.NO_ACTION) {
       setIsModalOpen(true);
 
       // Return a promise that resolves based on user action
@@ -265,9 +269,11 @@ const QueuesFieldListViewPage = () => {
       checkboxRowsSelected.push(checkbox.id);
     } 
 
-    if (indexToRemove > -1) {
+    if (indexToRemove > -1 && !isChecked) {
       checkboxRowsSelected.splice(indexToRemove, 1);
     }
+
+    setRowsSelected(checkboxRowsSelected);
   };
 
   return (

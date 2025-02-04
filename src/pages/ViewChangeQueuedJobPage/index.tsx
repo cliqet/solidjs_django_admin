@@ -8,7 +8,7 @@ import { useAppContext } from "src/context/sessionContext";
 import { UserPermissionsType } from "src/models/user";
 import { authRoute, dashboardRoute, nonAuthRoute } from "src/hooks/useAdminRoute";
 import { getUserPermissions } from "src/services/users";
-import { getQueuedJob, requeueJob } from "src/services/django-admin";
+import { deleteJobs, getQueuedJob, requeueJobs } from "src/services/django-admin";
 import Label from "src/components/form_fields/Label";
 
 type JobType = {
@@ -84,11 +84,29 @@ const ViewChangeQueuedJobPage = () => {
 
   const onRequeue = async () => {
     try {
-      const response = await requeueJob(params.queueName, params.jobId);
+      const response = await requeueJobs(params.queueName, [params.jobId]);
       if (response.success) {
         setAppState('toastState', 'isShowing', true);
         setAppState('toastState', 'type', 'success');
         setAppState('toastState', 'message', response.message);
+        setAppState('toastState', 'isHtmlMessage', true);
+        navigate(`${dashboardRoute(authRoute.queuesView)}/${params.queueName}/${params.field}`);
+      }
+    } catch (err: any) {
+      setAppState('toastState', 'isShowing', true);
+      setAppState('toastState', 'type', 'danger');
+      setAppState('toastState', 'message', err.message);
+    }
+  }
+
+  const onDelete = async () => {
+    try {
+      const response = await deleteJobs(params.queueName, [params.jobId]);
+      if (response.success) {
+        setAppState('toastState', 'isShowing', true);
+        setAppState('toastState', 'type', 'success');
+        setAppState('toastState', 'message', response.message);
+        setAppState('toastState', 'isHtmlMessage', true);
         navigate(`${dashboardRoute(authRoute.queuesView)}/${params.queueName}/${params.field}`);
       }
     } catch (err: any) {
@@ -146,7 +164,7 @@ const ViewChangeQueuedJobPage = () => {
               </div>
 
               <div>
-                <button type="submit" class="button-danger">
+                <button type="submit" class="button-danger" onClick={onDelete}>
                   Delete
                 </button>
                 <button type="submit" class="button" onClick={onRequeue}>

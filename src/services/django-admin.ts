@@ -198,16 +198,31 @@ export async function getQueuedJob(
   return response;
 }
 
-export async function requeueJob(
+export async function requeueJobs(
   queueName: string,
-  jobId: string
+  jobIds: string[]
 ): Promise<any> {
   const response = await sessionClient.fetch({
     method: "POST",
     urlSegment: `/django-admin/worker-jobs/requeue`,
     body: {
       queue_name: queueName,
-      job_id: jobId
+      job_ids: jobIds
+    }
+  });
+  return response;
+}
+
+export async function deleteJobs(
+  queueName: string,
+  jobIds: string[]
+): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "POST",
+    urlSegment: `/django-admin/worker-jobs/delete`,
+    body: {
+      queue_name: queueName,
+      job_ids: jobIds
     }
   });
   return response;

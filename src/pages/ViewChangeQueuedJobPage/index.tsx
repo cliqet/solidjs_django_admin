@@ -138,7 +138,7 @@ const ViewChangeQueuedJobPage = () => {
         )}
       >
         <div>
-          <h1 class="text-xl font-bold text-slate-200">
+          <h1 class="text-xl font-bold dark:text-slate-200">
             {toTitleCase(params.field)}
           </h1>
 
@@ -153,7 +153,7 @@ const ViewChangeQueuedJobPage = () => {
                     <>
                       <div class="p-1 my-2">
                         <Label for={fieldKey} text={fieldKey.toUpperCase()} />
-                        <span class="text-white">
+                        <span class="text-slate-500 dark:text-white">
                           {renderFieldValue(job()?.[fieldKey as keyof JobType])}
                         </span>
                       </div>

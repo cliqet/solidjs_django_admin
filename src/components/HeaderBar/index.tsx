@@ -1,4 +1,4 @@
-import { createSignal, Show } from "solid-js";
+import { createSignal, onMount, Show } from "solid-js";
 import { A, useNavigate } from "@solidjs/router";
 import { useAppContext } from "src/context/sessionContext";
 import {
@@ -7,6 +7,9 @@ import {
   dashboardRoute,
 } from "src/hooks/useAdminRoute";
 import { logoutUser } from "src/services/users";
+import MoonIcon from "src/assets/icons/moon-icon";
+import useStorageEvent from "src/hooks/useStorageEvent";
+import SunIcon from "src/assets/icons/sun-icon";
 
 const HeaderBar = () => {
   // const { appState, setAppState } = useAppContext();
@@ -14,6 +17,38 @@ const HeaderBar = () => {
     createSignal(false);
   const { appState, setAppState } = useAppContext();
   const navigate = useNavigate();
+  const { LOCAL_STORAGE_KEYS } = useStorageEvent();
+  const [themeMode, setThemeMode] = createSignal("dark");
+  const colorTheme = localStorage.getItem(LOCAL_STORAGE_KEYS.colorTheme);
+
+  const setToLightMode = () => {
+    document.documentElement.classList.remove("dark");
+    localStorage.setItem(LOCAL_STORAGE_KEYS.colorTheme, "light");
+    setThemeMode("light");
+  }
+
+  const setToDarkMode = () => {
+    document.documentElement.classList.add("dark");
+    localStorage.setItem(LOCAL_STORAGE_KEYS.colorTheme, "dark");
+    setThemeMode("dark");
+  }
+
+  onMount(() => {
+    if (colorTheme && colorTheme === "light") {
+      setToLightMode();
+    }
+    if (colorTheme && colorTheme === "dark") {
+      setToDarkMode();
+    }
+  });
+
+  const toggleMode = () => {
+    if (themeMode() === "light") {
+      setToDarkMode();
+    } else {
+      setToLightMode();
+    }
+  };
 
   const handleClickOutsideProfileDropdown = (e: MouseEvent) => {
     if (isProfileDropdownShowing()) {
@@ -59,7 +94,7 @@ const HeaderBar = () => {
     <>
       <nav
         id="header-bar"
-        class="fixed flex items-center justify-between top-0 h-20 px-4 z-50 w-full border-b bg-custom-dark border-gray-700"
+        class="fixed flex items-center justify-between top-0 h-20 px-4 z-40 w-full border-b dark:bg-custom-dark dark:border-gray-700"
       >
         <div class="flex items-center justify-start">
           <button
@@ -92,18 +127,29 @@ const HeaderBar = () => {
         </div>
 
         <div class="flex items-center">
+          <div class="mr-2">
+            <span class="cursor-pointer" onClick={toggleMode}>
+              <Show when={themeMode() === "dark"}>
+                <MoonIcon width={5} height={5} />
+              </Show>
+              <Show when={themeMode() === "light"}>
+                <SunIcon width={5} height={5} />
+              </Show>
+            </span>
+          </div>
+
           <Show when={appState.user}>
             <div class="flex items-center ml-3">
               <div>
                 <A href={dashboardRoute(authRoute.documentationView)}>
-                  <span class="text-white text-xs underline mr-2 hover:cursor-pointer">
+                  <span class="dark:text-white text-xs underline mr-2 hover:cursor-pointer">
                     Docs
                   </span>
                 </A>
               </div>
 
               <div>
-                <span class="text-white text-xs mr-2">
+                <span class="dark:text-white text-xs mr-2">
                   {appState.user?.email}
                 </span>
               </div>
@@ -135,16 +181,15 @@ const HeaderBar = () => {
               {/* Profile Dropdown */}
               <Show when={isProfileDropdownShowing()}>
                 <div
-                  class="absolute w-40 top-12 right-2 z-50 my-4 text-base list-none divide-y rounded shadow bg-gray-700 divide-gray-600"
+                  class="absolute w-40 top-12 right-2 z-50 my-4 text-base list-none divide-y rounded shadow bg-slate-50 dark:bg-gray-700 divide-gray-600"
                   id="dropdown-user"
                 >
                   <div class="px-4 py-3" role="none">
-                    <p class="text-xs text-white" role="none">
-                      Name
-                      {/* {appState.user?.firstName} {appState.user?.lastName} */}
+                    <p class="text-xs dark:text-white" role="none">
+                      {appState.user?.first_name} {appState.user?.last_name}
                     </p>
                     <p
-                      class="text-xs font-medium text-white truncate"
+                      class="text-xs font-medium dark:text-white truncate"
                       role="none"
                     >
                       {appState.user?.email}
@@ -153,8 +198,10 @@ const HeaderBar = () => {
                   <ul class="py-1" role="none">
                     <li>
                       <span
-                        onClick={() => navigate(dashboardRoute(authRoute.settingsView))}
-                        class="block cursor-pointer px-4 py-2 text-xs text-white hover:bg-gray-500"
+                        onClick={() =>
+                          navigate(dashboardRoute(authRoute.settingsView))
+                        }
+                        class="block cursor-pointer px-4 py-2 text-xs dark:text-white hover:bg-gray-100 dark:hover:bg-gray-500"
                         role="menuitem"
                       >
                         Settings
@@ -162,7 +209,7 @@ const HeaderBar = () => {
                     </li>
                     <li>
                       <span
-                        class="block cursor-pointer px-4 py-2 text-xs text-white hover:bg-gray-500"
+                        class="block cursor-pointer px-4 py-2 text-xs dark:text-white hover:bg-gray-100 dark:hover:bg-gray-500"
                         role="menuitem"
                         onClick={async () => {
                           try {

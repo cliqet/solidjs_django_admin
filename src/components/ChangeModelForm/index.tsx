@@ -173,7 +173,7 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
   return (
     <Show when={isDataReady()}>
       <div>
-        <h1 class="text-xl font-bold text-slate-200">
+        <h1 class="text-xl font-bold dark:text-slate-200">
           Change {props.modelAdminSettings.model_name}
         </h1>
 
@@ -249,7 +249,7 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
 
                           <Show when={props.modelFields[field].help_text}>
                             <div class="px-1">
-                              <span class="text-xs text-slate-300">
+                              <span class="text-xs text-slate-500 dark:text-slate-300">
                                 {props.modelFields[field].help_text}
                               </span>
                             </div>

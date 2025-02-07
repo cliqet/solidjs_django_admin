@@ -150,7 +150,7 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
         <tbody>
           <For each={props.listviewData.results}>
             {(record, i) => (
-              <tr class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600">
+              <tr class="border-b dark:bg-gray-800 border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
                 <td class="w-4 px-4 py-2">
                   <div class="flex items-center">
                     <input
@@ -158,7 +158,7 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
                       ref={checkboxRowRefs[i()]}
                       onClick={onRowCheck}
                       type="checkbox"
-                      class="w-4 h-4 text-custom-primary rounded focus:ring-custom-primary-lighter focus:ring-2 bg-gray-700 border-gray-600"
+                      class="w-4 h-4 text-custom-primary rounded focus:ring-custom-primary-lighter focus:ring-2 dark:bg-gray-700 border-gray-600"
                     />
                     <label for="checkbox-table-search-1" class="sr-only">
                       checkbox
@@ -167,7 +167,7 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
                 </td>
                 <For each={props.listdisplayFields}>
                   {(fieldName, fieldIndex) => (
-                    <td class="px-6 py-2 text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
+                    <td class="px-6 py-2 dark:text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
                       {renderTableData(
                         fieldName, 
                         record, 

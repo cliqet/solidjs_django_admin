@@ -111,7 +111,7 @@ const AddModelPage = () => {
     <>
     <Show when={isDataReady()}>
       <Show when={!hasAddModelPermission(userPermissions() as UserPermissionsType, params.appLabel, params.modelName)}>
-        <h2 class="text-white text-lg">You have no permissions for this page</h2>
+        <h2 class="dark:text-white text-lg">You have no permissions for this page</h2>
       </Show>
 
       <Show when={hasAddModelPermission(userPermissions() as UserPermissionsType, params.appLabel, params.modelName)}>

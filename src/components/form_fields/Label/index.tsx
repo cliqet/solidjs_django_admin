@@ -9,7 +9,7 @@ const Label: Component<LabelProps> = (props) => {
     return (
         <label
           for={props.for}
-          class="block mb-2 text-sm font-medium text-white"
+          class="block mb-2 text-sm font-medium dark:text-white"
         >{props.text}</label>
     );
 }

@@ -127,7 +127,7 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
   return (
     <>
       <div>
-        <h1 class="text-xl font-bold text-slate-200">
+        <h1 class="text-xl font-bold dark:text-slate-200">
           Add {props.modelAdminSettings.model_name}
         </h1>
 
@@ -199,7 +199,7 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
                           />
 
                           <div class="px-1">
-                            <span class="text-xs text-slate-300">
+                            <span class="text-xs text-slate-500 dark:text-slate-300">
                               {helpTextPrefix(props.modelFields[field].required)}
                               {props.modelFields[field].help_text}
                             </span>

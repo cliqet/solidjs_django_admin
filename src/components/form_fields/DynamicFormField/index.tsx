@@ -87,7 +87,7 @@ const DynamicFormField: Component<DynamicFormFieldProps> = (props) => {
     <>
       <Show when={props.isReadonly || props.field.type === FIELDTYPE.BigAutoField}>
         <div>
-          <span class="text-sm text-slate-300">{props.field.initial ?? "-"}</span>
+          <span class="text-sm text-slate-500 dark:text-slate-300">{props.field.initial ?? "-"}</span>
         </div>
       </Show>
 

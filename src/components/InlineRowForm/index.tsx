@@ -180,7 +180,7 @@ const InlineRowForm: Component<InlineRowFormProps> = (props) => {
   return (
     <Show when={isDataReady()}>
       <div>
-        <h1 class="text-xl font-bold text-slate-200">
+        <h1 class="text-xl font-bold dark:text-slate-200">
           Change {props.modelAdminSettings.model_name}
         </h1>
 

@@ -53,7 +53,7 @@ const QueuesPage = () => {
   ) => {
     if (fieldObj.field === 'failed_jobs') {
       return <A
-        class="underline"
+        class="underline text-custom-primary-lighter"
         href={`${dashboardRoute(authRoute.queuesView)}/${queueName}/${
           fieldObj.field
         }`}
@@ -149,13 +149,13 @@ const QueuesPage = () => {
 
   return (
     <div class="flex-col justify-between p-1 items-center">
-      <h1 class="text-xl text-white mb-5">Queues</h1>
+      <h1 class="text-xl dark:text-white mb-5">Queues</h1>
 
       <Show when={isDataReady()}>
         <div class="flex">
           <div class="flex items-center justify-end w-1/2">
             <Show when={didRefresh()}>
-              <span class="text-white text-xs text-nowrap mr-3">Refreshed</span>
+              <span class="dark:text-white text-xs text-nowrap mr-3">Refreshed</span>
             </Show>
           </div>
           <div class="flex items-center justify-end w-1/2 gap-3">
@@ -165,7 +165,7 @@ const QueuesPage = () => {
               </span>
             </Show>
 
-            <span class="text-white text-sm text-nowrap">Refresh Rate:</span>
+            <span class="dark:text-white text-sm text-nowrap">Refresh Rate:</span>
 
             <Show when={isAutoRefresh()}>
               <InputTypeField
@@ -204,7 +204,7 @@ const QueuesPage = () => {
               />
             </Show>
 
-            <span class="text-white text-sm text-nowrap">Auto Refresh</span>
+            <span class="dark:text-white text-sm text-nowrap">Auto Refresh</span>
             <CheckboxField
               inputProps={{
                 id: "refresh-checkbox",
@@ -219,24 +219,24 @@ const QueuesPage = () => {
 
         <For each={queues()}>
           {(queue, i) => (
-            <div class="w-full border rounded-lg shadow-sm bg-gray-800 border-gray-700 my-5">
-              <ul class="text-sm font-medium text-center text-white divide-x rounded-lg sm:flex divide-gray-600 rtl:divide-x-reverse">
+            <div class="w-full border rounded-lg shadow-sm dark:bg-gray-800 border-gray-700 my-5">
+              <ul class="text-sm font-medium text-center dark:text-white divide-x rounded-lg sm:flex divide-gray-600 rtl:divide-x-reverse">
                 <li class="w-full">
-                  <span class="inline-block w-full p-4 rounded-ss-lg focus:outline-none bg-gray-700">
+                  <span class="inline-block w-full p-4 rounded-ss-lg focus:outline-none dark:bg-gray-700">
                     NAME: {queue.name}
                   </span>
                 </li>
               </ul>
-              <div class="border-t border-gray-600">
-                <div class="p-4 rounded-lg md:p-8 bg-gray-800">
-                  <dl class="grid max-w-screen-xl grid-cols-2 gap-8 p-4 mx-auto sm:grid-cols-3 xl:grid-cols-6 text-white sm:p-8">
+              <div class="border-t dark:border-gray-600">
+                <div class="p-4 rounded-lg md:p-8 dark:bg-gray-800">
+                  <dl class="grid max-w-screen-xl grid-cols-2 gap-8 p-4 mx-auto sm:grid-cols-3 xl:grid-cols-6 dark:text-white sm:p-8">
                     <For each={queue.fields}>
                       {(field, j) => (
                         <div class="flex flex-col items-center justify-center">
                           <dt class="mb-2 text-lg font-bold">
                             {renderQueueStatField(queue.name, field)}
                           </dt>
-                          <dd class="text-gray-400 text-center">
+                          <dd class="dark:text-gray-400 text-center">
                             {field.label}
                           </dd>
                         </div>

@@ -83,7 +83,7 @@ const ViewChangeModelPage = () => {
           )
         }
       >
-        <h1 class="text-white">You have no permissions for this page</h1>
+        <h1 class="dark:text-white">You have no permissions for this page</h1>
       </Show>
 
       <Show

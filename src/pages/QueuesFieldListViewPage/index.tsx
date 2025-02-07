@@ -286,7 +286,7 @@ const QueuesFieldListViewPage = () => {
         )}
       >
         <div class="flex justify-between p-1 items-center mb-2">
-          <h1 class="text-xl text-white">
+          <h1 class="text-xl dark:text-white">
             {pageTitle(params.queueName, params.field)} in {params.queueName}{" "}
             queue
           </h1>
@@ -304,12 +304,12 @@ const QueuesFieldListViewPage = () => {
               value: searchTerm(),
             }}
           />
-          <p class="text-white text-xs my-2">Search by id, callable</p>
+          <p class="dark:text-white text-xs my-2">Search by id, callable</p>
         </div>
 
         {/** Actions */}
         <div class="p-2 border border-slate-300 rounded-md mb-2">
-          <span class="text-white text-sm">Actions</span>
+          <span class="dark:text-white text-sm">Actions</span>
           <div class="flex items-center gap-2 w-1/2">
             <div class="w-4/5">
               <SelectField
@@ -330,7 +330,7 @@ const QueuesFieldListViewPage = () => {
         <div class="p-2 border border-slate-300 rounded-md mb-2">
           <div class="flex-col mb-2">
             <div class="flex justify-between">
-              <h3 class="text-lg text-white">
+              <h3 class="text-lg dark:text-white">
                 {pageTitle(params.queueName, params.field)}
               </h3>
               <Show when={isParentTableOpen()}>
@@ -351,7 +351,7 @@ const QueuesFieldListViewPage = () => {
               </Show>
             </div>
             <div class="flex items-center justify-center">
-              <span class="text-white text-sm">
+              <span class="dark:text-white text-sm">
                 Page {currentPage()}: Total of {currentResults().length} records
               </span>
             </div>
@@ -364,7 +364,7 @@ const QueuesFieldListViewPage = () => {
           >
             <Show when={currentResults().length === 0}>
               <div>
-                <h3 class="text-white text-lg flex items-center justify-center">
+                <h3 class="dark:text-white text-lg flex items-center justify-center">
                   No records
                 </h3>
               </div>
@@ -407,7 +407,7 @@ const QueuesFieldListViewPage = () => {
                       )}
                     >
                       {(record, i) => (
-                        <tr class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600">
+                        <tr class="border-b dark:bg-gray-800 border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
                           <td class="w-4 px-4 py-2">
                             <div class="flex items-center">
                               <input
@@ -415,7 +415,7 @@ const QueuesFieldListViewPage = () => {
                                 ref={checkboxRowRefs[i()]}
                                 onClick={onRowCheck}
                                 type="checkbox"
-                                class="w-4 h-4 text-custom-primary rounded focus:ring-custom-primary-lighter focus:ring-2 bg-gray-700 border-gray-600"
+                                class="w-4 h-4 text-custom-primary rounded focus:ring-custom-primary-lighter focus:ring-2 dark:bg-gray-700 border-gray-600"
                               />
                               <label
                                 for="checkbox-table-search-1"
@@ -427,7 +427,7 @@ const QueuesFieldListViewPage = () => {
                           </td>
                           <For each={listviewData()?.table_fields}>
                             {(fieldName, fieldIndex) => (
-                              <td class="px-6 py-2 text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
+                              <td class="px-6 py-2 dark:text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
                                 {renderTableData(
                                   fieldName,
                                   record[fieldName],
@@ -510,7 +510,7 @@ const QueuesFieldListViewPage = () => {
             </Show>
           </div>
           <div class="flex items-center justify-center">
-            <span class="text-white text-sm">
+            <span class="dark:text-white text-sm">
               Page {currentPage()}: Total of {currentResults().length} records
             </span>
           </div>
@@ -527,7 +527,7 @@ const QueuesFieldListViewPage = () => {
           )
         }
       >
-        <h1 class="text-white text-lg">
+        <h1 class="dark:text-white text-lg">
           You have no permissions to view this page
         </h1>
       </Show>

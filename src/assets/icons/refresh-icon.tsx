@@ -8,7 +8,7 @@ type RefreshIconProps = {
 const RefreshIcon: Component<RefreshIconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height} text-white`}
+      class={`w-${props.width} h-${props.height} dark:text-white`}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"

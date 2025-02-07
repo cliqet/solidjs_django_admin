@@ -67,7 +67,7 @@ const FileUploadField: Component<FileUploadFieldProps> = (props) => {
   return (
     <>
       <div class="mb-2">
-        <span class="text-xs text-white">
+        <span class="text-xs dark:text-white">
           Current file: 
           <a 
             href={`${__API_ROOT_DOMAIN__}${metadataPayload().currentFilePathValue}`}

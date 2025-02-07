@@ -26,7 +26,7 @@ const ToastAlert: Component = () => {
     <Show when={appState.toastState.isShowing}>
       <div
         id={`toast-${appState.toastState.type}`}
-        class="border flex items-center w-full p-2 mb-4 rounded-lg shadow bg-gray-800"
+        class="border flex items-center w-full p-2 mb-4 rounded-lg shadow dark:bg-gray-800"
         classList={{
           "text-green-500": appState.toastState.type === "success",
           "text-yellow-500": appState.toastState.type === "warning",
@@ -52,7 +52,7 @@ const ToastAlert: Component = () => {
 
         <button
           type="button"
-          class="ml-auto -mx-1.5 -my-1.5 bg-gray-800 hover:bg-gray-600 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 inline-flex items-center justify-center h-8 w-8"
+          class="ml-auto -mx-1.5 -my-1.5 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-600 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 inline-flex items-center justify-center h-8 w-8"
           classList={{
             "text-green-500": appState.toastState.type === "success",
             "text-yellow-500 ": appState.toastState.type === "warning",

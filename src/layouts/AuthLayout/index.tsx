@@ -55,14 +55,14 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
     <ErrorBoundary
       fallback={(err, reset) => <ErrorBoundaryContent error={err} />}
     >
-      <div class="h-screen flex flex-col overflow-hidden bg-gray-800">
+      <div class="h-screen flex flex-col overflow-hidden dark:bg-gray-800">
         <HeaderBar />
 
         <div class="pt-20 flex flex-1 overflow-hidden">
           <SideBar />
           <div
             id="auth-main"
-            class="border-l border-gray-700 container px-4 pt-4 pb-20 flex-1 overflow-auto bg-gray-800"
+            class="border-l border-slate-300 container px-4 pt-4 pb-20 flex-1 overflow-auto dark:bg-gray-800"
           >
             <ToastAlert />
             {props.children}

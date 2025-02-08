@@ -113,13 +113,13 @@ const PasswordResetLinkPage = () => {
 
   return (
     <Show when={isDataReady()}>
-      <div class="w-full bg-custom-dark">
+      <div class="w-full dark:bg-custom-dark">
         <Show when={isValidLink()}>
           <form
             onSubmit={onReset}
-            class="w-1/4 mx-auto mt-20 p-4 rounded-md border bg-custom-dark"
+            class="w-1/4 mx-auto mt-20 p-4 rounded-md border dark:bg-custom-dark"
           >
-            <h3 class="text-white text-lg mb-3">Reset Password</h3>
+            <h3 class="dark:text-white text-lg mb-3">Reset Password</h3>
 
             <Show when={true}>
               <Label for="password" text="Enter Password" />

@@ -57,7 +57,7 @@ const Modal: Component<{
         <div class="relative p-4 w-full max-w-md max-h-full">
           <div
             ref={innerModalRef!}
-            class="relative rounded-lg shadow bg-gray-700"
+            class="relative rounded-lg shadow bg-slate-50 dark:bg-gray-700"
           >
             <button
               ref={closeBtnRef!}

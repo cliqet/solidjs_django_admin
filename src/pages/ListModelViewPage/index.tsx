@@ -416,7 +416,7 @@ const ListModelViewPage = () => {
         }
       >
         <div class="flex justify-between p-1 items-center mb-2">
-          <h1 class="text-xl text-white">
+          <h1 class="text-xl dark:text-white">
             Select {modelAdminSettings().model_name} to change
           </h1>
           <Show
@@ -452,7 +452,7 @@ const ListModelViewPage = () => {
                 value: searchTerm(),
               }}
             />
-            <p class="text-white text-xs my-2">
+            <p class="dark:text-white text-xs my-2">
               {modelAdminSettings().search_help_text}
             </p>
           </div>
@@ -467,7 +467,7 @@ const ListModelViewPage = () => {
           )}
         >
           <div class="p-2 border border-slate-300 rounded-md mb-2">
-            <span class="text-white text-sm">Actions</span>
+            <span class="dark:text-white text-sm">Actions</span>
             <div class="flex items-center gap-2 w-1/2">
               <div class="w-4/5">
                 <SelectField
@@ -489,7 +489,7 @@ const ListModelViewPage = () => {
         <Show when={modelAdminSettings().list_filter.length > 0}>
           <div class="p-2 border border-slate-300 rounded-md mb-2 flex-col">
             <div class="mb-2 flex justify-between">
-              <span class="text-white text-sm">Filters</span>
+              <span class="dark:text-white text-sm">Filters</span>
               <Show when={isFilterOpen()}>
                 <span
                   onClick={() => setIsFilterOpen(false)}
@@ -518,7 +518,7 @@ const ListModelViewPage = () => {
                   {(filterField, i) => (
                     <>
                       <hr class="mb-3" />
-                      <h4 class="font-semibold text-white text-sm mb-2">
+                      <h4 class="font-semibold dark:text-white text-sm mb-2">
                         By {filterField.field.toUpperCase()}
                       </h4>
                       <div class="flex flex-wrap gap-5 mb-2">
@@ -540,7 +540,7 @@ const ListModelViewPage = () => {
                                   );
                                 }}
                               />
-                              <span class="ml-2 text-white text-sm">
+                              <span class="ml-2 dark:text-white text-sm">
                                 {filterValue.label}
                               </span>
                             </div>
@@ -559,7 +559,7 @@ const ListModelViewPage = () => {
         <div class="p-2 border border-slate-300 rounded-md mb-2">
           <div class="flex-col mb-2">
             <div class="flex justify-between">
-              <h3 class="text-lg text-white">
+              <h3 class="text-lg dark:text-white">
                 {modelAdminSettings().model_name}
               </h3>
               <Show when={isParentTableOpen()}>
@@ -580,7 +580,7 @@ const ListModelViewPage = () => {
               </Show>
             </div>
             <div class="flex items-center justify-center">
-              <span class="text-white text-sm">
+              <span class="dark:text-white text-sm">
                 Page {currentPage()}: Total of {listviewData()?.count} records
               </span>
             </div>
@@ -593,7 +593,7 @@ const ListModelViewPage = () => {
           >
             <Show when={(listviewData()?.count as number) === 0}>
               <div>
-                <h3 class="text-white text-lg flex items-center justify-center">
+                <h3 class="dark:text-white text-lg flex items-center justify-center">
                   No records
                 </h3>
               </div>
@@ -682,7 +682,7 @@ const ListModelViewPage = () => {
             </Show>
           </div>
           <div class="flex items-center justify-center">
-            <span class="text-white text-sm">
+            <span class="dark:text-white text-sm">
               Page {currentPage()}: Total of {listviewData()?.count} records
             </span>
           </div>
@@ -721,7 +721,7 @@ const ListModelViewPage = () => {
           )
         }
       >
-        <h1 class="text-white text-lg">
+        <h1 class="dark:text-white text-lg">
           You have no permissions to view this page
         </h1>
       </Show>

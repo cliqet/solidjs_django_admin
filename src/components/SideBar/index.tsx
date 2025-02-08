@@ -54,7 +54,7 @@ const SideBar = () => {
 
   return (
     <Show when={apps() && userPermissions()}>
-      <div class="w-1/5 h-full bg-gray-800 p-2 text-white text-sm overflow-auto">
+      <div class="w-1/5 h-full dark:bg-gray-800 p-2 dark:text-white text-sm overflow-auto">
         <div
           class="group flex flex-col gap-2 py-2 data-[collapsed=true]:py-2"
           data-collapsed="false"
@@ -62,7 +62,7 @@ const SideBar = () => {
           <For each={apps()}>
             {(app, i) => (
               <Show when={hasAppPermission(userPermissions() as UserPermissionsType, app.appLabel)}>
-                <div class="bg-gray-600 px-2 flex items-center rounded-sm">
+                <div class="bg-custom-primary-lighter text-white px-2 flex items-center rounded-sm">
                   <span class="font-bold">{app.name}</span>
                 </div>
                 <nav class="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">

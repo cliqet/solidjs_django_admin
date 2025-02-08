@@ -52,7 +52,7 @@ const DocumentationPage = () => {
 
   return (
     <div>
-      <h1 class="text-lg text-white my-2">Documentation {docs().length}</h1>
+      <h1 class="text-lg dark:text-white my-2">Documentation {docs().length}</h1>
 
       <Show when={accordionDocs().length > 0}>
         <div>
@@ -63,9 +63,9 @@ const DocumentationPage = () => {
                   <button
                     type="button"
                     onClick={() => onClickAccordion(i())}
-                    class="flex items-center justify-between w-full p-5 font-medium rtl:text-right border focus:ring-4 focus:ring-gray-800 border-slate-300 text-gray-400 hover:bg-gray-700 gap-3"
+                    class="flex items-center justify-between w-full p-5 font-medium rtl:text-right border focus:ring-1 focus:ring-slate-200 dark:focus:ring-gray-800 border-slate-300 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 gap-3"
                   >
-                    <span class="text-white">{doc.appModelName.toUpperCase()}</span>
+                    <span class="dark:text-white">{doc.appModelName.toUpperCase()}</span>
                     <Show when={accordionDocs()[i()].isOpen}>
                       <AngleUp width={5} height={5} />
                     </Show>
@@ -82,7 +82,7 @@ const DocumentationPage = () => {
                     "visible": accordionDocs()[i()].isOpen
                   }}
                 >
-                  <div class="p-5 text-white border border-slate-300 bg-custom-dark" innerHTML={doc.content}>
+                  <div class="p-5 dark:text-white border border-slate-300 dark:bg-custom-dark" innerHTML={doc.content}>
                   </div>
                 </div>
               </>

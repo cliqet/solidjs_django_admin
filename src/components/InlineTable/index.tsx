@@ -233,7 +233,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
     <Show when={isTableRowFormsReady()}>
       <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div class="flex justify-between my-2">
-          <h3 class="text-lg text-white">
+          <h3 class="text-lg dark:text-white">
             {props.inline.model_name_label} Inline
           </h3>
           <Show when={isTableOpen()}>
@@ -279,7 +279,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
               <For each={listviewData()?.results}>
                 {(record, i) => (
                   <>
-                    <tr class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600">
+                    <tr class="border-b dark:bg-gray-800 border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
                       <td class="w-4 px-4 py-2">
                         <div class="flex items-center">
                           <span
@@ -309,7 +309,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                       </td>
                       <For each={props.inline.list_display}>
                         {(fieldName, fieldIndex) => (
-                          <td class="px-6 py-2 text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
+                          <td class="px-6 py-2 dark:text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
                             {renderTableData(
                               fieldName,
                               record,
@@ -414,7 +414,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
               </Show>
             </div>
             <div class="flex items-center justify-center">
-              <span class="text-white text-sm">
+              <span class="dark:text-white text-sm">
                 Page {currentPage()}: Total of {listviewData()?.count} records
               </span>
             </div>

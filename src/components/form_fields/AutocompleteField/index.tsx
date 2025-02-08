@@ -1,4 +1,5 @@
 import { Component, createSignal, For, JSX, onMount, Show } from "solid-js";
+import SearchIcon from "src/assets/icons/search-icon";
 
 type DropdownOptionsType = {
   selected: boolean;
@@ -92,7 +93,7 @@ const AutocompletField: Component<AutocompleteFieldProps> = (props) => {
           {...props.inputProps}
           id={`${props.inputProps.id}2`}
           ref={labelInputRef!}
-          class=""
+          class="pl-8"
           classList={{
             "p-2.5 block w-full border-red-500 rounded-lg text-sm disabled:opacity-50 disabled:pointer-events-none": props.isInvalid,
             "p-2.5 block w-full border-gray-200 rounded-lg text-sm focus:border-custom-primary-lighter focus:ring-custom-primary-lighter disabled:opacity-50 disabled:pointer-events-none": !props.isInvalid,
@@ -109,6 +110,9 @@ const AutocompletField: Component<AutocompleteFieldProps> = (props) => {
             }
           }}
         />
+        <span class="absolute top-3 left-2">
+          <SearchIcon />
+        </span>
         <div
           class="absolute top-1/2 end-3 -translate-y-1/2"
           aria-expanded="false"

@@ -64,19 +64,19 @@ const DynamicViewOnlyField: Component<DynamicViewOnlyFieldProps> = (props) => {
   return (
     <>
       <Show when={isDateTime()}>
-        <span class="text-white">{`${formatDateString(props.modelRecord[props.fieldName])}`}</span>
+        <span class="dark:text-white">{`${formatDateString(props.modelRecord[props.fieldName])}`}</span>
       </Show>
 
       <Show when={isRawData() && !isDateTime()}>
-        <span class="text-white">{`${props.modelRecord[props.fieldName]}`}</span>
+        <span class="dark:text-white">{`${props.modelRecord[props.fieldName]}`}</span>
       </Show>
 
       <Show when={isBoolean()}>
-        <span class="text-white">{`${String(props.modelRecord[props.fieldName])}`}</span>
+        <span class="dark:text-white">{`${String(props.modelRecord[props.fieldName])}`}</span>
       </Show>
 
       <Show when={isFileUrl()}>
-        <span class="text-white">
+        <span class="dark:text-white">
           <A 
             href={`${__API_ROOT_DOMAIN__}${props.modelRecord[props.fieldName]}`} 
             target="_blank"
@@ -89,7 +89,7 @@ const DynamicViewOnlyField: Component<DynamicViewOnlyFieldProps> = (props) => {
       </Show>
 
       <Show when={isForeignKey()}>
-        <span class="text-white">{`${getForeignkeyString(props.modelRecord[props.fieldName])}`}</span>
+        <span class="dark:text-white">{`${getForeignkeyString(props.modelRecord[props.fieldName])}`}</span>
       </Show>
 
       <Show when={isArray()}>
@@ -97,7 +97,7 @@ const DynamicViewOnlyField: Component<DynamicViewOnlyFieldProps> = (props) => {
           <For each={props.modelRecord[props.fieldName]}>
             {(item, k) => (
               <li>
-                <span class="text-white">- {item.string_value}</span>
+                <span class="dark:text-white">- {item.string_value}</span>
               </li>
             )}
           </For>
@@ -105,7 +105,7 @@ const DynamicViewOnlyField: Component<DynamicViewOnlyFieldProps> = (props) => {
       </Show>
 
       <Show when={isJson()}>
-        <span class="text-white">
+        <span class="dark:text-white">
           {`${JSON.stringify(
             props.modelRecord[props.fieldName]
           )}`}

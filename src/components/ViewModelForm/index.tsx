@@ -39,7 +39,7 @@ const ViewModelForm: Component<ViewModelFormProps> = (props) => {
   return (
     <Show when={isDataReady()}>
       <div>
-        <h1 class="text-xl font-bold text-slate-200">
+        <h1 class="text-xl font-bold dark:text-slate-200">
           View {props.modelAdminSettings.model_name}
         </h1>
 

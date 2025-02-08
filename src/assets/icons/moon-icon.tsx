@@ -1,11 +1,11 @@
 import { Component } from "solid-js";
 
-type AngleDownProps = {
-    width: number;
-    height: number;
-}
+type MoonIconProps = {
+  width: number;
+  height: number;
+};
 
-const AngleDown: Component<AngleDownProps> = (props) => {
+const MoonIcon: Component<MoonIconProps> = (props) => {
   return (
     <svg
       class={`w-${props.width} h-${props.height} dark:text-white`}
@@ -21,10 +21,10 @@ const AngleDown: Component<AngleDownProps> = (props) => {
         stroke-linecap="round"
         stroke-linejoin="round"
         stroke-width="2"
-        d="m19 9-7 7-7-7"
+        d="M12 21a9 9 0 0 1-.5-17.986V3c-.354.966-.5 1.911-.5 3a9 9 0 0 0 9 9c.239 0 .254.018.488 0A9.004 9.004 0 0 1 12 21Z"
       />
     </svg>
   );
 };
 
-export default AngleDown;
+export default MoonIcon;

@@ -62,7 +62,7 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
           <SideBar />
           <div
             id="auth-main"
-            class="border-l border-slate-300 container px-4 pt-4 pb-20 flex-1 overflow-auto dark:bg-gray-800"
+            class="border-l border-slate-300 container px-4 pt-4 pb-20 flex-1 overflow-auto dark:bg-gray-800 no-scrollbar"
           >
             <ToastAlert />
             {props.children}

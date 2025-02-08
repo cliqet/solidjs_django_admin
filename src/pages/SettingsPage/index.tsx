@@ -10,10 +10,10 @@ const SettingsPage = () => {
         Settings
       </h1>
 
-      <div class="p-2 border border-slate-300 rounded-md mb-2 flex-col">
+      <div class="p-2 bg-custom-primary-lighter rounded-md mb-2 flex-col">
         <h3 
             onClick={() => navigate(dashboardRoute(authRoute.queuesView))}
-            class="dark:text-white cursor-pointer hover:underline"
+            class="text-white cursor-pointer hover:underline"
         >
             Queues
         </h3>

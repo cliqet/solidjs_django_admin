@@ -219,10 +219,10 @@ const QueuesPage = () => {
 
         <For each={queues()}>
           {(queue, i) => (
-            <div class="w-full border rounded-lg shadow-sm dark:bg-gray-800 border-gray-700 my-5">
-              <ul class="text-sm font-medium text-center dark:text-white divide-x rounded-lg sm:flex divide-gray-600 rtl:divide-x-reverse">
+            <div class="w-full border border-custom-primary-lighter rounded-lg shadow-sm bg-dark-gray-800 my-5">
+              <ul class="text-sm font-medium text-center text-white divide-x rounded-lg sm:flex divide-gray-600 rtl:divide-x-reverse">
                 <li class="w-full">
-                  <span class="inline-block w-full p-4 rounded-ss-lg focus:outline-none dark:bg-gray-700">
+                  <span class="inline-block w-full p-4 rounded-ss-lg focus:outline-none bg-custom-primary-lighter">
                     NAME: {queue.name}
                   </span>
                 </li>

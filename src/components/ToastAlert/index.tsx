@@ -28,9 +28,9 @@ const ToastAlert: Component = () => {
         id={`toast-${appState.toastState.type}`}
         class="border flex items-center w-full p-2 mb-4 rounded-lg shadow dark:bg-gray-800"
         classList={{
-          "text-green-500": appState.toastState.type === "success",
-          "text-yellow-500": appState.toastState.type === "warning",
-          "text-red-500": appState.toastState.type === "danger",
+          "bg-green-50 text-green-800 dark:text-green-400 border-green-300 dark:border-green-800": appState.toastState.type === "success",
+          "bg-yellow-50 text-yellow-800 dark:text-yellow-300 border-yellow-300 dark:border-yellow-800": appState.toastState.type === "warning",
+          "bg-red-50 text-red-800 dark:text-red-400 border-red-300 dark:border-red-800": appState.toastState.type === "danger",
         }}
         role="alert"
       >
@@ -54,9 +54,9 @@ const ToastAlert: Component = () => {
           type="button"
           class="ml-auto -mx-1.5 -my-1.5 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-600 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 inline-flex items-center justify-center h-8 w-8"
           classList={{
-            "text-green-500": appState.toastState.type === "success",
-            "text-yellow-500 ": appState.toastState.type === "warning",
-            "text-red-500": appState.toastState.type === "danger",
+            "text-green-800 dark:text-green-400": appState.toastState.type === "success",
+            "text-yellow-800 dark:text-yellow-300": appState.toastState.type === "warning",
+            "text-red-800 dark:text-red-400": appState.toastState.type === "danger",
           }}
           aria-label="Close"
           onClick={() => setAppState("toastState", "isShowing", false)}

@@ -254,7 +254,7 @@ const ManyToManyField: Component<ManyToManyFieldProps> = (props) => {
                   />
                   <label
                     for={item.id}
-                    class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"
+                    class="w-full ms-2 text-sm font-medium dark:text-gray-900 rounded"
                   >
                     {item.label}
                   </label>

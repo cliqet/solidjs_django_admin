@@ -8,7 +8,7 @@ type SunIconProps = {
 const SunIcon: Component<SunIconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height} dark:text-white`}
+      class={`w-${props.width} h-${props.height} text-white`}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"

@@ -69,7 +69,7 @@ const HeaderBar = () => {
     <>
       <nav
         id="header-bar"
-        class="fixed flex items-center justify-between top-0 h-20 px-4 z-40 w-full border-b dark:bg-custom-dark dark:border-gray-700"
+        class="fixed flex items-center justify-between top-0 h-20 px-4 z-40 w-full border-b bg-custom-primary dark:bg-custom-dark dark:border-gray-700"
       >
         <div class="flex items-center justify-start">
           <button
@@ -96,7 +96,7 @@ const HeaderBar = () => {
             </svg>
           </button>
 
-          <span class="ml-2 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap text-custom-primary-lighter">
+          <span class="ml-2 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap text-white">
             <A href={dashboardRoute(authRoute.dashboardHomeView)}>MainApp</A>
           </span>
         </div>
@@ -117,14 +117,14 @@ const HeaderBar = () => {
             <div class="flex items-center ml-3">
               <div>
                 <A href={dashboardRoute(authRoute.documentationView)}>
-                  <span class="dark:text-white text-xs underline mr-2 hover:cursor-pointer">
+                  <span class="text-white text-xs underline mr-2 hover:cursor-pointer">
                     Docs
                   </span>
                 </A>
               </div>
 
               <div>
-                <span class="dark:text-white text-xs mr-2">
+                <span class="text-white text-xs mr-2">
                   {appState.user?.email}
                 </span>
               </div>

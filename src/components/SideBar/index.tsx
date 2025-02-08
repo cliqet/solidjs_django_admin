@@ -6,6 +6,8 @@ import PlusIcon from "src/assets/icons/plus-icon";
 import { hasAddModelPermission, hasAppPermission, hasModelPermission } from "src/hooks/useModelAdmin";
 import { useAppContext } from "src/context/sessionContext";
 import { UserPermissionsType } from "src/models/user";
+import ChevronLeftIcon from "src/assets/icons/chevron-left-icon";
+import ChevronRightIcon from "src/assets/icons/chevron-right-icon";
 
 type ModelPermissionType = {
   add: boolean;
@@ -35,6 +37,11 @@ const SideBar = () => {
   const [apps, setApps] = createSignal<AppSettingsType[]>([]);
   const [userPermissions, setUserPermissions] = createSignal<UserPermissionsType | null>(null);
   const { appState, setAppState } = useAppContext();
+  const [isSidebarMinimized, setIsSidebarMinimized] = createSignal(false);
+
+  const toggleSidebarWidth = () => {
+    setIsSidebarMinimized((prev) => !prev);
+  }
 
   createEffect(async () => {
     try {
@@ -54,10 +61,20 @@ const SideBar = () => {
 
   return (
     <Show when={apps() && userPermissions()}>
-      <div class="w-1/5 h-full dark:bg-gray-800 p-2 dark:text-white text-sm overflow-auto">
+      <div 
+        class="relative h-full dark:bg-gray-800 p-2 dark:text-white text-sm overflow-auto"
+        classList={{
+          "w-1/5": !isSidebarMinimized(),
+          "w-10": isSidebarMinimized()
+        }}
+      >
         <div
           class="group flex flex-col gap-2 py-2 data-[collapsed=true]:py-2"
           data-collapsed="false"
+          classList={{
+            "": !isSidebarMinimized(),
+            "hidden": isSidebarMinimized()
+          }}
         >
           <For each={apps()}>
             {(app, i) => (
@@ -106,6 +123,16 @@ const SideBar = () => {
               </Show>
             )}
           </For>
+        </div>
+        <div class="absolute top-60 right-[-12px] rounded-full h-7 w-7 bg-custom-primary flex items-center justify-left">
+            <span class="cursor-pointer" onClick={toggleSidebarWidth}>
+              <Show when={isSidebarMinimized()}>
+                <ChevronRightIcon width={5} height={5} />
+              </Show>
+              <Show when={!isSidebarMinimized()}>
+                <ChevronLeftIcon width={5} height={5} />
+              </Show>
+            </span>
         </div>
       </div>
     </Show>

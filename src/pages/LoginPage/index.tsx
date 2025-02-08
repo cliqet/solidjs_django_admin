@@ -256,6 +256,7 @@ const LoginPage = () => {
           class="my-2"
           ref={turnstileRef}
           sitekey={__TURNSTILE_SITEKEY__}
+          theme={appState.themeMode}
           onVerify={(token) => {
             setTurnstileToken(token);
           }}

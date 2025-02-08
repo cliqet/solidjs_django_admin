@@ -1,4 +1,4 @@
-import { createSignal, onMount, Show } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { A, useNavigate } from "@solidjs/router";
 import { useAppContext } from "src/context/sessionContext";
 import {
@@ -8,42 +8,17 @@ import {
 } from "src/hooks/useAdminRoute";
 import { logoutUser } from "src/services/users";
 import MoonIcon from "src/assets/icons/moon-icon";
-import useStorageEvent from "src/hooks/useStorageEvent";
 import SunIcon from "src/assets/icons/sun-icon";
 
 const HeaderBar = () => {
-  // const { appState, setAppState } = useAppContext();
   const [isProfileDropdownShowing, setIsProfileDropdownShowing] =
     createSignal(false);
-  const { appState, setAppState } = useAppContext();
+  const { appState, setAppState, setToDarkMode, setToLightMode } = useAppContext();
   const navigate = useNavigate();
-  const { LOCAL_STORAGE_KEYS } = useStorageEvent();
-  const [themeMode, setThemeMode] = createSignal("dark");
-  const colorTheme = localStorage.getItem(LOCAL_STORAGE_KEYS.colorTheme);
 
-  const setToLightMode = () => {
-    document.documentElement.classList.remove("dark");
-    localStorage.setItem(LOCAL_STORAGE_KEYS.colorTheme, "light");
-    setThemeMode("light");
-  }
-
-  const setToDarkMode = () => {
-    document.documentElement.classList.add("dark");
-    localStorage.setItem(LOCAL_STORAGE_KEYS.colorTheme, "dark");
-    setThemeMode("dark");
-  }
-
-  onMount(() => {
-    if (colorTheme && colorTheme === "light") {
-      setToLightMode();
-    }
-    if (colorTheme && colorTheme === "dark") {
-      setToDarkMode();
-    }
-  });
 
   const toggleMode = () => {
-    if (themeMode() === "light") {
+    if (appState.themeMode === "light") {
       setToDarkMode();
     } else {
       setToLightMode();
@@ -129,10 +104,10 @@ const HeaderBar = () => {
         <div class="flex items-center">
           <div class="mr-2">
             <span class="cursor-pointer" onClick={toggleMode}>
-              <Show when={themeMode() === "dark"}>
+              <Show when={appState.themeMode === "dark"}>
                 <MoonIcon width={5} height={5} />
               </Show>
-              <Show when={themeMode() === "light"}>
+              <Show when={appState.themeMode === "light"}>
                 <SunIcon width={5} height={5} />
               </Show>
             </span>

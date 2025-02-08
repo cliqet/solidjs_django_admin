@@ -1,5 +1,6 @@
-import { createContext, ParentComponent, useContext } from "solid-js";
+import { createContext, onMount, ParentComponent, useContext } from "solid-js";
 import { SetStoreFunction, createStore } from "solid-js/store";
+import useStorageEvent from "src/hooks/useStorageEvent";
 import { User } from "src/models/user";
 
 /**
@@ -26,14 +27,15 @@ export type ToastState = {
 export type AppStoreType = {
     user: User | null,  // the current user based on the token and contains all properties of users
     isLoading: boolean,  // loading state to be used while fetching resources
-    isForcedLoggedOut: boolean,  // state when user is forcefully logged out due to idle time
+    // isForcedLoggedOut: boolean,  // state when user is forcefully logged out due to idle time
     toastState: ToastState,  // store state of Toast to be shown
+    themeMode: "light" | "dark",
 }
 
 export default createStore<AppStoreType>({
     user: null,
     isLoading: false,
-    isForcedLoggedOut: false,
+    // isForcedLoggedOut: false,
     toastState: {
         isShowing: false,
         message: "",
@@ -41,13 +43,14 @@ export default createStore<AppStoreType>({
         persist: false,
         isHtmlMessage: false,
     },
+    themeMode: "dark",
 });
 
 
 const initialAppContext: AppStoreType = {
   user: null,
   isLoading: false,
-  isForcedLoggedOut: false,
+  // isForcedLoggedOut: false,
   toastState: {
     isShowing: false,
     message: "",
@@ -55,11 +58,14 @@ const initialAppContext: AppStoreType = {
     persist: false,
     isHtmlMessage: false,
   },
+  themeMode: "dark",
 };
 
 type CreateContextType = {
   appState: AppStoreType;
   setAppState: SetStoreFunction<AppStoreType>;
+  setToDarkMode: () => void,
+  setToLightMode: () => void
 }
 
 const initialAppStore = createStore<AppStoreType>(initialAppContext);
@@ -68,10 +74,33 @@ export const AppContext = createContext<CreateContextType>();
 
 export const AppContextProvider: ParentComponent = (props) => {
   const [context, setContext] = initialAppStore;
+  const { LOCAL_STORAGE_KEYS } = useStorageEvent();
+  const colorTheme = localStorage.getItem(LOCAL_STORAGE_KEYS.colorTheme);
+
+  const setToLightMode = () => {
+    document.documentElement.classList.remove("dark");
+    localStorage.setItem(LOCAL_STORAGE_KEYS.colorTheme, "light");
+    setContext("themeMode", "light");
+  }
+
+  const setToDarkMode = () => {
+    document.documentElement.classList.add("dark");
+    localStorage.setItem(LOCAL_STORAGE_KEYS.colorTheme, "dark");
+    setContext("themeMode", "dark");
+  }
+
+  onMount(() => {
+    if (colorTheme && colorTheme === "light") {
+      setToLightMode();
+    }
+    if (colorTheme && colorTheme === "dark") {
+      setToDarkMode();
+    }
+  })
 
   return (
     <AppContext.Provider
-      value={{ appState: context, setAppState: setContext }}
+      value={{ appState: context, setAppState: setContext, setToDarkMode, setToLightMode }}
     >
       {props.children}
     </AppContext.Provider>

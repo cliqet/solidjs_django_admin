@@ -154,7 +154,7 @@ const AutocompletField: Component<AutocompleteFieldProps> = (props) => {
                   <Show when={option.value === currentSelection().value}>
                     <span>
                       <svg
-                        class="shrink-0 size-3.5 text-blue-600 dark:text-blue-500"
+                        class="shrink-0 size-3.5 text-custom-primary"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"

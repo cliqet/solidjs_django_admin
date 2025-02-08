@@ -8,6 +8,9 @@ import { useAppContext } from "src/context/sessionContext";
 import { UserPermissionsType } from "src/models/user";
 import ChevronLeftIcon from "src/assets/icons/chevron-left-icon";
 import ChevronRightIcon from "src/assets/icons/chevron-right-icon";
+import RowActionArrowIcon from "src/assets/icons/row-action-arrow-icon";
+import AngleDown from "src/assets/icons/angle-down";
+import AngleUp from "src/assets/icons/angle-up";
 
 type ModelPermissionType = {
   add: boolean;
@@ -38,6 +41,7 @@ const SideBar = () => {
   const [userPermissions, setUserPermissions] = createSignal<UserPermissionsType | null>(null);
   const { appState, setAppState } = useAppContext();
   const [isSidebarMinimized, setIsSidebarMinimized] = createSignal(false);
+  const [appsIsOpen, setAppsIsOpen] = createSignal<boolean[]>([]);
 
   const toggleSidebarWidth = () => {
     setIsSidebarMinimized((prev) => !prev);
@@ -48,6 +52,10 @@ const SideBar = () => {
       // get list of apps
       const appResponse = await getApps();
       setApps(appResponse);
+
+      appResponse.forEach(() => {
+        appsIsOpen().push(true);
+      });
 
       // get user permissions
       const permissionResponse = await getUserPermissions(appState.user?.uid as string);
@@ -79,10 +87,29 @@ const SideBar = () => {
           <For each={apps()}>
             {(app, i) => (
               <Show when={hasAppPermission(userPermissions() as UserPermissionsType, app.appLabel)}>
-                <div class="bg-custom-primary-lighter text-white px-2 flex items-center rounded-sm">
+                <div
+                  onClick={() => {
+                    const openStates = [...appsIsOpen()];
+                    openStates[i()] = !openStates[i()];
+                    setAppsIsOpen(openStates);
+                  }}
+                  class="bg-custom-primary-lighter text-white px-2 py-1 flex items-center rounded-sm justify-between"
+                >
                   <span class="font-bold">{app.name}</span>
+                  <Show when={appsIsOpen()[i()]}>
+                    <span class="cursor-pointer"><AngleUp width={5} height={5} /></span>
+                  </Show>
+                  <Show when={!appsIsOpen()[i()]}>
+                    <span class="cursor-pointer"><AngleDown width={5} height={5} /></span>
+                  </Show>
                 </div>
-                <nav class="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
+                <nav
+                  classList={{
+                    "hidden": !appsIsOpen()[i()],
+                    "": appsIsOpen()[i()],
+                  }}
+                  class="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2"
+                >
                   <For each={app.models}>
                     {(model, j) => (
                       <Show 

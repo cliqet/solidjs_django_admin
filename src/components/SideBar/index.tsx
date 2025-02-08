@@ -62,7 +62,7 @@ const SideBar = () => {
   return (
     <Show when={apps() && userPermissions()}>
       <div 
-        class="relative h-full dark:bg-gray-800 p-2 dark:text-white text-sm overflow-y-auto overflow-x-hidden"
+        class="relative h-full dark:bg-gray-800 p-2 dark:text-white text-sm overflow-y-auto overflow-x-hidden no-scrollbar"
         classList={{
           "w-1/5": !isSidebarMinimized(),
           "w-10": isSidebarMinimized()

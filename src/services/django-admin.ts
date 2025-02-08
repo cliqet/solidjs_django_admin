@@ -136,7 +136,7 @@ export async function verifyCloudflareToken(
 export async function sendPasswordResetLink(
   uid: string, 
 ): Promise<any> {
-  const response = await noSessionClient.fetch({
+  const response = await sessionClient.fetch({
     method: "GET",
     urlSegment: `/django-admin/users/send-password-reset-link/${uid}`,
   });

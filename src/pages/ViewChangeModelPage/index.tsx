@@ -12,6 +12,7 @@ import {
   hasAppPermission,
   hasChangeModelPermission,
   handleFetchError,
+  hasDeleteModelPermission,
 } from "src/hooks/useModelAdmin";
 import { useAppContext } from "src/context/sessionContext";
 import ViewModelForm from "src/components/ViewModelForm";
@@ -116,7 +117,7 @@ const ViewChangeModelPage = () => {
           modelAdminSettings={modelAdminSettings()}
           modelFields={modelFields()}
           setModelFields={setModelFields}
-          canChange={hasChangeModelPermission(
+          canDelete={hasDeleteModelPermission(
             userPermissions() as UserPermissionsType,
             params.appLabel,
             params.modelName

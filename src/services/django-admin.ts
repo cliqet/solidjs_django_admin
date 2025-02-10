@@ -62,6 +62,14 @@ export async function addRecord(appLabel: string, modelName: string, bodyData: a
   return response;
 }
 
+export async function deleteRecord(appLabel: string, modelName: string, pk: string): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "DELETE",
+    urlSegment: `/django-admin/delete-record/${appLabel}/${modelName}/${pk}`,
+  });
+  return response;
+}
+
 export async function applyCustomAction(
   appLabel: string, 
   modelName: string,

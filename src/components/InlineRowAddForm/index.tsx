@@ -7,109 +7,75 @@ import {
   buildFieldStateOnFieldChange,
   buildFieldStateOnFocus,
   buildModelFormData,
-  initializeChangeFormFieldState,
+  initializeAddFormFieldState,
   isReadOnlyField,
   updateFieldStateOnInvalidFields,
-  updateModelFieldsWithDbValues,
 } from "src/hooks/useModelAdmin";
 import {
   FieldsInFormStateType,
   ModelAdminSettingsType,
   ModelFieldsObjType,
 } from "src/models/django-admin";
-import { changeRecord, getModelFieldsEdit, getModelRecord } from "src/services/django-admin";
-import { useAppContext } from "src/context/sessionContext";
 import { scrollToTopForm } from "src/hooks/useUI";
+import { useAppContext } from "src/context/sessionContext";
+import { addRecord } from "src/services/django-admin";
 import PlusIcon from "src/assets/icons/plus-icon";
+import { useNavigate } from "@solidjs/router";
 import { FIELDTYPE } from "src/constants/django-admin";
 
-type InlineRowFormProps = {
+type AddModelFormProps = {
   appLabel: string;
   modelName: string;
-  pk: string;
   modelAdminSettings: ModelAdminSettingsType;
-  onSave: () => void;
+  modelFields: ModelFieldsObjType;
+  onAddFn: () => void;
 };
 
-const InlineRowForm: Component<InlineRowFormProps> = (props) => {
-  const [isDataReady, setIsDataReady] = createSignal(false);
-
-  // An object which contains the values from the db for the record
-  // It has the key as the field name and the value as the db value
-  const [modelRecord, setModelRecord] = createSignal<ModelFieldsObjType | null>(null);
-
-  // An object which contains the field name as key and the value as an object with
-  // field property types such as initial, type, etc
-  const [modelFieldsEdit, setModelFieldsEdit] = createSignal<ModelFieldsObjType>({});
-
-  // An object that contains the key as the field name and its state such as the value,
-  // isInvalid, etc from initial data load and whenever a field changes value
-  // This is where form data gets values to pass to the backend
-  const [fieldsInFormState, setFieldsInFormState] = createSignal<FieldsInFormStateType | null>(null);
+const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
   const { appState, setAppState } = useAppContext();
+  const navigate = useNavigate();
+  const [fieldsInFormState, setFieldsInFormState] =
+    createSignal<FieldsInFormStateType | null>(null);
+  const formId = `add-inline-${crypto.randomUUID()}`;
 
-  onMount(async () => {
+  onMount(() => {
     try {
-      // Setup model record
-      const recordData = await getModelRecord(
-        props.appLabel,
-        props.modelName,
-        props.pk
-      );
-      setModelRecord(recordData.record);
-
-      // Setup model fields for edit
-      const modelFieldsData = await getModelFieldsEdit(
-        props.appLabel,
-        props.modelName,
-        props.pk
-      );
-      setModelFieldsEdit(modelFieldsData.fields);
-
-      // Setup form fields state
-      const formFields = initializeChangeFormFieldState(
+      // get all the fields and have each in formFieldState
+      const formFields = initializeAddFormFieldState(
         props.modelAdminSettings,
-        modelRecord() as ModelFieldsObjType,
-        modelFieldsEdit()
+        props.modelFields
       );
+
       setFieldsInFormState(formFields);
-
-      // UPDATE model fields with modelRecord data to have those values as initial values
-      const newModelFields = updateModelFieldsWithDbValues(
-        modelFieldsEdit(), 
-        modelRecord() as ModelFieldsObjType
-      );
-      setModelFieldsEdit(newModelFields);
-
-      setIsDataReady(true);
     } catch (err: any) {
-      setAppState("toastState", {
-        ...appState.toastState,
-        isShowing: true,
-        message: `An error occured. Please refresh the page. ${err.message}`,
-        type: "danger",
-      });
+
     }
   });
 
-  const onSave = async (e: Event) => {
+  const onAdd = async (e: Event) => {
     e.preventDefault();
 
     const formData = buildModelFormData(
-      modelFieldsEdit(),
+      props.modelFields,
       fieldsInFormState() as FieldsInFormStateType,
       e.target as HTMLFormElement
     );
 
     try {
-      await changeRecord(
+      const response = await addRecord(
         props.appLabel,
         props.modelName,
-        props.pk,
         formData
       );
 
-      props.onSave();
+      setAppState("toastState", {
+        ...appState.toastState,
+        isShowing: true,
+        message: response.message,
+        type: "success",
+      });
+
+      props.onAddFn();
     } catch (err: any) {
       if (err.validation_error) {
         const newFieldsState = buildFieldStateOnError(
@@ -124,18 +90,17 @@ const InlineRowForm: Component<InlineRowFormProps> = (props) => {
         setAppState("toastState", {
           ...appState.toastState,
           isShowing: true,
-          message: `An error occured while saving. ${err.message}`,
+          message: err.message,
           type: "danger",
         });
       }
 
       // Scroll up to show error message
-      scrollToTopForm("change-model-row-form");
+      scrollToTopForm(formId);
     }
   };
 
   // Update fields state for every changes in value of fields
-  
   const handleFieldChangeValue = (
     value: any,
     fieldName: string,
@@ -146,7 +111,7 @@ const InlineRowForm: Component<InlineRowFormProps> = (props) => {
       fieldName,
       value,
       metadata
-  );
+    );
 
     setFieldsInFormState(newFieldsState);
   };
@@ -166,7 +131,7 @@ const InlineRowForm: Component<InlineRowFormProps> = (props) => {
       setFieldsInFormState as Setter<FieldsInFormStateType>
     );
 
-    scrollToTopForm("change-model-row-form");
+    scrollToTopForm(formId);
   };
 
   const handleOnFocus = (field: string) => {
@@ -177,14 +142,18 @@ const InlineRowForm: Component<InlineRowFormProps> = (props) => {
     setFieldsInFormState(newFieldsState);
   };
 
+  const helpTextPrefix = (isRequired: boolean) => {
+    return isRequired ? "Required: " : "Optional: ";
+  };
+
   return (
-    <Show when={isDataReady()}>
+    <>
       <div>
         <h1 class="text-xl font-bold dark:text-slate-200">
-          Change {props.modelAdminSettings.model_name}
+          Add {props.modelAdminSettings.model_name}
         </h1>
 
-        <form id="change-model-row-form" class="mt-3" onSubmit={(e) => onSave(e)}>
+        <form id={formId} class="mt-3" onSubmit={onAdd}>
           <For each={props.modelAdminSettings.fieldsets}>
             {(fieldset, i) => (
               <div>
@@ -199,19 +168,19 @@ const InlineRowForm: Component<InlineRowFormProps> = (props) => {
                           <div class="flex">
                             <Label
                               for={field}
-                              text={modelFieldsEdit()[field].label}
+                              text={props.modelFields[field].label}
                             />
                             <Show
                               when={[
                                 FIELDTYPE.ForeignKey,
                                 FIELDTYPE.OneToOneField,
-                              ].includes(modelFieldsEdit()[field].type)}
+                              ].includes(props.modelFields[field].type)}
                             >
                               <span class="ml-3 cursor-pointer">
                                 <a
                                   href={`/dashboard/${
-                                    modelFieldsEdit()[field].foreignkey_app
-                                  }/${modelFieldsEdit()[
+                                    props.modelFields[field].foreignkey_app
+                                  }/${props.modelFields[
                                     field
                                   ].foreignkey_model?.toLowerCase()}/add`}
                                   target="_blank"
@@ -221,7 +190,6 @@ const InlineRowForm: Component<InlineRowFormProps> = (props) => {
                               </span>
                             </Show>
                           </div>
-
                           <DynamicFormField
                             onFocus={() => handleOnFocus(field)}
                             onInvalid={(
@@ -246,22 +214,22 @@ const InlineRowForm: Component<InlineRowFormProps> = (props) => {
                               fieldsInFormState()?.[field]
                                 .isInvalid as boolean
                             }
-                            field={modelFieldsEdit()[field]}
+                            field={props.modelFields[field]}
                             isReadonly={isReadOnlyField(
                               field,
                               props.modelAdminSettings.readonly_fields
                             )}
                             modelAdminSettings={props.modelAdminSettings}
-                            isEditMode={true}
                           />
 
-                          <Show when={modelFieldsEdit()[field].help_text}>
-                            <div class="px-1">
-                              <span class="text-xs text-slate-300">
-                                {modelFieldsEdit()[field].help_text}
-                              </span>
-                            </div>
-                          </Show>
+                          <div class="px-1">
+                            <span class="text-xs text-slate-500 dark:text-slate-300">
+                              {helpTextPrefix(
+                                props.modelFields[field].required
+                              )}
+                              {props.modelFields[field].help_text}
+                            </span>
+                          </div>
 
                           <Show
                             when={
@@ -291,13 +259,13 @@ const InlineRowForm: Component<InlineRowFormProps> = (props) => {
 
           <div>
             <button type="submit" class="button">
-              Save
+              Add
             </button>
           </div>
         </form>
       </div>
-    </Show>
+    </>
   );
 };
 
-export default InlineRowForm;
+export default InlineRowAddForm;

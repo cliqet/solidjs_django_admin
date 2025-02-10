@@ -69,7 +69,7 @@ const ListModelViewPage = () => {
     createSignal<UserPermissionsType | null>(null);
   const [isDataReady, setIsDataReady] = createSignal(false);
   const [searchTerm, setSearchTerm] = createSignal("");
-  const [pageLimit, setPageLimit] = createSignal(0);
+  const [pageLimit, setPageLimit] = createSignal(20);
   const [pageOffset, setPageOffset] = createSignal(0);
   const [currentPage, setCurrentPage] = createSignal(1);
 
@@ -190,14 +190,9 @@ const ListModelViewPage = () => {
   });
 
   createEffect(async () => {
-    if (pageLimit() && pageOffset()) {
-      // Get paginated data
-      const listviewResponse = await getListviewData();
-      setListviewData(listviewResponse);
-    }
-  });
+    pageLimit();
+    pageOffset();
 
-  createEffect(async () => {
     // Get paginated data
     const listviewResponse = await getListviewData();
     setListviewData(listviewResponse);
@@ -639,7 +634,7 @@ const ListModelViewPage = () => {
             <Show when={listviewData()?.previous}>
               <button
                 onClick={() => {
-                  setPageOffset((prev) => prev - 10);
+                  setPageOffset((prev) => prev - pageLimit());
                   setCurrentPage((prev) => prev - 1);
                 }}
                 class="button"
@@ -650,7 +645,7 @@ const ListModelViewPage = () => {
             <Show when={listviewData()?.next}>
               <button
                 onClick={() => {
-                  setPageOffset((prev) => prev + 10);
+                  setPageOffset((prev) => prev + pageLimit());
                   setCurrentPage((prev) => prev + 1);
                 }}
                 class="button"
@@ -697,6 +692,7 @@ const ListModelViewPage = () => {
                 parentModelName={params.modelName}
                 inline={inline}
                 resetParentTable={resetState}
+                userPermissions={userPermissions() as UserPermissionsType}
               />
             </div>
           )}

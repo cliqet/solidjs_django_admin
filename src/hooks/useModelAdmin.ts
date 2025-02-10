@@ -1,5 +1,6 @@
 import { Setter } from "solid-js";
 import { StoreSetter } from "solid-js/store";
+import { SelectedOptionsType } from "src/components/form_fields/SelectField";
 import { FIELDTYPE } from "src/constants/django-admin";
 import { ToastState } from "src/context/sessionContext";
 import {
@@ -486,6 +487,75 @@ export const initializeChangeFormFieldState = (
           isValid: true, // on change mode, isValid is true
           file: "",
         };
+      }
+    });
+  });
+
+  return formFields;
+};
+
+export const initializeAddFormFieldState = (
+  modelAdminSettings: ModelAdminSettingsType,
+  modelFields: ModelFieldsObjType
+) => {
+  let formFields: FieldsInFormStateType = {};
+
+  modelAdminSettings.fieldsets.forEach((fieldset: FieldsetType) => {
+    fieldset.fields.forEach((field) => {
+      // Handle datetime fields by adding the id with suffix time for its time field
+      if (modelFields[field].type === FIELDTYPE.DateTimeField) {
+        formFields[`${field}-time`] = {
+          fieldName: field,
+          value: modelFields[field].initial,
+          isInvalid: false,
+          errorMsg: "",
+        };
+      }
+
+      // Add the actual field
+      formFields[field] = {
+        fieldName: field,
+        value: modelFields[field].initial,
+        isInvalid: false,
+        errorMsg: "",
+      };
+
+      // Handle the password2 field
+      if (field === "password") {
+        formFields["password2"] = {
+          fieldName: field,
+          value: "",
+          isInvalid: false,
+          errorMsg: "",
+        };
+      }
+
+      // Handle many to many field value as list of ids selected
+      if (modelFields[field].type === FIELDTYPE.ManyToManyField) {
+        formFields[field].value = [];
+      }
+
+      // Handle file and image fields which uses metadata
+      if (
+        [FIELDTYPE.FileField, FIELDTYPE.ImageField].includes(
+          modelFields[field].type
+        )
+      ) {
+        formFields[field].metadata = {
+          currentFilePathValue: "",
+          hasChanged: false,
+          isValid: false,
+          file: "",
+        };
+      }
+
+      // Handle ForeignKey field value and set first choice
+      if ([FIELDTYPE.ForeignKey, FIELDTYPE.OneToOneField].includes(modelFields[field].type)) {
+        const choices = modelFields[field]
+          .foreignkey_choices as SelectedOptionsType[];
+        if (choices.length > 0) {
+          formFields[field].value = choices[0].value;
+        }
       }
     });
   });

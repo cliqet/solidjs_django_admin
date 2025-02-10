@@ -52,9 +52,9 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
   });
 
   return (
-    <ErrorBoundary
-      fallback={(err, reset) => <ErrorBoundaryContent error={err} />}
-    >
+    // <ErrorBoundary
+    //   fallback={(err, reset) => <ErrorBoundaryContent error={err} />}
+    // >
       <div class="h-screen flex flex-col overflow-hidden dark:bg-gray-800">
         <HeaderBar />
 
@@ -69,7 +69,7 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
           </div>
         </div>
       </div>
-    </ErrorBoundary>
+    // </ErrorBoundary>
   );
 };
 

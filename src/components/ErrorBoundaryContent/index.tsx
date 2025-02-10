@@ -11,7 +11,7 @@ const ErrorBoundaryContent: Component<ErrorBoundaryContentProps> = (props) => {
     const lineNumber = lineNumberMatch ? lineNumberMatch[1] : "Unknown line number";
 
     return (
-        <div class="w-full h-full">
+        <div class="w-full h-full dark:bg-gray-800">
             <p class="dark:text-white">Ooops, an error occured. Please refresh the page</p>
             <p class="dark:text-white">Error Details: {errorDetails}</p>
             <p class="dark:text-white">{props.error.toString()}</p>

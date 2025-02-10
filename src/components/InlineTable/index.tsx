@@ -18,13 +18,18 @@ import {
   ModelAdminSettingsType,
   ModelFieldsObjType,
 } from "src/models/django-admin";
-import InlineRowForm from "../InlineRowForm";
+import InlineRowChangeForm from "../InlineRowChangeForm";
 import {
   getInlineListview,
   getModelAdminSettings,
   getModelFields,
 } from "src/services/django-admin";
 import { useAppContext } from "src/context/sessionContext";
+import PlusIcon from "src/assets/icons/plus-icon";
+import { UserPermissionsType } from "src/models/user";
+import { hasChangeModelPermission } from "src/hooks/useModelAdmin";
+import InlineRowAddForm from "../InlineRowAddForm";
+import CloseXIcon from "src/assets/icons/closex-icon";
 
 export type ListviewDataType = {
   count: number;
@@ -45,6 +50,7 @@ type InlineTableProps = {
   parentModelName: string;
   inline: CustomInlineType;
   resetParentTable: () => void;
+  userPermissions: UserPermissionsType;
 };
 
 type TableRowFormType = {
@@ -57,6 +63,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
   const [pageLimit, setPageLimit] = createSignal(20);
   const [pageOffset, setPageOffset] = createSignal(0);
   const [currentPage, setCurrentPage] = createSignal(1);
+  const [isRowAddFormOpen, setIsRowAddFormOpen] = createSignal(false);
   const [listviewData, setListviewData] = createSignal<ListviewDataType | null>(
     null
   );
@@ -83,21 +90,36 @@ const InlineTable: Component<InlineTableProps> = (props) => {
     return tableRowForms;
   };
 
-  const getListviewData = async () => {
+  const getListviewData = async (modelAdminLimit?: number) => {
     // Get paginated data
-    return await getInlineListview(
-      props.parentAppLabel,
-      props.parentModelName,
-      pageLimit(),
-      pageOffset(),
-      props.inline.class_name
-    );
+    const limit = modelAdminLimit ?? pageLimit();
+
+    try {
+      return await getInlineListview(
+        props.parentAppLabel,
+        props.parentModelName,
+        limit,
+        pageOffset(),
+        props.inline.class_name
+      );
+    } catch (err: any) {
+      setAppState("toastState", {
+        ...appState.toastState,
+        isShowing: true,
+        message: `An error occured while retrieving inline data. ${err.message}`,
+        type: "danger",
+      });
+    }
+    
   };
 
   onMount(async () => {
     try {
+      // Setup page limit
+      setPageLimit(props.inline.list_per_page);
+
       // Get paginated data
-      const listviewResponse = await getListviewData();
+      const listviewResponse = await getListviewData(props.inline.list_per_page);
       setListviewData(listviewResponse);
 
       // Setup table row forms
@@ -118,23 +140,21 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       );
       setModelAdminSettings(modelAdminSettingsData.model_admin_settings);
 
-      // Setup page limit
-      setPageLimit(props.inline.list_per_page);
-
       setIsTableRowFormsReady(true);
-    } catch (err: any) {}
-  });
-
-  createEffect(async () => {
-    if (pageLimit() && pageOffset()) {
-      // Get paginated data
-      const listviewResponse = await getListviewData();
-      setListviewData(listviewResponse);
+    } catch (err: any) {
+      setAppState("toastState", {
+        ...appState.toastState,
+        isShowing: true,
+        message: `An error occured while retrieving data. ${err.message}`,
+        type: "danger",
+      });
     }
   });
 
-  // Fixes problem when going to first page from last page
   createEffect(async () => {
+    pageLimit();
+    pageOffset();
+
     // Get paginated data
     const listviewResponse = await getListviewData();
     setListviewData(listviewResponse);
@@ -218,7 +238,6 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       // Get paginated data
       const listviewResponse = await getListviewData();
       setListviewData(listviewResponse);
-      // props.resetParentTable();
     } catch (err: any) {
       setAppState("toastState", {
         ...appState.toastState,
@@ -228,6 +247,25 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       });
     }
   };
+
+  const onAddRowForm = async () => {
+    try {
+      const listviewResponse = await getListviewData();
+      setListviewData(listviewResponse);
+      setIsRowAddFormOpen(false);
+    } catch (err: any) {
+      setAppState("toastState", {
+        ...appState.toastState,
+        isShowing: true,
+        message: `An error occured while retrieving inline data. ${err.message}`,
+        type: "danger",
+      });
+    }
+  }
+
+  const addText = () => {
+    return isRowAddFormOpen() ? 'Close' : 'Add';
+  }
 
   return (
     <Show when={isTableRowFormsReady()}>
@@ -280,33 +318,38 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                 {(record, i) => (
                   <>
                     <tr class="border-b dark:bg-gray-800 border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
-                      <td class="w-4 px-4 py-2">
-                        <div class="flex items-center">
-                          <span
-                            onClick={() => {
-                              onRowClick(i(), record.pk);
-                            }}
-                            class="cursor-pointer"
-                          >
-                            <Show
-                              when={
-                                tableRowsFormState().length > 0 &&
-                                tableRowsFormState()[i()].isOpen
-                              }
+                      <Show when={
+                        hasChangeModelPermission(props.userPermissions, props.inline.app_label, props.inline.model_name)
+                      }>
+                        <td class="w-4 px-4 py-2">
+                          <div class="flex items-center">
+                            <span
+                              onClick={() => {
+                                onRowClick(i(), record.pk);
+                              }}
+                              class="cursor-pointer"
                             >
-                              <AngleUp width={5} height={5} />
-                            </Show>
-                            <Show
-                              when={
-                                tableRowsFormState().length > 0 &&
-                                !tableRowsFormState()[i()].isOpen
-                              }
-                            >
-                              <AngleDown width={5} height={5} />
-                            </Show>
-                          </span>
-                        </div>
-                      </td>
+                              <Show
+                                when={
+                                  tableRowsFormState().length > 0 &&
+                                  tableRowsFormState()[i()]?.isOpen
+                                }
+                              >
+                                <AngleUp width={5} height={5} />
+                              </Show>
+                              <Show
+                                when={
+                                  tableRowsFormState().length > 0 &&
+                                  !tableRowsFormState()[i()]?.isOpen
+                                }
+                              >
+                                <AngleDown width={5} height={5} />
+                              </Show>
+                            </span>
+                          </div>
+                        </td>
+                      </Show>
+                      
                       <For each={props.inline.list_display}>
                         {(fieldName, fieldIndex) => (
                           <td class="px-6 py-2 dark:text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
@@ -323,7 +366,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                     <Show
                       when={
                         tableRowsFormState().length > 0 &&
-                        tableRowsFormState()[i()].isOpen
+                        tableRowsFormState()[i()]?.isOpen
                       }
                     >
                       <tr
@@ -335,7 +378,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                           class="w-full"
                         >
                           <div class="p-2 border border-slate-300 rounded-md mb-2">
-                            <InlineRowForm
+                            <InlineRowChangeForm
                               appLabel={props.inline.app_label}
                               modelName={props.inline.model_name}
                               pk={record.pk}
@@ -354,6 +397,35 @@ const InlineTable: Component<InlineTableProps> = (props) => {
             </tbody>
           </table>
 
+          <div class="flex items-center my-2 gap-2 px-2">
+            <span class="dark:text-white text-sm">
+              { addText() }
+            </span>
+            <span 
+              class="cursor-pointer" 
+              onClick={() => setIsRowAddFormOpen((prev) => !prev)}
+            >
+              <Show when={!isRowAddFormOpen()}>
+                <PlusIcon width={5} height={5} />
+              </Show>
+              <Show when={isRowAddFormOpen()}>
+                <CloseCircle />
+              </Show>
+            </span>
+          </div>
+
+          <Show when={isRowAddFormOpen()}>
+            <div class="p-2 border border-slate-300 rounded-md mb-2">
+              <InlineRowAddForm 
+                appLabel={props.inline.app_label} 
+                modelName={props.inline.model_name}
+                modelAdminSettings={modelAdminSettings()}
+                modelFields={modelFields()}
+                onAddFn={onAddRowForm}
+              />
+            </div>
+          </Show>
+
           <div class="p-2 border border-slate-300 rounded-md mb-2">
             <div class="flex items-center justify-center">
               <Show when={listviewData()?.previous}>
@@ -370,7 +442,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
               <Show when={listviewData()?.previous}>
                 <button
                   onClick={() => {
-                    setPageOffset((prev) => prev - 10);
+                    setPageOffset((prev) => prev - pageLimit());
                     setCurrentPage((prev) => prev - 1);
                   }}
                   class="button"
@@ -381,7 +453,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
               <Show when={listviewData()?.next}>
                 <button
                   onClick={() => {
-                    setPageOffset((prev) => prev + 10);
+                    setPageOffset((prev) => prev + pageLimit());
                     setCurrentPage((prev) => prev + 1);
                   }}
                   class="button"

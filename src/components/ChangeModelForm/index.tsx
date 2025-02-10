@@ -7,22 +7,26 @@ import {
   buildFieldStateOnFieldChange,
   buildFieldStateOnFocus,
   buildModelFormData,
+  handleFetchError,
   initializeChangeFormFieldState,
   isReadOnlyField,
   updateFieldStateOnInvalidFields,
   updateModelFieldsWithDbValues,
 } from "src/hooks/useModelAdmin";
 import {
-  FieldsetType,
   FieldsInFormStateType,
   ModelAdminSettingsType,
   ModelFieldsObjType,
 } from "src/models/django-admin";
-import { changeRecord, getModelRecord } from "src/services/django-admin";
+import { changeRecord, deleteRecord, getModelRecord } from "src/services/django-admin";
 import { useAppContext } from "src/context/sessionContext";
 import { scrollToTopForm } from "src/hooks/useUI";
 import PlusIcon from "src/assets/icons/plus-icon";
 import { FIELDTYPE } from "src/constants/django-admin";
+import Modal from "../Modal";
+import ActionModalMessage from "../ActionModalMessage";
+import { nonAuthRoute } from "src/hooks/useAdminRoute";
+import { useNavigate } from "@solidjs/router";
 
 type ChangeModelFormProps = {
   appLabel: string;
@@ -31,7 +35,7 @@ type ChangeModelFormProps = {
   modelAdminSettings: ModelAdminSettingsType;
   modelFields: ModelFieldsObjType;
   setModelFields: Setter<ModelFieldsObjType>;
-  canChange: boolean;
+  canDelete: boolean;
 };
 
 const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
@@ -50,6 +54,9 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
     createSignal<FieldsInFormStateType | null>(null);
 
   const { appState, setAppState } = useAppContext();
+  const [isModalOpen, setIsModalOpen] = createSignal(false);
+  const navigate = useNavigate();
+  let modalEventPromise: (event: string) => void;
 
   onMount(async () => {
     // Setup model record
@@ -78,6 +85,47 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
 
     setIsDataReady(true);
   });
+
+  const onModalEvent = async (modalEvent: string) => {
+    setIsModalOpen(false);
+    if (modalEventPromise) {
+      modalEventPromise(modalEvent); // Resolve the promise with the modal event
+    }
+  };
+
+  const onConfirmDelete = async () => {
+    try {
+      const response = await deleteRecord(props.appLabel, props.modelName, props.pk);
+
+      setAppState("toastState", "isShowing", true);
+      setAppState("toastState", "type", "success");
+      setAppState("toastState", "message", response.message);
+      setAppState("toastState", "persist", true);
+
+      navigate(`/dashboard/${props.appLabel}/${props.modelName}`);
+    } catch (err: any) {
+      const handler = handleFetchError(err);
+      if (handler.shouldNavigate) {
+        navigate(nonAuthRoute.loginView);
+      } else {
+        setAppState("toastState", handler.newToastState);
+        scrollToTopForm("change-model-form");
+      }
+    }
+  }
+
+  const onDelete = async () => {
+    setIsModalOpen(true);
+
+    // Return a promise that resolves based on user action
+    await new Promise((resolve) => {
+      modalEventPromise = resolve; // Store the resolve function
+    }).then((event) => {
+      if (event === "confirm") {
+        onConfirmDelete(); // Proceed only if confirmed
+      }
+    });
+  }
 
   const onSave = async (e: Event) => {
     e.preventDefault();
@@ -281,15 +329,28 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
             )}
           </For>
 
-          <Show when={props.canChange}>
-            <div>
-              <button type="submit" class="button">
-                Save
+          <div>
+            <button type="submit" class="button">
+              Save
+            </button>
+            <Show when={props.canDelete}>
+              <button type="button" class="button-danger" onClick={onDelete}>
+                Delete
               </button>
-            </div>
-          </Show>
+            </Show>
+          </div>
         </form>
       </div>
+
+      {/** Modal */}
+      <Show when={isModalOpen()}>
+        <Modal
+          modalEvent={(modalEvent) => {
+            onModalEvent(modalEvent);
+          }}
+          modalBody={<ActionModalMessage action="delete" />}
+        />
+      </Show>
     </Show>
   );
 };

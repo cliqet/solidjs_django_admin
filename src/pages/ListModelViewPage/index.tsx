@@ -613,7 +613,7 @@ const ListModelViewPage = () => {
 
         {/** Table Pagination */}
         <div 
-          class="p-2 border border-slate-300 rounded-md mb-2"
+          class="p-2 border border-slate-300 rounded-md mb-10"
           classList={{
             "hidden": !isParentTableOpen(),
             "visible": isParentTableOpen()
@@ -686,7 +686,7 @@ const ListModelViewPage = () => {
         {/** Custom Inlines */}
         <For each={modelAdminSettings().custom_inlines}>
           {(inline, _) => (
-            <div class="p-2 border border-slate-300 rounded-md mb-2">
+            <div class="p-2 border border-slate-300 rounded-md mb-10">
               <InlineTable
                 parentAppLabel={params.appLabel}
                 parentModelName={params.modelName}

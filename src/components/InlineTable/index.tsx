@@ -20,6 +20,7 @@ import {
 } from "src/models/django-admin";
 import InlineRowChangeForm from "../InlineRowChangeForm";
 import {
+  deleteRecord,
   getInlineListview,
   getModelAdminSettings,
   getModelFields,
@@ -29,7 +30,7 @@ import PlusIcon from "src/assets/icons/plus-icon";
 import { UserPermissionsType } from "src/models/user";
 import { hasChangeModelPermission } from "src/hooks/useModelAdmin";
 import InlineRowAddForm from "../InlineRowAddForm";
-import CloseXIcon from "src/assets/icons/closex-icon";
+import EllipsisIcon from "src/assets/icons/ellipsis-icon";
 
 export type ListviewDataType = {
   count: number;
@@ -57,6 +58,10 @@ type TableRowFormType = {
   isOpen: boolean;
 };
 
+type TableRowActionType = {
+  isOpen: boolean;
+};
+
 const InlineTable: Component<InlineTableProps> = (props) => {
   const { appState, setAppState } = useAppContext();
   const [isTableRowFormsReady, setIsTableRowFormsReady] = createSignal(false);
@@ -69,6 +74,9 @@ const InlineTable: Component<InlineTableProps> = (props) => {
   );
   const [tableRowsFormState, setTableRowsFormState] = createSignal<
     TableRowFormType[]
+  >([]);
+  const [tableRowsActionState, setTableRowsActionState] = createSignal<
+    TableRowActionType[]
   >([]);
 
   // An object which contains the field name as key and the value as an object with
@@ -88,6 +96,14 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       tableRowForms.push({ isOpen: false });
     });
     return tableRowForms;
+  };
+
+  const createTableRowActions = () => {
+    let tableRowActions: TableRowActionType[] = [];
+    listviewData()?.results.forEach((record) => {
+      tableRowActions.push({ isOpen: false });
+    });
+    return tableRowActions;
   };
 
   const getListviewData = async (modelAdminLimit?: number) => {
@@ -110,7 +126,6 @@ const InlineTable: Component<InlineTableProps> = (props) => {
         type: "danger",
       });
     }
-    
   };
 
   onMount(async () => {
@@ -119,12 +134,18 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       setPageLimit(props.inline.list_per_page);
 
       // Get paginated data
-      const listviewResponse = await getListviewData(props.inline.list_per_page);
+      const listviewResponse = await getListviewData(
+        props.inline.list_per_page
+      );
       setListviewData(listviewResponse);
 
       // Setup table row forms
       const tableRowForms = createTableRowForms();
       setTableRowsFormState(tableRowForms);
+
+      // Setup table row actions
+      const tableRowActions = createTableRowActions();
+      setTableRowsActionState(tableRowActions);
 
       // Setup model fields for table use
       const modelFieldsData = await getModelFields(
@@ -169,8 +190,8 @@ const InlineTable: Component<InlineTableProps> = (props) => {
   };
 
   const renderTableData = (
-    fieldName: string, 
-    record: any, 
+    fieldName: string,
+    record: any,
     links: string[],
     customChangeLink: string
   ) => {
@@ -231,6 +252,16 @@ const InlineTable: Component<InlineTableProps> = (props) => {
     setTableRowsFormState(newRowForms);
   };
 
+  const onActionOpenOrClose = (index: number) => {
+    let newRowActions = [...tableRowsActionState()];
+    const prevState = newRowActions[index].isOpen;
+    newRowActions.forEach((action, i) => {
+      newRowActions[i].isOpen = false;
+    });
+    newRowActions[index].isOpen = !prevState;
+    setTableRowsActionState(newRowActions);
+  };
+
   const onSaveRowForm = async (index: number, pk: string | number) => {
     onRowClick(index, pk);
 
@@ -261,41 +292,58 @@ const InlineTable: Component<InlineTableProps> = (props) => {
         type: "danger",
       });
     }
+  };
+
+  const onDeleteInlineRow = async (index: number, pk: string | number) => {
+    onActionOpenOrClose(index);
+
+    try {
+      await deleteRecord(
+        props.inline.app_label,
+        props.inline.model_name,
+        pk as string
+      )
+
+      // Get paginated data
+      const listviewResponse = await getListviewData();
+      setListviewData(listviewResponse);
+    } catch (err: any) {
+      setAppState("toastState", {
+        ...appState.toastState,
+        isShowing: true,
+        message: `An error occured while deleting. ${err.message}`,
+        type: "danger",
+      });
+    }
   }
 
   const addText = () => {
-    return isRowAddFormOpen() ? 'Close' : 'Add';
-  }
+    return isRowAddFormOpen() ? "Close" : "Add";
+  };
 
   return (
     <Show when={isTableRowFormsReady()}>
-      <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg pb-5">
         <div class="flex justify-between my-2">
           <h3 class="text-lg dark:text-white">
             {props.inline.model_name_label} Inline
           </h3>
           <Show when={isTableOpen()}>
-                <span
-                  class="cursor-pointer"
-                  onClick={() => setIsTableOpen(false)}
-                >
-                  <AngleUp width={5} height={5} />
-                </span>
-              </Show>
-              <Show when={!isTableOpen()}>
-                <span
-                  class="cursor-pointer"
-                  onClick={() => setIsTableOpen(true)}
-                >
-                  <AngleDown width={5} height={5} />
-                </span>
-              </Show>
+            <span class="cursor-pointer" onClick={() => setIsTableOpen(false)}>
+              <AngleUp width={5} height={5} />
+            </span>
+          </Show>
+          <Show when={!isTableOpen()}>
+            <span class="cursor-pointer" onClick={() => setIsTableOpen(true)}>
+              <AngleDown width={5} height={5} />
+            </span>
+          </Show>
         </div>
 
         <div
           classList={{
-            "hidden": !isTableOpen(),
-            "visible": isTableOpen()
+            hidden: !isTableOpen(),
+            visible: isTableOpen(),
           }}
         >
           <table class="w-full text-sm text-left rtl:text-right table-auto">
@@ -311,6 +359,9 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                     </th>
                   )}
                 </For>
+                <th scope="col" class="p-4">
+                  <div class="flex items-center"></div>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -318,9 +369,14 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                 {(record, i) => (
                   <>
                     <tr class="border-b dark:bg-gray-800 border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
-                      <Show when={
-                        hasChangeModelPermission(props.userPermissions, props.inline.app_label, props.inline.model_name)
-                      }>
+                      {/** Dropdown to open change form */}
+                      <Show
+                        when={hasChangeModelPermission(
+                          props.userPermissions,
+                          props.inline.app_label,
+                          props.inline.model_name
+                        )}
+                      >
                         <td class="w-4 px-4 py-2">
                           <div class="flex items-center">
                             <span
@@ -349,7 +405,8 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                           </div>
                         </td>
                       </Show>
-                      
+
+                      {/** Actual table data */}
                       <For each={props.inline.list_display}>
                         {(fieldName, fieldIndex) => (
                           <td class="px-6 py-2 dark:text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
@@ -362,7 +419,28 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                           </td>
                         )}
                       </For>
+
+                      {/** Row actions */}
+                      <td class="relative px-6 py-2 dark:text-white">
+                        <button onClick={() => onActionOpenOrClose(i())}>
+                          <EllipsisIcon width={5} height={5} />
+                        </button>
+                        <Show when={tableRowsActionState()[i()].isOpen}>
+                          <div class="absolute right-0 top-full z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                            <div class="py-1">
+                              <span
+                                onClick={() => onDeleteInlineRow(i(), record.pk)}
+                                class="cursor-pointer block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                              >
+                                Delete
+                              </span>
+                            </div>
+                          </div>
+                        </Show>
+                      </td>
                     </tr>
+
+                    {/** Inline row change form */}
                     <Show
                       when={
                         tableRowsFormState().length > 0 &&
@@ -397,12 +475,11 @@ const InlineTable: Component<InlineTableProps> = (props) => {
             </tbody>
           </table>
 
+          {/** Add row form section */}
           <div class="flex items-center my-2 gap-2 px-2">
-            <span class="dark:text-white text-sm">
-              { addText() }
-            </span>
-            <span 
-              class="cursor-pointer" 
+            <span class="dark:text-white text-sm">{addText()}</span>
+            <span
+              class="cursor-pointer"
               onClick={() => setIsRowAddFormOpen((prev) => !prev)}
             >
               <Show when={!isRowAddFormOpen()}>
@@ -416,8 +493,8 @@ const InlineTable: Component<InlineTableProps> = (props) => {
 
           <Show when={isRowAddFormOpen()}>
             <div class="p-2 border border-slate-300 rounded-md mb-2">
-              <InlineRowAddForm 
-                appLabel={props.inline.app_label} 
+              <InlineRowAddForm
+                appLabel={props.inline.app_label}
                 modelName={props.inline.model_name}
                 modelAdminSettings={modelAdminSettings()}
                 modelFields={modelFields()}
@@ -426,6 +503,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
             </div>
           </Show>
 
+          {/** Pagination */}
           <div class="p-2 border border-slate-300 rounded-md mb-2">
             <div class="flex items-center justify-center">
               <Show when={listviewData()?.previous}>

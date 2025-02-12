@@ -88,3 +88,27 @@ export const initialModelAdminSettings = {
 };
 
 
+export type ModelPermissionType = {
+  add: boolean;
+  change: boolean;
+  delete: boolean;
+  view: boolean;
+};
+
+export type AppModelType = {
+  name: string;
+  objectName: string;
+  adminUrl: string;
+  addUrl: string;
+  perms: ModelPermissionType;
+  viewOnly: boolean;
+};
+
+export type AppSettingsType = {
+  name: string;
+  appLabel: string;
+  appUrl: string;
+  hasModulePerms: boolean;
+  models: AppModelType[];
+};
+

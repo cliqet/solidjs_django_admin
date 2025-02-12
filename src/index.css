@@ -31,32 +31,32 @@ body {
 
 .valid-input {
   @apply
-    border border-gray-300 text-sm rounded-lg block w-full p-2.5
+    border border-gray-300 rounded-lg block w-full
   focus:ring-custom-primary-lighter focus:border-custom-primary-lighter;
 }
 
 .invalid-input {
   @apply
-    border border-red-500 text-sm rounded-lg block w-full p-2.5;
+    border border-red-500 rounded-lg block w-full;
 }
 
 .search-input {
   @apply
-    block w-full p-3 ps-10 text-sm text-gray-900 border border-gray-300 
+    block w-full ps-10 text-gray-900 border border-gray-300 
     rounded-lg bg-gray-50 
     focus:ring-custom-primary-lighter focus:border-custom-primary-lighter;
 }
 
 .valid-search-input {
   @apply
-    block w-full p-3 ps-10 text-sm text-gray-900 border border-gray-300 
+    block w-full p-3 ps-10 text-gray-900 border border-gray-300 
     rounded-lg bg-gray-50 
     focus:ring-custom-primary-lighter focus:border-custom-primary-lighter;
 }
 
 .invalid-search-input {
   @apply
-    block w-full p-3 ps-10 text-sm text-gray-900 border border-red-500 
+    block w-full ps-10 text-gray-900 border border-red-500 
     rounded-lg bg-gray-50;
 }
 

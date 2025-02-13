@@ -10,6 +10,7 @@ import { useAppContext } from "src/context/sessionContext";
 import { AppSettingsType, ModelFieldsObjType } from "src/models/django-admin";
 import { getApps, getBuildQueryResults, getModelFields } from "src/services/django-admin";
 import BorderedSection from "../BorderedSection";
+import QueryReportsTable, { ReportsDataType } from "../QueryReportsTable";
 
 type AppModelListType = {
   label: string;
@@ -21,6 +22,7 @@ type AppModelListType = {
 };
 
 type ConditionType = [string, string, any];
+
 
 const QueryBuilderPanel = () => {
   const [conditions, setConditions] = createSignal<ConditionType[]>([]);
@@ -38,6 +40,7 @@ const QueryBuilderPanel = () => {
     SelectedOptionsType[]
   >([]);
   const [isDataReady, setIsDataReady] = createSignal(false);
+  const [tableData, setTableData] = createSignal<ReportsDataType | null>(null);
 
   const transformToAppModelList = (appList: AppSettingsType[]) => {
     const appModelList = appList.map((app) => {
@@ -271,6 +274,7 @@ const QueryBuilderPanel = () => {
 
     try {
       const response = await getBuildQueryResults(bodyData);
+      setTableData(response);
       console.log(response);
     } catch (err: any) {
       setAppState("toastState", "isShowing", true);
@@ -459,9 +463,11 @@ const QueryBuilderPanel = () => {
         </button>
       </BorderedSection>
 
-      <BorderedSection>
-        Table
-      </BorderedSection>
+      <Show when={tableData()}>
+        <BorderedSection>
+          <QueryReportsTable data={tableData() as ReportsDataType} />
+        </BorderedSection>
+        </Show>
     </Show>
   );
 };

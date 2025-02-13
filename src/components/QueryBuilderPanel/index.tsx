@@ -8,7 +8,7 @@ import SelectField, {
 } from "src/components/form_fields/SelectField";
 import { useAppContext } from "src/context/sessionContext";
 import { AppSettingsType, ModelFieldsObjType } from "src/models/django-admin";
-import { getApps, getModelFields } from "src/services/django-admin";
+import { getApps, getBuildQueryResults, getModelFields } from "src/services/django-admin";
 import BorderedSection from "../BorderedSection";
 
 type AppModelListType = {
@@ -24,6 +24,8 @@ type ConditionType = [string, string, any];
 
 const QueryBuilderPanel = () => {
   const [conditions, setConditions] = createSignal<ConditionType[]>([]);
+  const [orderings, setOrderings] = createSignal<string[]>([]);
+  const [queryLimit, setQueryLimit] = createSignal<number | null>(null);
   const [appModelList, setAppModelList] = createSignal<AppModelListType[]>([]);
   const [currentApp, setCurrentApp] = createSignal("");
   const [currentModel, setCurrentModel] = createSignal("");
@@ -143,6 +145,14 @@ const QueryBuilderPanel = () => {
     setConditions(newConditions);
   };
 
+  const updateOrderings = (firstModelField: string) => {
+    const newOrderings = orderings().map((order) => {
+      return firstModelField;
+    });
+
+    setOrderings(newOrderings);
+  };
+
   // on app change
   const onAppChange = async (appSelected: string) => {
     setCurrentApp(appSelected);
@@ -158,6 +168,9 @@ const QueryBuilderPanel = () => {
 
       // update conditions
       updateConditions(newModelFieldChoices[0].value);
+
+      // update orderings
+      updateOrderings(newModelFieldChoices[0].value);
     } catch (err: any) {
       setAppState("toastState", "isShowing", true);
       setAppState(
@@ -181,6 +194,9 @@ const QueryBuilderPanel = () => {
 
       // update conditions
       updateConditions(newModelFieldChoices[0].value);
+
+      // update orderings
+      updateOrderings(newModelFieldChoices[0].value);
     } catch (err: any) {
       setAppState("toastState", "isShowing", true);
       setAppState(
@@ -204,28 +220,67 @@ const QueryBuilderPanel = () => {
     setConditions(currentConditions);
   };
 
+  const addOrderingRow = () => {
+    const currentOrderings = [...orderings()];
+    currentOrderings.push(modelFieldChoices()[0].value);
+    setOrderings(currentOrderings);
+  };
+
+  const removeOrderingRow = (index: number) => {
+    const currentOrderings = [...orderings()];
+    currentOrderings.splice(index, 1);
+    setOrderings(currentOrderings);
+  };
+
   const onSelectConditionField = (index: number, fieldName: string) => {
     let currentConditions = [...conditions()];
     currentConditions[index][0] = fieldName;
     setConditions(currentConditions);
-  }
+  };
 
   const onSelectConditionOperator = (index: number, operator: string) => {
     let currentConditions = [...conditions()];
     currentConditions[index][1] = operator;
     setConditions(currentConditions);
-  }
+  };
 
   const onChangeConditionValue = (index: number, value: any) => {
     let currentConditions = [...conditions()];
     currentConditions[index][2] = value;
     setConditions(currentConditions);
-  }
+  };
 
-  const runQueryBuilder = () => {
-    console.log("Current app", currentApp());
-    console.log("Current model", currentModel());
-    console.log("Current conditions", conditions());
+  const onSelectOrderingField = (index: number, fieldName: string) => {
+    let currentOrderings = [...orderings()];
+    currentOrderings[index] = fieldName;
+    setOrderings(currentOrderings);
+  };
+
+  const onChangeLimitValue = (value: string) => {
+    setQueryLimit(+value);
+  };
+
+  const runQueryBuilder = async () => {
+    const bodyData = {
+      'app_name': currentApp(),
+      'model_name': currentModel(),
+      'conditions': conditions(),
+      'orderings': orderings(),
+      'query_limit': queryLimit()
+    }
+
+    try {
+      const response = await getBuildQueryResults(bodyData);
+      console.log(response);
+    } catch (err: any) {
+      setAppState("toastState", "isShowing", true);
+      setAppState(
+        "toastState",
+        "message",
+        err.message ?? "Something went wrong. Please refresh the page"
+      );
+      setAppState("toastState", "type", "danger");
+    }
   };
 
   return (
@@ -329,14 +384,12 @@ const QueryBuilderPanel = () => {
                 />
               </div>
               <div class="w-1/2">
-                <Show when={i() !== 0}>
-                  <span
-                    class="cursor-pointer"
-                    onClick={() => removeConditionRow(i())}
-                  >
-                    <CloseCircle />
-                  </span>
-                </Show>
+                <span
+                  class="cursor-pointer"
+                  onClick={() => removeConditionRow(i())}
+                >
+                  <CloseCircle />
+                </span>
               </div>
             </div>
           )}
@@ -344,7 +397,60 @@ const QueryBuilderPanel = () => {
       </BorderedSection>
 
       <BorderedSection>
-        <h3 class="dark:text-white text-sm">Ordering</h3>
+        <div class="flex gap-2">
+          <h3 class="dark:text-white text-sm mb-2">Ordering</h3>
+          <span class="cursor-pointer" onClick={addOrderingRow}>
+            <PlusIcon width={5} height={5} />
+          </span>
+        </div>
+
+        <For each={orderings()}>
+          {(ordering, i) => (
+            <div class="flex gap-3 items-center mb-2">
+              <div class="w-3/12">
+                <SelectField
+                  selectProps={{
+                    id: `field${i()}`,
+                    class: "text-xs",
+                  }}
+                  options={modelFieldChoices()}
+                  onChangeValue={(value, _) => {
+                    onSelectOrderingField(i(), value);
+                  }}
+                />
+              </div>
+              <div class="w-1/2">
+                <span
+                  class="cursor-pointer"
+                  onClick={() => removeOrderingRow(i())}
+                >
+                  <CloseCircle />
+                </span>
+              </div>
+            </div>
+          )}
+        </For>
+      </BorderedSection>
+
+      <BorderedSection>
+        <h3 class="dark:text-white text-sm mb-2">Limit Results</h3>
+        <div class="w-3/12">
+          <InputTypeField
+            inputProps={{
+              id: "limit",
+              type: "number",
+              value: "",
+              class: "text-xs",
+              placeholder: "Leave empty for all results",
+            }}
+            isInvalid={false}
+            onInvalid={() => {}}
+            onFocus={() => {}}
+            onChangeValue={(value, _) => {
+              onChangeLimitValue(value);
+            }}
+          />
+        </div>
       </BorderedSection>
 
       <BorderedSection>

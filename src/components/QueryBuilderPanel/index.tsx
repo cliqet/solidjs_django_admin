@@ -458,6 +458,10 @@ const QueryBuilderPanel = () => {
           Run Query
         </button>
       </BorderedSection>
+
+      <BorderedSection>
+        Table
+      </BorderedSection>
     </Show>
   );
 };

@@ -33,7 +33,7 @@ type ListModelViewTableProps = {
 }
 
 const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
-  let checkboxAllRef: HTMLInputElement;
+  let checkboxAllRef!: HTMLInputElement;
   let checkboxRowRefs: HTMLInputElement[] = new Array(length).fill(null);
 
   const getPkField = (record: any) : string => {
@@ -98,8 +98,8 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
 
   const onRowCheckAll = () => {
     let rowsSelected: { id: string; isChecked: boolean; }[] = [];
-
-    if (!checkboxAllRef.checked) {
+    
+    if (checkboxAllRef.checked) {
       checkboxRowRefs.forEach(checkbox => {
         checkbox.checked = false;
         rowsSelected.push({ id: checkbox.id, isChecked: false });

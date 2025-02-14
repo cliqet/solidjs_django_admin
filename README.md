@@ -47,13 +47,14 @@ Modify the directories according to your environments.
 <img width="1345" alt="Screenshot 2025-01-27 at 12 45 07 PM" src="https://github.com/user-attachments/assets/2660fc55-60c6-4da9-a66a-e3b93bc278f6" />
 
 #### Listview
-<img width="1345" alt="Screenshot 2025-01-27 at 12 46 04 PM" src="https://github.com/user-attachments/assets/38ae69a6-da7a-4795-8b8b-8b92a02d3fcb" />
+<img width="1350" alt="Screenshot 2025-02-14 at 2 35 33 PM" src="https://github.com/user-attachments/assets/3cae7690-64e2-400b-b9ec-2c3c35afc6d2" />
+<img width="1350" alt="Screenshot 2025-02-14 at 2 35 49 PM" src="https://github.com/user-attachments/assets/1ca28d66-b293-45cf-add9-e019b4dd13c8" />
 
 #### Documentation 
-<img width="1345" alt="Screenshot 2025-01-27 at 12 47 07 PM" src="https://github.com/user-attachments/assets/377ae640-49c0-4cbb-88ec-85649c8067a0" />
+<img width="1350" alt="Screenshot 2025-02-14 at 2 35 03 PM" src="https://github.com/user-attachments/assets/523fec9a-f0ab-40bb-b2c8-4b52ada58817" />
 
 ### Queue Management
-<img width="1042" alt="Screenshot 2025-02-03 at 5 29 58 PM" src="https://github.com/user-attachments/assets/70146293-8cfe-4285-903d-d4221c717bbf" />
+<img width="1350" alt="Screenshot 2025-02-14 at 2 34 46 PM" src="https://github.com/user-attachments/assets/6b4f3471-faf0-4a65-a479-add2261885c8" />
 
 ### Query Builder Reports
 <img width="1350" alt="Screenshot 2025-02-14 at 2 25 39 PM" src="https://github.com/user-attachments/assets/f6f173a3-a6ed-4963-96a7-e8aa2dbf47e2" />

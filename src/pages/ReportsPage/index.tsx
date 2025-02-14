@@ -1,5 +1,6 @@
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import QueryBuilderPanel from "src/components/QueryBuilderPanel";
+import SqlQueryPanel from "src/components/SqlQueryPanel";
 
 const TABS = {
   QUERY_BUILDER: "QUERY_BUILDER",
@@ -47,7 +48,13 @@ const ReportsPage = () => {
       </div>
 
       {/** Content */}
-      <QueryBuilderPanel />
+      <Show when={activeTab() === TABS.QUERY_BUILDER}>
+        <QueryBuilderPanel />
+      </Show>
+
+      <Show when={activeTab() === TABS.SQL_QUERY}>
+        <SqlQueryPanel />
+      </Show>
     </div>
   );
 };

@@ -8,9 +8,13 @@ import SelectField, {
 } from "src/components/form_fields/SelectField";
 import { useAppContext } from "src/context/sessionContext";
 import { AppSettingsType, ModelFieldsObjType } from "src/models/django-admin";
-import { getApps, getBuildQueryResults, getModelFields } from "src/services/django-admin";
+import {
+  getApps,
+  getBuildQueryResults,
+  getModelFields,
+} from "src/services/django-admin";
 import BorderedSection from "../BorderedSection";
-import QueryReportsTable, { ReportsDataType } from "../QueryReportsTable";
+import QueryReportsTable, { initialTableData, ReportsDataType } from "../QueryReportsTable";
 
 type AppModelListType = {
   label: string;
@@ -22,7 +26,6 @@ type AppModelListType = {
 };
 
 type ConditionType = [string, string, any];
-
 
 const QueryBuilderPanel = () => {
   const [conditions, setConditions] = createSignal<ConditionType[]>([]);
@@ -40,7 +43,7 @@ const QueryBuilderPanel = () => {
     SelectedOptionsType[]
   >([]);
   const [isDataReady, setIsDataReady] = createSignal(false);
-  const [tableData, setTableData] = createSignal<ReportsDataType | null>(null);
+  const [tableData, setTableData] = createSignal<ReportsDataType>(initialTableData);
 
   const transformToAppModelList = (appList: AppSettingsType[]) => {
     const appModelList = appList.map((app) => {
@@ -265,12 +268,12 @@ const QueryBuilderPanel = () => {
 
   const runQueryBuilder = async () => {
     const bodyData = {
-      'app_name': currentApp(),
-      'model_name': currentModel(),
-      'conditions': conditions(),
-      'orderings': orderings(),
-      'query_limit': queryLimit()
-    }
+      app_name: currentApp(),
+      model_name: currentModel(),
+      conditions: conditions(),
+      orderings: orderings(),
+      query_limit: queryLimit(),
+    };
 
     try {
       const response = await getBuildQueryResults(bodyData);
@@ -467,7 +470,7 @@ const QueryBuilderPanel = () => {
         <BorderedSection>
           <QueryReportsTable data={tableData() as ReportsDataType} />
         </BorderedSection>
-        </Show>
+      </Show>
     </Show>
   );
 };

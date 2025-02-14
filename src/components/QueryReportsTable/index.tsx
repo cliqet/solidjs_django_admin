@@ -10,9 +10,22 @@ type QueryReportsTableProps = {
   data: ReportsDataType;
 };
 
+export const initialTableData = {
+  count: 0,
+  fields: [],
+  results: [],
+};
+
 const QueryReportsTable: Component<QueryReportsTableProps> = (props) => {
   return (
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <h3 class="dark:text-white text-sm">
+          Total records found: 
+          <Show when={props.data.fields.length > 0}>
+            {props.data.count}
+          </Show>
+        </h3>
+
       <table class="w-full text-sm text-left rtl:text-right table-auto">
         <thead class="text-xs text-white uppercase bg-custom-primary">
           <tr>

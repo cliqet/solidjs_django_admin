@@ -73,8 +73,6 @@ const HeaderBar = () => {
       >
         <div class="flex items-center justify-start">
           <button
-            data-drawer-target="logo-sidebar"
-            data-drawer-toggle="logo-sidebar"
             aria-controls="logo-sidebar"
             type="button"
             onClick={showAndHideSidebar}
@@ -135,7 +133,6 @@ const HeaderBar = () => {
                   type="button"
                   class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                   aria-expanded="false"
-                  data-dropdown-toggle="dropdown-user"
                   onClick={() => {
                     setIsProfileDropdownShowing((showStatus) => !showStatus);
                     document.addEventListener(

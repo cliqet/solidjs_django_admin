@@ -26,6 +26,7 @@ const SettingsPage = lazy(() => import('src/pages/SettingsPage'));
 const QueuesPage = lazy(() => import('src/pages/QueuesPage'));
 const QueuesFieldListViewPage = lazy(() => import('src/pages/QueuesFieldListViewPage'));
 const ViewChangeQueuedJobPage = lazy(() => import('src/pages/ViewChangeQueuedJobPage'));
+const ReportsPage = lazy(() => import('src/pages/ReportsPage'));
 
 // For Demo only of custom change link page
 const CustomCountryProfileChangePage = lazy(() => import('src/pages/CustomCountryProfileChangePage'));
@@ -54,6 +55,7 @@ render(
           <Route path={authRoute.documentationView} component={DocumentationPage}></Route>
           <Route path={authRoute.settingsView} component={SettingsPage}></Route>
           <Route path={authRoute.queuesView} component={QueuesPage}></Route>
+          <Route path={authRoute.queryReportsView} component={ReportsPage}></Route>
           <Route path={authRoute.queuesFieldListView} component={QueuesFieldListViewPage}></Route>
           <Route path={authRoute.viewChangeJobView} component={ViewChangeQueuedJobPage}></Route>
         </Route>

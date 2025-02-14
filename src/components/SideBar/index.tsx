@@ -8,33 +8,11 @@ import { useAppContext } from "src/context/sessionContext";
 import { UserPermissionsType } from "src/models/user";
 import ChevronLeftIcon from "src/assets/icons/chevron-left-icon";
 import ChevronRightIcon from "src/assets/icons/chevron-right-icon";
-import RowActionArrowIcon from "src/assets/icons/row-action-arrow-icon";
 import AngleDown from "src/assets/icons/angle-down";
 import AngleUp from "src/assets/icons/angle-up";
+import { AppSettingsType } from "src/models/django-admin";
 
-type ModelPermissionType = {
-  add: boolean;
-  change: boolean;
-  delete: boolean;
-  view: boolean;
-};
 
-type AppModelType = {
-  name: string;
-  objectName: string;
-  adminUrl: string;
-  addUrl: string;
-  perms: ModelPermissionType;
-  viewOnly: boolean;
-};
-
-type AppSettingsType = {
-  name: string;
-  appLabel: string;
-  appUrl: string;
-  hasModulePerms: boolean;
-  models: AppModelType[];
-};
 
 const SideBar = () => {
   const [apps, setApps] = createSignal<AppSettingsType[]>([]);

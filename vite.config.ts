@@ -27,5 +27,9 @@ export default defineConfig(() => {
         'src': path.resolve(__dirname, 'src'),
       }
     },
+    optimizeDeps: {
+      // Add both @codemirror/state and @codemirror/view to included deps for optimization
+      include: ["@codemirror/state", "@codemirror/view"],
+    },
   }
 });

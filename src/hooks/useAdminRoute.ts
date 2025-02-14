@@ -11,6 +11,7 @@ export const authRoute = {
   documentationView: '/model-docs',
   settingsView: '/settings',
   queuesView: '/settings/queues',
+  queryReportsView: '/settings/query-reports',
   queuesFieldListView: '/settings/queues/:queueName/:field',
   viewChangeJobView: '/settings/queues/:queueName/:field/:jobId',
 

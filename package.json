@@ -19,11 +19,18 @@
     "vite-plugin-solid": "^2.11.0"
   },
   "dependencies": {
+    "@codemirror/lang-sql": "^6.8.0",
+    "@codemirror/language": "^6.10.8",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/view": "^6.36.2",
+    "@solid-codemirror/codemirror": "^1.0.4",
     "@solidjs/router": "^0.15.1",
     "autoprefixer": "^10.4.20",
     "babel-preset-solid": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "codemirror": "^6.0.1",
     "flowbite": "^2.5.2",
     "jsoneditor": "^10.1.2",
     "jwt-decode": "^4.0.0",

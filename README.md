@@ -55,5 +55,12 @@ Modify the directories according to your environments.
 ### Queue Management
 <img width="1042" alt="Screenshot 2025-02-03 at 5 29 58 PM" src="https://github.com/user-attachments/assets/70146293-8cfe-4285-903d-d4221c717bbf" />
 
+### Query Builder Reports
+<img width="1350" alt="Screenshot 2025-02-14 at 2 25 39 PM" src="https://github.com/user-attachments/assets/f6f173a3-a6ed-4963-96a7-e8aa2dbf47e2" />
+
+### Raw SQL Query Reports
+<img width="1350" alt="Screenshot 2025-02-14 at 2 26 09 PM" src="https://github.com/user-attachments/assets/252cfb7b-562a-4d09-826f-ad02b2d21d78" />
+
+
 
 

@@ -118,7 +118,6 @@ const LoginPage = () => {
     }
 
     try {
-
       const verifyResponse = await verifyCloudflareToken(turnstileToken());
       if (!verifyResponse.isValid) {
         setAppState("toastState", {

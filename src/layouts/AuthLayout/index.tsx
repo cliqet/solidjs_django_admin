@@ -52,9 +52,7 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
   });
 
   return (
-    // <ErrorBoundary
-    //   fallback={(err, reset) => <ErrorBoundaryContent error={err} />}
-    // >
+    <div>
       <div class="h-screen flex flex-col overflow-hidden dark:bg-gray-800">
         <HeaderBar />
 
@@ -64,12 +62,16 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
             id="auth-main"
             class="border-l border-slate-300 container px-4 pt-4 pb-20 flex-1 overflow-auto dark:bg-gray-800 no-scrollbar"
           >
-            <ToastAlert />
-            {props.children}
+            <ErrorBoundary
+              fallback={(err, reset) => <ErrorBoundaryContent error={err} />}
+            >
+              <ToastAlert />
+              {props.children}
+            </ErrorBoundary>
           </div>
         </div>
       </div>
-    // </ErrorBoundary>
+    </div>
   );
 };
 

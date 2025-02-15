@@ -78,7 +78,9 @@ const QueuesPage = () => {
       if (handler.shouldNavigate) {
         navigate(nonAuthRoute.loginView);
       } else {
-        setAppState("toastState", handler.newToastState);
+        setAppState("toastState", "type", "danger");
+        setAppState("toastState", "isShowing", true);
+        setAppState("toastState", "message", err.message ?? handler.message);
       }
     }
   });
@@ -125,7 +127,9 @@ const QueuesPage = () => {
           if (handler.shouldNavigate) {
             navigate(nonAuthRoute.loginView);
           } else {
-            setAppState("toastState", handler.newToastState);
+            setAppState("toastState", "type", "danger");
+            setAppState("toastState", "isShowing", true);
+            setAppState("toastState", "message", err.message ?? handler.message);
           }
         }
       }, refreshNumberRate * 1000);
@@ -142,7 +146,9 @@ const QueuesPage = () => {
       if (handler.shouldNavigate) {
         navigate(nonAuthRoute.loginView);
       } else {
-        setAppState("toastState", handler.newToastState);
+        setAppState("toastState", "type", "danger");
+        setAppState("toastState", "isShowing", true);
+        setAppState("toastState", "message", err.message ?? handler.message);
       }
     }
   }

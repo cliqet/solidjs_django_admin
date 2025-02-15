@@ -15,7 +15,7 @@ type SearchInputProps = {
 };
 
 const SearchInput: Component<SearchInputProps> = (props) => {
-  let searchInputRef: HTMLInputElement;
+  let searchInputRef!: HTMLInputElement;
 
   return (
     <div class="max-w-md">

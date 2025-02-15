@@ -2,7 +2,7 @@ import SearchInput from "src/components/SearchInput";
 import SelectField from "src/components/form_fields/SelectField";
 import { A, useNavigate, useParams } from "@solidjs/router";
 import { createSignal, For, onMount, Show } from "solid-js";
-import { applyCustomAction, deleteJobs, getFailedJobs, requeueJobs } from "src/services/django-admin";
+import { deleteJobs, getFailedJobs, requeueJobs } from "src/services/django-admin";
 import { UserPermissionsType } from "src/models/user";
 import { getUserPermissions } from "src/services/users";
 import { useAppContext } from "src/context/sessionContext";
@@ -54,7 +54,7 @@ const QueuesFieldListViewPage = () => {
   const [isModalOpen, setIsModalOpen] = createSignal(false);
   const [isParentTableOpen, setIsParentTableOpen] = createSignal(true);
   let modalEventPromise: (event: string) => void;
-  let checkboxAllRef: HTMLInputElement;
+  let checkboxAllRef!: HTMLInputElement;
   let checkboxRowRefs: HTMLInputElement[] = new Array(length).fill(null);
 
   const resetState = async () => {
@@ -135,7 +135,9 @@ const QueuesFieldListViewPage = () => {
       if (handler.shouldNavigate) {
         navigate(nonAuthRoute.loginView);
       } else {
-        setAppState("toastState", handler.newToastState);
+        setAppState("toastState", "type", "danger");
+        setAppState("toastState", "isShowing", true);
+        setAppState("toastState", "message", err.message ?? handler.message);
       }
     }
   });
@@ -197,7 +199,9 @@ const QueuesFieldListViewPage = () => {
       if (handler.shouldNavigate) {
         navigate(nonAuthRoute.loginView);
       } else {
-        setAppState("toastState", handler.newToastState);
+        setAppState("toastState", "type", "danger");
+        setAppState("toastState", "isShowing", true);
+        setAppState("toastState", "message", err.message ?? handler.message);
       }
     }
   };

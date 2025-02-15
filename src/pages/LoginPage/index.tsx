@@ -28,8 +28,8 @@ const LoginPage = () => {
   });
   const { LOCAL_STORAGE_KEYS } = useStorageEvent();
   const navigate = useNavigate();
-  let emailRef: HTMLInputElement;
-  let passwordRef: HTMLInputElement;
+  let emailRef!: HTMLInputElement;
+  let passwordRef!: HTMLInputElement;
   let turnstileRef: TurnstileRef | undefined;
 
   onMount(() => {
@@ -118,7 +118,6 @@ const LoginPage = () => {
     }
 
     try {
-
       const verifyResponse = await verifyCloudflareToken(turnstileToken());
       if (!verifyResponse.isValid) {
         setAppState("toastState", {

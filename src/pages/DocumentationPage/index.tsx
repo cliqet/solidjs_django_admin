@@ -39,7 +39,9 @@ const DocumentationPage = () => {
       if (handler.shouldNavigate) {
         navigate(nonAuthRoute.loginView);
       } else {
-        setAppState("toastState", handler.newToastState);
+        setAppState("toastState", "type", "danger");
+        setAppState("toastState", "isShowing", true);
+        setAppState("toastState", "message", err.message ?? handler.message);
       }
     }
   });

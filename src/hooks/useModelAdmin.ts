@@ -347,7 +347,7 @@ export const handleFetchError = (
   err: any
 ): {
   shouldNavigate: boolean;
-  newToastState: StoreSetter<ToastState, ["toastState"]>;
+  message: string;
 } => {
   let message = "";
   let shouldNavigate = false;
@@ -364,11 +364,7 @@ export const handleFetchError = (
 
   return {
     shouldNavigate,
-    newToastState: {
-      isShowing: true,
-      type: "danger",
-      message,
-    },
+    message
   };
 };
 

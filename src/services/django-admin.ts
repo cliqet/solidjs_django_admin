@@ -107,11 +107,12 @@ export async function getModelListview(
 export async function getInlineListview(
   appLabel: string, 
   modelName: string,
+  pk: string,
   limit: number,
   offset: number,
   inlineClass: string
 ): Promise<any> {
-  const url = `/django-admin/inline-listview/${appLabel}/${modelName}?limit=${limit}&offset=${offset}&inline_class=${inlineClass}`;
+  const url = `/django-admin/inline-listview/${appLabel}/${modelName}/${pk}?limit=${limit}&offset=${offset}&inline_class=${inlineClass}`;
 
   const response = await sessionClient.fetch({
     method: "GET",

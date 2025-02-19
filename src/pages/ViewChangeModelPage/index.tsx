@@ -1,11 +1,14 @@
 import { useParams, useNavigate } from "@solidjs/router";
-import { createSignal, createEffect, Show } from "solid-js";
+import { createSignal, createEffect, Show, For } from "solid-js";
 import {
   ModelFieldsObjType,
   ModelAdminSettingsType,
   initialModelAdminSettings,
 } from "src/models/django-admin";
-import { getModelAdminSettings, getModelFieldsEdit } from "src/services/django-admin";
+import {
+  getModelAdminSettings,
+  getModelFieldsEdit,
+} from "src/services/django-admin";
 import { getUserPermissions } from "src/services/users";
 import {
   hasViewOnlyModelPermission,
@@ -19,6 +22,8 @@ import ViewModelForm from "src/components/ViewModelForm";
 import { UserPermissionsType } from "src/models/user";
 import ChangeModelForm from "src/components/ChangeModelForm";
 import { nonAuthRoute } from "src/hooks/useAdminRoute";
+import InlineTable from "src/components/InlineTable";
+import DynamicExtraInline from "src/components/extra_inlines/DynamicExtraInline";
 
 const ViewChangeModelPage = () => {
   const params = useParams();
@@ -53,7 +58,7 @@ const ViewChangeModelPage = () => {
 
       const modelAdminSettingsData = await getModelAdminSettings(
         params.appLabel,
-        params.modelName,
+        params.modelName
       );
       setModelAdminSettings(modelAdminSettingsData.model_admin_settings);
 
@@ -126,6 +131,29 @@ const ViewChangeModelPage = () => {
           )}
         />
       </Show>
+
+      {/** Custom Inlines */}
+      <For each={modelAdminSettings().custom_inlines}>
+        {(inline, _) => (
+          <div class="p-2 border border-slate-300 rounded-md mb-10">
+            <InlineTable
+              parentAppLabel={params.appLabel}
+              parentModelName={params.modelName}
+              parentPk={params.pk}
+              inline={inline}
+              userPermissions={userPermissions() as UserPermissionsType}
+            />
+          </div>
+        )}
+      </For>
+
+      <For each={modelAdminSettings().extra_inlines}>
+        {(inline, i) => (
+          <div class="p-2 border border-slate-300 rounded-md mb-2">
+            <DynamicExtraInline componentName={inline} />
+          </div>
+        )}
+      </For>
     </Show>
   );
 };

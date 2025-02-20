@@ -28,7 +28,7 @@ import {
 import { useAppContext } from "src/context/sessionContext";
 import PlusIcon from "src/assets/icons/plus-icon";
 import { UserPermissionsType } from "src/models/user";
-import { hasChangeModelPermission } from "src/hooks/useModelAdmin";
+import { hasChangeModelPermission, hasViewModelPermission } from "src/hooks/useModelAdmin";
 import InlineRowAddForm from "../InlineRowAddForm";
 import EllipsisIcon from "src/assets/icons/ellipsis-icon";
 
@@ -49,8 +49,8 @@ export type TableMetatdataType = {
 type InlineTableProps = {
   parentAppLabel: string;
   parentModelName: string;
+  parentPk: string;
   inline: CustomInlineType;
-  resetParentTable: () => void;
   userPermissions: UserPermissionsType;
 };
 
@@ -114,6 +114,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       return await getInlineListview(
         props.parentAppLabel,
         props.parentModelName,
+        props.parentPk,
         limit,
         pageOffset(),
         props.inline.class_name
@@ -322,7 +323,11 @@ const InlineTable: Component<InlineTableProps> = (props) => {
   };
 
   return (
-    <Show when={isTableRowFormsReady()}>
+    <Show when={
+      isTableRowFormsReady() && hasViewModelPermission(
+        props.userPermissions, props.inline.app_label, props.inline.model_name
+      )}
+    >
       <div class="relative overflow-x-auto shadow-md sm:rounded-lg pb-5">
         <div class="flex justify-between my-2">
           <h3 class="text-lg dark:text-white">

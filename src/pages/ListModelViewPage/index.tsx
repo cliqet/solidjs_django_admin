@@ -5,7 +5,7 @@ import ListModelViewTable, {
 } from "src/components/ListModelViewTable";
 import SelectField from "src/components/form_fields/SelectField";
 import { useNavigate, useParams } from "@solidjs/router";
-import { createEffect, createSignal, For, onMount, Show } from "solid-js";
+import { createEffect, createSignal, For, Show } from "solid-js";
 import {
   applyCustomAction,
   getModelAdminSettings,
@@ -32,8 +32,6 @@ import Modal from "src/components/Modal";
 import CheckboxField from "src/components/form_fields/CheckboxField";
 import AngleDown from "src/assets/icons/angle-down";
 import AngleUp from "src/assets/icons/angle-up";
-import InlineTable from "src/components/InlineTable";
-import DynamicExtraInline from "src/components/extra_inlines/DynamicExtraInline";
 import ActionModalMessage from "src/components/ActionModalMessage";
 
 type FilterCheckboxType = {
@@ -686,29 +684,6 @@ const ListModelViewPage = () => {
             </span>
           </div>
         </div>
-
-        {/** Custom Inlines */}
-        <For each={modelAdminSettings().custom_inlines}>
-          {(inline, _) => (
-            <div class="p-2 border border-slate-300 rounded-md mb-10">
-              <InlineTable
-                parentAppLabel={params.appLabel}
-                parentModelName={params.modelName}
-                inline={inline}
-                resetParentTable={resetState}
-                userPermissions={userPermissions() as UserPermissionsType}
-              />
-            </div>
-          )}
-        </For>
-
-        <For each={modelAdminSettings().extra_inlines}>
-          {(inline, i) => (
-            <div class="p-2 border border-slate-300 rounded-md mb-2">
-              <DynamicExtraInline componentName={inline} />
-            </div>
-          )}
-        </For>
       </Show>
 
       {/** No Permissions */}

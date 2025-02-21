@@ -678,7 +678,7 @@ const ListModelViewPage = () => {
               </button>
             </Show>
           </div>
-          <div class="flex items-center justify-center">
+          <div class="flex flex-col items-center justify-center">
             <span class="dark:text-white text-sm">
               Page {currentPage()}: Total of {listviewData()?.count} records
             </span>

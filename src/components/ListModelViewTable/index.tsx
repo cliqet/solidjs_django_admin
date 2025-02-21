@@ -101,13 +101,13 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
     
     if (checkboxAllRef.checked) {
       checkboxRowRefs.forEach(checkbox => {
-        checkbox.checked = false;
-        rowsSelected.push({ id: checkbox.id, isChecked: false });
+        checkbox.checked = true;
+        rowsSelected.push({ id: checkbox.id, isChecked: true });
       });
     } else {
       checkboxRowRefs.forEach(checkbox => {
-        checkbox.checked = true;
-        rowsSelected.push({ id: checkbox.id, isChecked: true });
+        checkbox.checked = false;
+        rowsSelected.push({ id: checkbox.id, isChecked: false });
       });
     }
     props.onTableEvent('rowSelectAll', { rowsSelected });

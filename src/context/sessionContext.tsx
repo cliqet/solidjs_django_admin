@@ -3,17 +3,6 @@ import { SetStoreFunction, createStore } from "solid-js/store";
 import useStorageEvent from "src/hooks/useStorageEvent";
 import { User } from "src/models/user";
 
-/**
- * App wide state that can be accessed and updated from any component
- * NOTE: Always use appStore using context to prevent singleton instance 
- *       on server side.
- * USAGE:
- * import { useAppContext } from "src/services/context"
- * const { appStore, setAppStore } = useAppContext();
- * setAppStore('isLoading', false);  // sets isLoading to false
- * appStore.isLoading  // get current value of isLoading
- */
-
 export type ToastType = "success" | "warning" | "danger";
 
 export type ToastState = {
@@ -30,6 +19,7 @@ export type AppStoreType = {
     // isForcedLoggedOut: boolean,  // state when user is forcefully logged out due to idle time
     toastState: ToastState,  // store state of Toast to be shown
     themeMode: "light" | "dark",
+    isSidebarMinimized: boolean,
 }
 
 export default createStore<AppStoreType>({
@@ -44,6 +34,7 @@ export default createStore<AppStoreType>({
         isHtmlMessage: false,
     },
     themeMode: "dark",
+    isSidebarMinimized: true,
 });
 
 
@@ -59,13 +50,15 @@ const initialAppContext: AppStoreType = {
     isHtmlMessage: false,
   },
   themeMode: "dark",
+  isSidebarMinimized: true,
 };
 
 type CreateContextType = {
   appState: AppStoreType;
   setAppState: SetStoreFunction<AppStoreType>;
   setToDarkMode: () => void,
-  setToLightMode: () => void
+  setToLightMode: () => void,
+  toggleSidebarWidth: () => void,
 }
 
 const initialAppStore = createStore<AppStoreType>(initialAppContext);
@@ -89,6 +82,10 @@ export const AppContextProvider: ParentComponent = (props) => {
     setContext("themeMode", "dark");
   }
 
+  const toggleSidebarWidth = () => {
+    setContext("isSidebarMinimized", !context.isSidebarMinimized);
+  };
+
   onMount(() => {
     if (colorTheme && colorTheme === "light") {
       setToLightMode();
@@ -100,7 +97,7 @@ export const AppContextProvider: ParentComponent = (props) => {
 
   return (
     <AppContext.Provider
-      value={{ appState: context, setAppState: setContext, setToDarkMode, setToLightMode }}
+      value={{ appState: context, setAppState: setContext, setToDarkMode, setToLightMode, toggleSidebarWidth }}
     >
       {props.children}
     </AppContext.Provider>

@@ -54,6 +54,7 @@ const HeaderBar = () => {
 
     // Show the sidebar
     if (sidebar!.classList.contains("-translate-x-full")) {
+      sidebar!.classList.remove("hidden");
       sidebar!.classList.remove("-translate-x-full");
       sidebar!.classList.add("transform-none");
 
@@ -63,6 +64,7 @@ const HeaderBar = () => {
     } else {
       sidebar!.classList.remove("transform-none");
       sidebar!.classList.add("-translate-x-full");
+      sidebar!.classList.add("hidden");
     }
   };
 

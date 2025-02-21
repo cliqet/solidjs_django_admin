@@ -412,7 +412,7 @@ const ListModelViewPage = () => {
           )
         }
       >
-        <div class="flex justify-between p-1 items-center mb-2">
+        <div class="flex flex-col sm:flex-row justify-between p-1 items-center mb-2">
           <h1 class="text-xl dark:text-white">
             Select {modelAdminSettings().model_name} to change
           </h1>
@@ -438,7 +438,7 @@ const ListModelViewPage = () => {
 
         {/** Search */}
         <Show when={modelAdminSettings().search_fields.length > 0}>
-          <div class="p-2 border border-slate-300 rounded-md mb-2">
+          <div class="flex-col p-2 border border-slate-300 rounded-md mb-2">
             <SearchInput
               onSearchClick={(searchTerm) => onSearch(searchTerm)}
               onClearSearch={(searchTerm) => onSearch(searchTerm)}
@@ -463,17 +463,17 @@ const ListModelViewPage = () => {
             params.modelName
           )}
         >
-          <div class="p-2 border border-slate-300 rounded-md mb-2">
+          <div class="flex-col p-2 border border-slate-300 rounded-md mb-2">
             <span class="dark:text-white text-sm">Actions</span>
-            <div class="flex items-center gap-2 w-1/2">
-              <div class="w-4/5">
+            <div class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-1/2">
+              <div class="w-full md:w-4/5">
                 <SelectField
                   selectProps={{ id: "search-table" }}
                   options={customActions()}
                   onChangeValue={(value, fieldName) => onSelectAction(value)}
                 />
               </div>
-              <div class="w-1/5 pr-2">
+              <div class="w-full md:w-1/5 pr-2">
                 <button type="button" class="button mt-2" onClick={onAction}>
                   Go
                 </button>

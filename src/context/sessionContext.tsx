@@ -89,6 +89,7 @@ export const AppContextProvider: ParentComponent = (props) => {
   }
 
   onMount(() => {
+    setScreenSize();
     window.addEventListener('resize', setScreenSize);
   });
 

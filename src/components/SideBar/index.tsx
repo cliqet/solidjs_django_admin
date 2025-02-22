@@ -18,6 +18,7 @@ import AngleUp from "src/assets/icons/angle-up";
 import { AppSettingsType } from "src/models/django-admin";
 import { nonAuthRoute } from "src/hooks/useAdminRoute";
 
+
 const SideBar = () => {
   const [apps, setApps] = createSignal<AppSettingsType[]>([]);
   const [userPermissions, setUserPermissions] =
@@ -52,6 +53,12 @@ const SideBar = () => {
       }
     }
   });
+
+  const onClickModelOrAddOnMobileView = () => {
+    if (!appState.isSidebarMinimized && appState.screenSize === 'xs') {
+      toggleSidebarWidth();
+    }
+  }
 
   return (
     <Show when={apps() && userPermissions()}>
@@ -117,7 +124,7 @@ const SideBar = () => {
                       >
                         <ul class="inline-flex items-center font-medium h-8 rounded-md px-3 text-sm justify-start">
                           <div class="mr-2">
-                            <A href={model.adminUrl} class="hover:underline">
+                            <A href={model.adminUrl} class="hover:underline" onClick={onClickModelOrAddOnMobileView}>
                               {model.name}
                             </A>
                           </div>
@@ -129,7 +136,7 @@ const SideBar = () => {
                                 model.objectName.toLowerCase()
                               )}
                             >
-                              <A href={model.addUrl}>
+                              <A href={model.addUrl} onClick={onClickModelOrAddOnMobileView}>
                                 <PlusIcon width={4} height={4} />
                               </A>
                             </Show>

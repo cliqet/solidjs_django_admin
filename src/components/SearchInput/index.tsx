@@ -1,7 +1,7 @@
 import SearchIcon from "src/assets/icons/search-icon";
 import { JSX, Component } from "solid-js";
 import CloseXIcon from "src/assets/icons/closex-icon";
-import { useAppContext } from "src/context/sessionContext";
+
 
 type SearchInputProps = {
   inputProps: {
@@ -17,7 +17,6 @@ type SearchInputProps = {
 
 const SearchInput: Component<SearchInputProps> = (props) => {
   let searchInputRef!: HTMLInputElement;
-  const { appState } = useAppContext();
 
   return (
     <div class="flex-col">
@@ -84,9 +83,6 @@ const SearchInput: Component<SearchInputProps> = (props) => {
               }
             }}
             class="absolute top-4 right-3 cursor-pointer"
-            classList={{
-              "hidden sm:block": !appState.isSidebarMinimized 
-            }}
           >
             <CloseXIcon width={3} height={3} />
           </span>

@@ -1,5 +1,6 @@
-import { createContext, onMount, ParentComponent, useContext } from "solid-js";
+import { createContext, onCleanup, onMount, ParentComponent, useContext } from "solid-js";
 import { SetStoreFunction, createStore } from "solid-js/store";
+import { isExtraSmallScreen, isLargeScreen, isMediumScreen, isSmallScreen, ScreenSizeType } from "src/hooks/useScreenWidth";
 import useStorageEvent from "src/hooks/useStorageEvent";
 import { User } from "src/models/user";
 
@@ -20,6 +21,7 @@ export type AppStoreType = {
     toastState: ToastState,  // store state of Toast to be shown
     themeMode: "light" | "dark",
     isSidebarMinimized: boolean,
+    screenSize: ScreenSizeType,
 }
 
 export default createStore<AppStoreType>({
@@ -35,6 +37,7 @@ export default createStore<AppStoreType>({
     },
     themeMode: "dark",
     isSidebarMinimized: true,
+    screenSize: 'lg',
 });
 
 
@@ -51,6 +54,7 @@ const initialAppContext: AppStoreType = {
   },
   themeMode: "dark",
   isSidebarMinimized: true,
+  screenSize: 'lg',
 };
 
 type CreateContextType = {
@@ -69,6 +73,28 @@ export const AppContextProvider: ParentComponent = (props) => {
   const [context, setContext] = initialAppStore;
   const { LOCAL_STORAGE_KEYS } = useStorageEvent();
   const colorTheme = localStorage.getItem(LOCAL_STORAGE_KEYS.colorTheme);
+
+  const setScreenSize = () => {
+    if (isExtraSmallScreen()) {
+      setContext('screenSize', 'xs');
+    } else if (isSmallScreen()) {
+      setContext('screenSize', 'sm');
+    } else if (isMediumScreen()) {
+      setContext('screenSize', 'md');
+    } else if (isLargeScreen()) {
+      setContext('screenSize', 'lg');
+    } else {
+      setContext('screenSize', '2xl');
+    }
+  }
+
+  onMount(() => {
+    window.addEventListener('resize', setScreenSize);
+  });
+
+  onCleanup(() => {
+    window.removeEventListener('resize', setScreenSize);
+  });
 
   const setToLightMode = () => {
     document.documentElement.classList.remove("dark");

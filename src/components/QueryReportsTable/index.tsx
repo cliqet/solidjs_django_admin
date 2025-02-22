@@ -17,6 +17,20 @@ export const initialTableData = {
 };
 
 const QueryReportsTable: Component<QueryReportsTableProps> = (props) => {
+  const renderCellValue = (cellValue: any) => {
+    if (typeof cellValue === "boolean") {
+      if (cellValue) {
+        return "True";
+      } else {
+        return "False";
+      }
+    }else if (typeof cellValue === "object") {
+      return JSON.stringify(cellValue);
+    } else {
+      return cellValue;
+    }
+  }
+
   return (
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <h3 class="dark:text-white text-sm">
@@ -45,7 +59,7 @@ const QueryReportsTable: Component<QueryReportsTableProps> = (props) => {
                 <For each={props.data.fields}>
                   {(fieldName, fieldIndex) => (
                     <td class="px-6 py-2 dark:text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
-                      {record[fieldName]}
+                      {renderCellValue(record[fieldName])}
                     </td>
                   )}
                 </For>

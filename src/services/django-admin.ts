@@ -260,3 +260,27 @@ export async function getRawQueryResults(
   });
   return response;
 }
+
+export async function addQueryBuilder(
+  queryName: string,
+  queryBody: any
+): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "POST",
+    urlSegment: `/django-admin/saved-queries/query-builder/add`,
+    body: {
+      name: queryName,
+      query: queryBody
+    }
+  });
+  return response;
+}
+
+
+export async function getSavedQueryBuilders(): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "GET",
+    urlSegment: `/django-admin/saved-queries/query-builder`,
+  });
+  return response;
+}

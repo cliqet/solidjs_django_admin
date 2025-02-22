@@ -10,13 +10,12 @@ import { logoutUser } from "src/services/users";
 import MoonIcon from "src/assets/icons/moon-icon";
 import SunIcon from "src/assets/icons/sun-icon";
 
-
 const HeaderBar = () => {
   const [isProfileDropdownShowing, setIsProfileDropdownShowing] =
     createSignal(false);
-  const { appState, setAppState, setToDarkMode, setToLightMode } = useAppContext();
+  const { appState, setAppState, setToDarkMode, setToLightMode } =
+    useAppContext();
   const navigate = useNavigate();
-
 
   const toggleMode = () => {
     if (appState.themeMode === "light") {
@@ -30,41 +29,6 @@ const HeaderBar = () => {
     if (isProfileDropdownShowing()) {
       setIsProfileDropdownShowing(false);
       document.removeEventListener("click", handleClickOutsideProfileDropdown);
-    }
-  };
-
-  const onClickOutsideToCloseSidebar = (event: MouseEvent) => {
-    let sidebar = document.getElementById("logo-sidebar");
-
-    const backdrop = sidebar?.getBoundingClientRect();
-    if (
-      event.clientX < backdrop!.left ||
-      event.clientX > backdrop!.right ||
-      event.clientY < backdrop!.top ||
-      event.clientY > backdrop!.bottom
-    ) {
-      sidebar!.classList.remove("transform-none");
-      sidebar!.classList.add("-translate-x-full");
-      document.removeEventListener("click", onClickOutsideToCloseSidebar);
-    }
-  };
-
-  const showAndHideSidebar = () => {
-    let sidebar = document.getElementById("logo-sidebar");
-
-    // Show the sidebar
-    if (sidebar!.classList.contains("-translate-x-full")) {
-      sidebar!.classList.remove("hidden");
-      sidebar!.classList.remove("-translate-x-full");
-      sidebar!.classList.add("transform-none");
-
-      document.addEventListener("click", onClickOutsideToCloseSidebar);
-
-      // Hide the sidebar
-    } else {
-      sidebar!.classList.remove("transform-none");
-      sidebar!.classList.add("-translate-x-full");
-      sidebar!.classList.add("hidden");
     }
   };
 
@@ -186,6 +150,18 @@ const HeaderBar = () => {
                   </ul>
                 </div>
               </Show>
+            </div>
+          </Show>
+
+          <Show when={!appState.user}>
+            <div class="flex items-center ml-3">
+              <div>
+                <A href={dashboardRoute(nonAuthRoute.loginView)}>
+                  <span class="text-white text-xs underline mr-2 hover:cursor-pointer">
+                    Login
+                  </span>
+                </A>
+              </div>
             </div>
           </Show>
         </div>

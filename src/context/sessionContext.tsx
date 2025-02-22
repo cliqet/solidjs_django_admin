@@ -1,18 +1,8 @@
-import { createContext, onMount, ParentComponent, useContext } from "solid-js";
+import { createContext, onCleanup, onMount, ParentComponent, useContext } from "solid-js";
 import { SetStoreFunction, createStore } from "solid-js/store";
+import { isExtraSmallScreen, isLargeScreen, isMediumScreen, isSmallScreen, ScreenSizeType } from "src/hooks/useScreenWidth";
 import useStorageEvent from "src/hooks/useStorageEvent";
 import { User } from "src/models/user";
-
-/**
- * App wide state that can be accessed and updated from any component
- * NOTE: Always use appStore using context to prevent singleton instance 
- *       on server side.
- * USAGE:
- * import { useAppContext } from "src/services/context"
- * const { appStore, setAppStore } = useAppContext();
- * setAppStore('isLoading', false);  // sets isLoading to false
- * appStore.isLoading  // get current value of isLoading
- */
 
 export type ToastType = "success" | "warning" | "danger";
 
@@ -30,6 +20,8 @@ export type AppStoreType = {
     // isForcedLoggedOut: boolean,  // state when user is forcefully logged out due to idle time
     toastState: ToastState,  // store state of Toast to be shown
     themeMode: "light" | "dark",
+    isSidebarMinimized: boolean,
+    screenSize: ScreenSizeType,
 }
 
 export default createStore<AppStoreType>({
@@ -44,6 +36,8 @@ export default createStore<AppStoreType>({
         isHtmlMessage: false,
     },
     themeMode: "dark",
+    isSidebarMinimized: true,
+    screenSize: 'lg',
 });
 
 
@@ -59,13 +53,16 @@ const initialAppContext: AppStoreType = {
     isHtmlMessage: false,
   },
   themeMode: "dark",
+  isSidebarMinimized: true,
+  screenSize: 'lg',
 };
 
 type CreateContextType = {
   appState: AppStoreType;
   setAppState: SetStoreFunction<AppStoreType>;
   setToDarkMode: () => void,
-  setToLightMode: () => void
+  setToLightMode: () => void,
+  toggleSidebarWidth: () => void,
 }
 
 const initialAppStore = createStore<AppStoreType>(initialAppContext);
@@ -76,6 +73,29 @@ export const AppContextProvider: ParentComponent = (props) => {
   const [context, setContext] = initialAppStore;
   const { LOCAL_STORAGE_KEYS } = useStorageEvent();
   const colorTheme = localStorage.getItem(LOCAL_STORAGE_KEYS.colorTheme);
+
+  const setScreenSize = () => {
+    if (isExtraSmallScreen()) {
+      setContext('screenSize', 'xs');
+    } else if (isSmallScreen()) {
+      setContext('screenSize', 'sm');
+    } else if (isMediumScreen()) {
+      setContext('screenSize', 'md');
+    } else if (isLargeScreen()) {
+      setContext('screenSize', 'lg');
+    } else {
+      setContext('screenSize', '2xl');
+    }
+  }
+
+  onMount(() => {
+    setScreenSize();
+    window.addEventListener('resize', setScreenSize);
+  });
+
+  onCleanup(() => {
+    window.removeEventListener('resize', setScreenSize);
+  });
 
   const setToLightMode = () => {
     document.documentElement.classList.remove("dark");
@@ -89,6 +109,10 @@ export const AppContextProvider: ParentComponent = (props) => {
     setContext("themeMode", "dark");
   }
 
+  const toggleSidebarWidth = () => {
+    setContext("isSidebarMinimized", !context.isSidebarMinimized);
+  };
+
   onMount(() => {
     if (colorTheme && colorTheme === "light") {
       setToLightMode();
@@ -100,7 +124,7 @@ export const AppContextProvider: ParentComponent = (props) => {
 
   return (
     <AppContext.Provider
-      value={{ appState: context, setAppState: setContext, setToDarkMode, setToLightMode }}
+      value={{ appState: context, setAppState: setContext, setToDarkMode, setToLightMode, toggleSidebarWidth }}
     >
       {props.children}
     </AppContext.Provider>

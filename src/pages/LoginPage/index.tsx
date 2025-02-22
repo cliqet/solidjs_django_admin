@@ -174,7 +174,7 @@ const LoginPage = () => {
     <div class="w-full dark:bg-custom-dark">
       <form
         onSubmit={onLogin}
-        class="w-1/4 mx-auto mt-20 p-4 rounded-md border border-slate-400 dark:bg-custom-dark"
+        class="w-full md:w-1/2 lg:w-1/4 mx-auto mt-20 p-4 rounded-md border border-slate-400 dark:bg-custom-dark"
       >
         <h3 class="dark:text-white text-lg mb-3">Login</h3>
 

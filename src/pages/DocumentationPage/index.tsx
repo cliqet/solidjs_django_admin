@@ -65,7 +65,7 @@ const DocumentationPage = () => {
                   <button
                     type="button"
                     onClick={() => onClickAccordion(i())}
-                    class="flex items-center justify-between w-full p-5 font-medium rtl:text-right border focus:ring-1 focus:ring-slate-200 dark:focus:ring-gray-800 border-slate-300 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 gap-3"
+                    class="flex items-center justify-between w-full p-5 font-medium rtl:text-right border focus:ring-1 focus:ring-gray-800 border-slate-300 text-gray-400 bg-custom-primary hover:bg-custom-primary-lighter gap-3"
                   >
                     <span class="dark:text-white">{doc.appModelName.toUpperCase()}</span>
                     <Show when={accordionDocs()[i()].isOpen}>

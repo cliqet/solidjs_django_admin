@@ -14,7 +14,10 @@ import {
   getModelFields,
 } from "src/services/django-admin";
 import BorderedSection from "../BorderedSection";
-import QueryReportsTable, { initialTableData, ReportsDataType } from "../QueryReportsTable";
+import QueryReportsTable, {
+  initialTableData,
+  ReportsDataType,
+} from "../QueryReportsTable";
 
 type AppModelListType = {
   label: string;
@@ -43,7 +46,8 @@ const QueryBuilderPanel = () => {
     SelectedOptionsType[]
   >([]);
   const [isDataReady, setIsDataReady] = createSignal(false);
-  const [tableData, setTableData] = createSignal<ReportsDataType>(initialTableData);
+  const [tableData, setTableData] =
+    createSignal<ReportsDataType>(initialTableData);
 
   const transformToAppModelList = (appList: AppSettingsType[]) => {
     const appModelList = appList.map((app) => {
@@ -293,37 +297,41 @@ const QueryBuilderPanel = () => {
   return (
     <Show when={isDataReady()}>
       <BorderedSection>
-        <div class="flex items-center gap-4">
-          <div>
-            <Label for="app-name" text="App" />
-          </div>
-          <div class="w-4/12">
-            <SelectField
-              selectProps={{
-                id: "app-name",
-                class: "text-xs",
-              }}
-              options={appListChoices()}
-              onChangeValue={async (value, _) => {
-                await onAppChange(value);
-              }}
-            />
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div class="flex items-center gap-3">
+            <div>
+              <Label for="app-name" text="App" />
+            </div>
+            <div class="w-9/12">
+              <SelectField
+                selectProps={{
+                  id: "app-name",
+                  class: "text-xs",
+                }}
+                options={appListChoices()}
+                onChangeValue={async (value, _) => {
+                  await onAppChange(value);
+                }}
+              />
+            </div>
           </div>
 
-          <div>
-            <Label for="model-name" text="Model" />
-          </div>
-          <div class="w-4/12">
-            <SelectField
-              selectProps={{
-                id: "model-name",
-                class: "text-xs",
-              }}
-              options={modelChoices()}
-              onChangeValue={async (value, _) => {
-                onModelChange(value);
-              }}
-            />
+          <div class="flex items-center gap-3">
+            <div>
+              <Label for="model-name" text="Model" />
+            </div>
+            <div class="w-9/12">
+              <SelectField
+                selectProps={{
+                  id: "model-name",
+                  class: "text-xs",
+                }}
+                options={modelChoices()}
+                onChangeValue={async (value, _) => {
+                  onModelChange(value);
+                }}
+              />
+            </div>
           </div>
         </div>
       </BorderedSection>
@@ -338,8 +346,8 @@ const QueryBuilderPanel = () => {
 
         <For each={conditions()}>
           {(condition, i) => (
-            <div class="flex gap-3 items-center mb-2">
-              <div class="w-3/12">
+            <div class="flex flex-col sm:flex-row gap-3 sm:items-center mb-2">
+              <div class="w-full sm:w-3/12">
                 <SelectField
                   selectProps={{
                     id: `field${i()}`,
@@ -351,7 +359,7 @@ const QueryBuilderPanel = () => {
                   }}
                 />
               </div>
-              <div class="w-3/12">
+              <div class="w-full sm:w-3/12">
                 <SelectField
                   selectProps={{
                     id: `operator${i()}`,
@@ -374,7 +382,7 @@ const QueryBuilderPanel = () => {
                   }}
                 />
               </div>
-              <div class="w-3/12">
+              <div class="w-full sm:w-/12">
                 <InputTypeField
                   inputProps={{
                     id: `field-value${i()}`,
@@ -414,7 +422,7 @@ const QueryBuilderPanel = () => {
         <For each={orderings()}>
           {(ordering, i) => (
             <div class="flex gap-3 items-center mb-2">
-              <div class="w-3/12">
+              <div class="w-9/12 sm:w-1/2">
                 <SelectField
                   selectProps={{
                     id: `field${i()}`,
@@ -426,7 +434,7 @@ const QueryBuilderPanel = () => {
                   }}
                 />
               </div>
-              <div class="w-1/2">
+              <div class="w-3/12 sm:w-1/2">
                 <span
                   class="cursor-pointer"
                   onClick={() => removeOrderingRow(i())}
@@ -441,7 +449,7 @@ const QueryBuilderPanel = () => {
 
       <BorderedSection>
         <h3 class="dark:text-white text-sm mb-2">Limit Results</h3>
-        <div class="w-3/12">
+        <div class="w-full sm:w-3/12">
           <InputTypeField
             inputProps={{
               id: "limit",

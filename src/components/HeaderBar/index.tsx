@@ -13,9 +13,9 @@ import SunIcon from "src/assets/icons/sun-icon";
 const HeaderBar = () => {
   const [isProfileDropdownShowing, setIsProfileDropdownShowing] =
     createSignal(false);
-  const { appState, setAppState, setToDarkMode, setToLightMode } = useAppContext();
+  const { appState, setAppState, setToDarkMode, setToLightMode } =
+    useAppContext();
   const navigate = useNavigate();
-
 
   const toggleMode = () => {
     if (appState.themeMode === "light") {
@@ -32,39 +32,6 @@ const HeaderBar = () => {
     }
   };
 
-  const onClickOutsideToCloseSidebar = (event: MouseEvent) => {
-    let sidebar = document.getElementById("logo-sidebar");
-
-    const backdrop = sidebar?.getBoundingClientRect();
-    if (
-      event.clientX < backdrop!.left ||
-      event.clientX > backdrop!.right ||
-      event.clientY < backdrop!.top ||
-      event.clientY > backdrop!.bottom
-    ) {
-      sidebar!.classList.remove("transform-none");
-      sidebar!.classList.add("-translate-x-full");
-      document.removeEventListener("click", onClickOutsideToCloseSidebar);
-    }
-  };
-
-  const showAndHideSidebar = () => {
-    let sidebar = document.getElementById("logo-sidebar");
-
-    // Show the sidebar
-    if (sidebar!.classList.contains("-translate-x-full")) {
-      sidebar!.classList.remove("-translate-x-full");
-      sidebar!.classList.add("transform-none");
-
-      document.addEventListener("click", onClickOutsideToCloseSidebar);
-
-      // Hide the sidebar
-    } else {
-      sidebar!.classList.remove("transform-none");
-      sidebar!.classList.add("-translate-x-full");
-    }
-  };
-
   return (
     <>
       <nav
@@ -72,28 +39,6 @@ const HeaderBar = () => {
         class="fixed flex items-center justify-between top-0 h-20 px-4 z-40 w-full border-b bg-custom-primary dark:bg-custom-dark dark:border-gray-700"
       >
         <div class="flex items-center justify-start">
-          <button
-            aria-controls="logo-sidebar"
-            type="button"
-            onClick={showAndHideSidebar}
-            class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-          >
-            <span class="sr-only">Open sidebar</span>
-            <svg
-              class="w-6 h-6"
-              aria-hidden="true"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                clip-rule="evenodd"
-                fill-rule="evenodd"
-                d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-              ></path>
-            </svg>
-          </button>
-
           <span class="ml-2 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap text-white">
             <A href={dashboardRoute(authRoute.dashboardHomeView)}>MainApp</A>
           </span>
@@ -121,7 +66,7 @@ const HeaderBar = () => {
                 </A>
               </div>
 
-              <div>
+              <div class="hidden md:block">
                 <span class="text-white text-xs mr-2">
                   {appState.user?.email}
                 </span>
@@ -205,6 +150,18 @@ const HeaderBar = () => {
                   </ul>
                 </div>
               </Show>
+            </div>
+          </Show>
+
+          <Show when={!appState.user}>
+            <div class="flex items-center ml-3">
+              <div>
+                <A href={dashboardRoute(nonAuthRoute.loginView)}>
+                  <span class="text-white text-xs underline mr-2 hover:cursor-pointer">
+                    Login
+                  </span>
+                </A>
+              </div>
             </div>
           </Show>
         </div>

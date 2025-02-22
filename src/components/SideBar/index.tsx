@@ -18,18 +18,14 @@ import AngleUp from "src/assets/icons/angle-up";
 import { AppSettingsType } from "src/models/django-admin";
 import { nonAuthRoute } from "src/hooks/useAdminRoute";
 
+
 const SideBar = () => {
   const [apps, setApps] = createSignal<AppSettingsType[]>([]);
   const [userPermissions, setUserPermissions] =
     createSignal<UserPermissionsType | null>(null);
-  const { appState, setAppState } = useAppContext();
-  const [isSidebarMinimized, setIsSidebarMinimized] = createSignal(false);
+  const { appState, setAppState, toggleSidebarWidth } = useAppContext();
   const [appsIsOpen, setAppsIsOpen] = createSignal<boolean[]>([]);
   const navigate = useNavigate();
-
-  const toggleSidebarWidth = () => {
-    setIsSidebarMinimized((prev) => !prev);
-  };
 
   createEffect(async () => {
     try {
@@ -58,21 +54,28 @@ const SideBar = () => {
     }
   });
 
+  const onClickModelOrAddOnMobileView = () => {
+    if (!appState.isSidebarMinimized && appState.screenSize === 'xs') {
+      toggleSidebarWidth();
+    }
+  }
+
   return (
     <Show when={apps() && userPermissions()}>
       <div
+        id="logo-sidebar"
         class="relative h-full dark:bg-gray-800 p-2 dark:text-white text-sm overflow-y-auto overflow-x-hidden no-scrollbar"
         classList={{
-          "w-1/5": !isSidebarMinimized(),
-          "w-10": isSidebarMinimized(),
+          "w-full md:w-1/4 lg:w-1/5": !appState.isSidebarMinimized,
+          "w-5": appState.isSidebarMinimized,
         }}
       >
         <div
           class="group flex flex-col gap-2 py-2 data-[collapsed=true]:py-2"
           data-collapsed="false"
           classList={{
-            "": !isSidebarMinimized(),
-            hidden: isSidebarMinimized(),
+            "": !appState.isSidebarMinimized,
+            hidden: appState.isSidebarMinimized,
           }}
         >
           <For each={apps()}>
@@ -121,7 +124,7 @@ const SideBar = () => {
                       >
                         <ul class="inline-flex items-center font-medium h-8 rounded-md px-3 text-sm justify-start">
                           <div class="mr-2">
-                            <A href={model.adminUrl} class="hover:underline">
+                            <A href={model.adminUrl} class="hover:underline" onClick={onClickModelOrAddOnMobileView}>
                               {model.name}
                             </A>
                           </div>
@@ -133,7 +136,7 @@ const SideBar = () => {
                                 model.objectName.toLowerCase()
                               )}
                             >
-                              <A href={model.addUrl}>
+                              <A href={model.addUrl} onClick={onClickModelOrAddOnMobileView}>
                                 <PlusIcon width={4} height={4} />
                               </A>
                             </Show>
@@ -149,10 +152,10 @@ const SideBar = () => {
         </div>
         <div class="absolute top-60 right-[-12px] rounded-full h-7 w-7 bg-custom-primary flex items-center justify-left">
           <span class="cursor-pointer" onClick={toggleSidebarWidth}>
-            <Show when={isSidebarMinimized()}>
+            <Show when={appState.isSidebarMinimized}>
               <ChevronRightIcon width={5} height={5} />
             </Show>
-            <Show when={!isSidebarMinimized()}>
+            <Show when={!appState.isSidebarMinimized}>
               <ChevronLeftIcon width={5} height={5} />
             </Show>
           </span>

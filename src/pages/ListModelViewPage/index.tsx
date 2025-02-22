@@ -404,15 +404,13 @@ const ListModelViewPage = () => {
   return (
     <Show when={isDataReady()}>
       <Show
-        when={
-          hasViewModelPermission(
-            userPermissions() as UserPermissionsType,
-            params.appLabel,
-            params.modelName
-          )
-        }
+        when={hasViewModelPermission(
+          userPermissions() as UserPermissionsType,
+          params.appLabel,
+          params.modelName
+        )}
       >
-        <div class="flex justify-between p-1 items-center mb-2">
+        <div class="flex flex-col sm:flex-row justify-between p-1 items-center mb-2">
           <h1 class="text-xl dark:text-white">
             Select {modelAdminSettings().model_name} to change
           </h1>
@@ -438,7 +436,7 @@ const ListModelViewPage = () => {
 
         {/** Search */}
         <Show when={modelAdminSettings().search_fields.length > 0}>
-          <div class="p-2 border border-slate-300 rounded-md mb-2">
+          <div class="flex-col p-2 border border-slate-300 rounded-md mb-2">
             <SearchInput
               onSearchClick={(searchTerm) => onSearch(searchTerm)}
               onClearSearch={(searchTerm) => onSearch(searchTerm)}
@@ -463,17 +461,17 @@ const ListModelViewPage = () => {
             params.modelName
           )}
         >
-          <div class="p-2 border border-slate-300 rounded-md mb-2">
+          <div class="flex-col p-2 border border-slate-300 rounded-md mb-2">
             <span class="dark:text-white text-sm">Actions</span>
-            <div class="flex items-center gap-2 w-1/2">
-              <div class="w-4/5">
+            <div class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-1/2">
+              <div class="w-full md:w-4/5">
                 <SelectField
                   selectProps={{ id: "search-table" }}
                   options={customActions()}
                   onChangeValue={(value, fieldName) => onSelectAction(value)}
                 />
               </div>
-              <div class="w-1/5 pr-2">
+              <div class="w-full md:w-1/5 pr-2">
                 <button type="button" class="button mt-2" onClick={onAction}>
                   Go
                 </button>
@@ -584,8 +582,8 @@ const ListModelViewPage = () => {
           </div>
           <div
             classList={{
-              "hidden": !isParentTableOpen(),
-              "visible": isParentTableOpen()
+              hidden: !isParentTableOpen(),
+              visible: isParentTableOpen(),
             }}
           >
             <Show when={(listviewData()?.count as number) === 0}>
@@ -614,71 +612,77 @@ const ListModelViewPage = () => {
         </div>
 
         {/** Table Pagination */}
-        <div 
+        <div
           class="p-2 border border-slate-300 rounded-md mb-10"
           classList={{
-            "hidden": !isParentTableOpen(),
-            "visible": isParentTableOpen()
+            hidden: !isParentTableOpen(),
+            visible: isParentTableOpen(),
           }}
         >
-          <div class="flex items-center justify-center">
-            <Show when={listviewData()?.previous}>
-              <button
-                onClick={() => {
-                  setPageOffset(0);
-                  setCurrentPage(1);
-                }}
-                class="button"
-              >
-                First
-              </button>
-            </Show>
-            <Show when={listviewData()?.previous}>
-              <button
-                onClick={() => {
-                  setPageOffset((prev) => prev - pageLimit());
-                  setCurrentPage((prev) => prev - 1);
-                }}
-                class="button"
-              >
-                Previous
-              </button>
-            </Show>
-            <Show when={listviewData()?.next}>
-              <button
-                onClick={() => {
-                  setPageOffset((prev) => prev + pageLimit());
-                  setCurrentPage((prev) => prev + 1);
-                }}
-                class="button"
-              >
-                Next
-              </button>
-            </Show>
-            <Show when={listviewData()?.next}>
-              <button
-                onClick={() => {
-                  let lastPage;
-                  const remainderRecords =
-                    (listviewData()?.count as number) % pageLimit();
-                  if (remainderRecords === 0) {
-                    lastPage = (listviewData()?.count as number) / pageLimit();
-                  } else {
-                    lastPage =
-                      Math.floor(
-                        (listviewData()?.count as number) / pageLimit()
-                      ) + 1;
-                  }
-                  setPageOffset(lastPage * pageLimit() - pageLimit());
-                  setCurrentPage(lastPage);
-                }}
-                class="button"
-              >
-                Last
-              </button>
-            </Show>
+          <div class="flex flex-col sm:flex-row items-center justify-center">
+            <div class="flex">
+              <Show when={listviewData()?.previous}>
+                <button
+                  onClick={() => {
+                    setPageOffset(0);
+                    setCurrentPage(1);
+                  }}
+                  class="button"
+                >
+                  First
+                </button>
+              </Show>
+              <Show when={listviewData()?.previous}>
+                <button
+                  onClick={() => {
+                    setPageOffset((prev) => prev - pageLimit());
+                    setCurrentPage((prev) => prev - 1);
+                  }}
+                  class="button"
+                >
+                  Previous
+                </button>
+              </Show>
+            </div>
+
+            <div class="flex">
+              <Show when={listviewData()?.next}>
+                <button
+                  onClick={() => {
+                    setPageOffset((prev) => prev + pageLimit());
+                    setCurrentPage((prev) => prev + 1);
+                  }}
+                  class="button"
+                >
+                  Next
+                </button>
+              </Show>
+              <Show when={listviewData()?.next}>
+                <button
+                  onClick={() => {
+                    let lastPage;
+                    const remainderRecords =
+                      (listviewData()?.count as number) % pageLimit();
+                    if (remainderRecords === 0) {
+                      lastPage =
+                        (listviewData()?.count as number) / pageLimit();
+                    } else {
+                      lastPage =
+                        Math.floor(
+                          (listviewData()?.count as number) / pageLimit()
+                        ) + 1;
+                    }
+                    setPageOffset(lastPage * pageLimit() - pageLimit());
+                    setCurrentPage(lastPage);
+                  }}
+                  class="button"
+                >
+                  Last
+                </button>
+              </Show>
+            </div>
           </div>
-          <div class="flex items-center justify-center">
+          <div class="flex flex-col items-center justify-center">
             <span class="dark:text-white text-sm">
               Page {currentPage()}: Total of {listviewData()?.count} records
             </span>

@@ -60,6 +60,9 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
           <SideBar />
           <div
             id="auth-main"
+            classList={{
+              "hidden": !appState.isSidebarMinimized && appState.screenSize === 'xs'
+            }}
             class="border-l border-slate-300 container px-4 pt-4 pb-20 flex-1 overflow-auto dark:bg-gray-800 no-scrollbar"
           >
             <ErrorBoundary

@@ -41,17 +41,17 @@ Modify the directories according to your environments.
 
 ### Screenshots
 #### Login
-<img width="1333" alt="Screenshot 2025-01-27 at 12 26 57 PM" src="https://github.com/user-attachments/assets/49d07907-33cc-41ad-a8c4-5045773536f5" />
+<img width="1335" alt="login_page" src="https://github.com/user-attachments/assets/225a4225-cbac-45de-bcdd-28d82391c93c" />
 
 #### Forms
-<img width="1345" alt="Screenshot 2025-01-27 at 12 45 07 PM" src="https://github.com/user-attachments/assets/2660fc55-60c6-4da9-a66a-e3b93bc278f6" />
+<img width="1335" alt="add_form" src="https://github.com/user-attachments/assets/f36bca66-e6bd-4873-a13c-4331106ea7e4" />
 
 #### Listview
-<img width="1350" alt="Screenshot 2025-02-14 at 2 35 33 PM" src="https://github.com/user-attachments/assets/3cae7690-64e2-400b-b9ec-2c3c35afc6d2" />
-<img width="1350" alt="Screenshot 2025-02-14 at 2 35 49 PM" src="https://github.com/user-attachments/assets/1ca28d66-b293-45cf-add9-e019b4dd13c8" />
+<img width="1335" alt="listview1" src="https://github.com/user-attachments/assets/1d1c3ba1-5ca8-4248-b0bd-e072344d22ce" />
+<img width="1335" alt="listview2" src="https://github.com/user-attachments/assets/2db57c18-2e09-415c-97fa-90fa0f3a4e6d" />
 
 #### Documentation 
-<img width="1350" alt="Screenshot 2025-02-14 at 2 35 03 PM" src="https://github.com/user-attachments/assets/523fec9a-f0ab-40bb-b2c8-4b52ada58817" />
+<img width="1335" alt="doc_page" src="https://github.com/user-attachments/assets/2a1fd52a-6ea3-4c52-b58a-0434f5826e11" />
 
 ### Queue Management
 <img width="1350" alt="Screenshot 2025-02-14 at 2 34 46 PM" src="https://github.com/user-attachments/assets/6b4f3471-faf0-4a65-a479-add2261885c8" />

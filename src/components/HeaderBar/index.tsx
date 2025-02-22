@@ -9,7 +9,7 @@ import {
 import { logoutUser } from "src/services/users";
 import MoonIcon from "src/assets/icons/moon-icon";
 import SunIcon from "src/assets/icons/sun-icon";
-import BurgerIcon from "src/assets/icons/burger-icon";
+
 
 const HeaderBar = () => {
   const [isProfileDropdownShowing, setIsProfileDropdownShowing] =
@@ -75,17 +75,7 @@ const HeaderBar = () => {
         class="fixed flex items-center justify-between top-0 h-20 px-4 z-40 w-full border-b bg-custom-primary dark:bg-custom-dark dark:border-gray-700"
       >
         <div class="flex items-center justify-start">
-          <button
-            aria-controls="logo-sidebar"
-            type="button"
-            onClick={showAndHideSidebar}
-            class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-          >
-            <span class="sr-only">Open sidebar</span>
-            <BurgerIcon width={6} height={6} />
-          </button>
-
-          <span class="hidden md:block ml-2 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap text-white">
+          <span class="ml-2 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap text-white">
             <A href={dashboardRoute(authRoute.dashboardHomeView)}>MainApp</A>
           </span>
         </div>

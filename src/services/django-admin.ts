@@ -292,6 +292,17 @@ export async function changeQueryBuilder(
   return response;
 }
 
+export async function deleteQueryBuilder(
+  id: number,
+): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "DELETE",
+    urlSegment: `/django-admin/saved-queries/query-builder/delete/${id}`,
+  });
+  return response;
+}
+
+
 
 export async function getSavedQueryBuilders(): Promise<any> {
   const response = await sessionClient.fetch({

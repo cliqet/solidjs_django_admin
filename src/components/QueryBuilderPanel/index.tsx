@@ -11,6 +11,7 @@ import { AppSettingsType, ModelFieldsObjType } from "src/models/django-admin";
 import {
   addQueryBuilder,
   changeQueryBuilder,
+  deleteQueryBuilder,
   getApps,
   getBuildQueryResults,
   getModelFields,
@@ -471,6 +472,43 @@ const QueryBuilderPanel = () => {
     }
   }
 
+  const onDeleteSavedQuery = async () => {
+    if (currentSavedQueryId() === 0) {
+      setAppState("toastState", "isShowing", true);
+      setAppState(
+        "toastState",
+        "message",
+        "A query must be selected"
+      );
+      setAppState("toastState", "type", "danger");
+
+      return;
+    }
+
+    try {
+      const response = await deleteQueryBuilder(currentSavedQueryId());
+
+      const savedQueriesResponse = await getSavedQueryBuilders();
+      setSavedQueries(savedQueriesResponse.queries);
+
+      setAppState("toastState", "isShowing", true);
+      setAppState("toastState", "message", response.message);
+      setAppState("toastState", "type", "success");
+
+      setSaveAsQueryName("");
+    } catch (err: any) {
+      setAppState("toastState", "isShowing", true);
+      setAppState(
+        "toastState",
+        "message",
+        err.message ??
+          err.validation_error ??
+          "Something went wrong. Please refresh the page"
+      );
+      setAppState("toastState", "type", "danger");
+    }
+  }
+
   const saveButtonText = () => {
     return isSaving() ? "Save" : "Update"; 
   }
@@ -659,19 +697,24 @@ const QueryBuilderPanel = () => {
               </span>
             </Show>
             <Show when={currentSavedQueryId() !== 0}>
-              <span class="cursor-pointer" onClick={() => {
-                setIsEditing(true);
-                const queryNameEl = document.getElementById('query-name') as HTMLInputElement;
-                if (queryNameEl) {
-                  const currentQuery = savedQueries().find(query => query.id === currentSavedQueryId());
-                  queryNameEl.value = currentQuery?.name as string;
-                }
-              }}>
-                <PencilEditIcon width={5} height={5} />
-              </span>
-              <span class="cursor-pointer">
-                <TrashDeleteIcon width={5} height={5} />
-              </span>
+              <Show when={!isSaving()}>
+                <span class="cursor-pointer" onClick={() => {
+                  setIsEditing(true);
+                  const queryNameEl = document.getElementById('query-name') as HTMLInputElement;
+                  if (queryNameEl) {
+                    const currentQuery = savedQueries().find(query => query.id === currentSavedQueryId());
+                    queryNameEl.value = currentQuery?.name as string;
+                  }
+                }}>
+                  <PencilEditIcon width={5} height={5} />
+                </span>
+              </Show>
+
+              <Show when={!isSaving() && !isEditing()}>
+                <span class="cursor-pointer" onClick={onDeleteSavedQuery}>
+                  <TrashDeleteIcon width={5} height={5} />
+                </span>
+              </Show>
             </Show>
           </div>
 

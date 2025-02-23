@@ -276,6 +276,22 @@ export async function addQueryBuilder(
   return response;
 }
 
+export async function changeQueryBuilder(
+  queryName: string,
+  queryBody: any,
+  id: number,
+): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "POST",
+    urlSegment: `/django-admin/saved-queries/query-builder/change/${id}`,
+    body: {
+      name: queryName,
+      query: queryBody
+    }
+  });
+  return response;
+}
+
 
 export async function getSavedQueryBuilders(): Promise<any> {
   const response = await sessionClient.fetch({

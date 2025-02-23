@@ -10,6 +10,7 @@ import { useAppContext } from "src/context/sessionContext";
 import { AppSettingsType, ModelFieldsObjType } from "src/models/django-admin";
 import {
   addQueryBuilder,
+  changeQueryBuilder,
   getApps,
   getBuildQueryResults,
   getModelFields,
@@ -21,6 +22,8 @@ import QueryReportsTable, {
   ReportsDataType,
 } from "../QueryReportsTable";
 import SaveIcon from "src/assets/icons/save-icon";
+import PencilEditIcon from "src/assets/icons/pencil-edit-icon";
+import TrashDeleteIcon from "src/assets/icons/trash-delete-icon";
 
 type AppModelListType = {
   label: string;
@@ -66,6 +69,7 @@ const QueryBuilderPanel = () => {
   const [tableData, setTableData] =
     createSignal<ReportsDataType>(initialTableData);
   const [isSaving, setIsSaving] = createSignal(false);
+  const [isEditing, setIsEditing] = createSignal(false);
   const [isInvalidQueryName, setIsInvalidQueryName] = createSignal(false);
   const [saveAsQueryName, setSaveAsQueryName] = createSignal("");
   const [savedQueries, setSavedQueries] = createSignal<SavedQueryType[]>([]);
@@ -361,6 +365,7 @@ const QueryBuilderPanel = () => {
   const onCancelSaveQuery = () => {
     setIsInvalidQueryName(false);
     setIsSaving(false);
+    setIsEditing(false);
     setSaveAsQueryName("");
   };
 
@@ -429,6 +434,46 @@ const QueryBuilderPanel = () => {
       setAppState("toastState", "type", "danger");
     }
   };
+
+  const onUpdateSavedQuery = async () => {
+    if (!saveAsQueryName()) {
+      setIsInvalidQueryName(true);
+      return;
+    }
+
+    try {
+      const response = await changeQueryBuilder(
+        saveAsQueryName(), 
+        queryData(), 
+        currentSavedQueryId()
+      );
+
+      const savedQueriesResponse = await getSavedQueryBuilders();
+      setSavedQueries(savedQueriesResponse.queries);
+
+      setAppState("toastState", "isShowing", true);
+      setAppState("toastState", "message", response.message);
+      setAppState("toastState", "type", "success");
+
+      setIsInvalidQueryName(false);
+      setIsEditing(false);
+      setSaveAsQueryName("");
+    } catch (err: any) {
+      setAppState("toastState", "isShowing", true);
+      setAppState(
+        "toastState",
+        "message",
+        err.message ??
+          err.validation_error ??
+          "Something went wrong. Please refresh the page"
+      );
+      setAppState("toastState", "type", "danger");
+    }
+  }
+
+  const saveButtonText = () => {
+    return isSaving() ? "Save" : "Update"; 
+  }
 
   return (
     <Show when={isDataReady()}>
@@ -608,9 +653,26 @@ const QueryBuilderPanel = () => {
         <div class="flex flex-col gap-2">
           <div class="flex gap-2">
             <h3 class="dark:text-white text-sm mb-2">Saved Queries</h3>
-            <span class="cursor-pointer" onClick={() => setIsSaving(true)}>
-              <SaveIcon width={5} height={5} />
-            </span>
+            <Show when={!isEditing()}>
+              <span class="cursor-pointer" onClick={() => setIsSaving(true)}>
+                <SaveIcon width={5} height={5} />
+              </span>
+            </Show>
+            <Show when={currentSavedQueryId() !== 0}>
+              <span class="cursor-pointer" onClick={() => {
+                setIsEditing(true);
+                const queryNameEl = document.getElementById('query-name') as HTMLInputElement;
+                if (queryNameEl) {
+                  const currentQuery = savedQueries().find(query => query.id === currentSavedQueryId());
+                  queryNameEl.value = currentQuery?.name as string;
+                }
+              }}>
+                <PencilEditIcon width={5} height={5} />
+              </span>
+              <span class="cursor-pointer">
+                <TrashDeleteIcon width={5} height={5} />
+              </span>
+            </Show>
           </div>
 
           <Show when={!isSaving()}>
@@ -628,7 +690,7 @@ const QueryBuilderPanel = () => {
             </div>
           </Show>
 
-          <Show when={isSaving()}>
+          <Show when={isSaving() || isEditing()}>
             <div class="flex flex-col gap-2">
               <div class="w-full sm:w-6/12">
                 <InputTypeField
@@ -649,8 +711,18 @@ const QueryBuilderPanel = () => {
               </div>
             </div>
             <div>
-              <button type="button" class="button" onClick={onSaveQuery}>
-                Save
+              <button 
+                type="button" 
+                class="button" 
+                onClick={async () => {
+                  if (isSaving()) {
+                    await onSaveQuery();
+                  } else {
+                    await onUpdateSavedQuery();
+                  }  
+                }}
+              >
+                {saveButtonText()}
               </button>
               <button
                 type="button"

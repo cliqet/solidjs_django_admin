@@ -703,6 +703,7 @@ const QueryBuilderPanel = () => {
                   if (queryNameEl) {
                     const currentQuery = savedQueries().find(query => query.id === currentSavedQueryId());
                     queryNameEl.value = currentQuery?.name as string;
+                    setSaveAsQueryName(queryNameEl.value);
                   }
                 }}>
                   <PencilEditIcon width={5} height={5} />

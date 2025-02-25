@@ -8,16 +8,22 @@ import SelectField, {
 } from "src/components/form_fields/SelectField";
 import { useAppContext } from "src/context/sessionContext";
 import { AppSettingsType, ModelFieldsObjType } from "src/models/django-admin";
-import {
-  getApps,
-  getBuildQueryResults,
-  getModelFields,
-} from "src/services/django-admin";
+import { getApps, getModelFields } from "src/services/django-admin";
+import { 
+  addQueryBuilder, 
+  changeQueryBuilder, 
+  deleteQueryBuilder, 
+  getBuildQueryResults, 
+  getSavedQueryBuilders
+} from "src/services/saved-queries";
 import BorderedSection from "../BorderedSection";
 import QueryReportsTable, {
   initialTableData,
   ReportsDataType,
 } from "../QueryReportsTable";
+import SaveIcon from "src/assets/icons/save-icon";
+import PencilEditIcon from "src/assets/icons/pencil-edit-icon";
+import TrashDeleteIcon from "src/assets/icons/trash-delete-icon";
 
 type AppModelListType = {
   label: string;
@@ -29,6 +35,20 @@ type AppModelListType = {
 };
 
 type ConditionType = [string, string, any];
+
+type QueryBuilderType = {
+  app_name: string;
+  model_name: string;
+  conditions: ConditionType[];
+  orderings: string[];
+  query_limit: number | null;
+};
+
+type SavedQueryType = {
+  id: number;
+  name: string;
+  query: QueryBuilderType;
+};
 
 const QueryBuilderPanel = () => {
   const [conditions, setConditions] = createSignal<ConditionType[]>([]);
@@ -48,6 +68,18 @@ const QueryBuilderPanel = () => {
   const [isDataReady, setIsDataReady] = createSignal(false);
   const [tableData, setTableData] =
     createSignal<ReportsDataType>(initialTableData);
+  const [isSaving, setIsSaving] = createSignal(false);
+  const [isEditing, setIsEditing] = createSignal(false);
+  const [isInvalidQueryName, setIsInvalidQueryName] = createSignal(false);
+  const [saveAsQueryName, setSaveAsQueryName] = createSignal("");
+  const [savedQueries, setSavedQueries] = createSignal<SavedQueryType[]>([]);
+  const [currentSavedQueryId, setCurrentSavedQueryId] = createSignal<number>(0);
+
+  const resetQueryBuilder = () => {
+    setConditions([]);
+    setOrderings([]);
+    setQueryLimit(null);
+  };
 
   const transformToAppModelList = (appList: AppSettingsType[]) => {
     const appModelList = appList.map((app) => {
@@ -133,6 +165,9 @@ const QueryBuilderPanel = () => {
       createModelListChoices(transformedList[0].value);
 
       await updateModelFieldsAndFieldChoices(currentApp(), currentModel());
+
+      const savedQueriesResponse = await getSavedQueryBuilders();
+      setSavedQueries(savedQueriesResponse.queries);
 
       setIsDataReady(true);
     } catch (err: any) {
@@ -270,19 +305,20 @@ const QueryBuilderPanel = () => {
     setQueryLimit(+value);
   };
 
-  const runQueryBuilder = async () => {
-    const bodyData = {
+  const queryData = () => {
+    return {
       app_name: currentApp(),
       model_name: currentModel(),
       conditions: conditions(),
       orderings: orderings(),
       query_limit: queryLimit(),
     };
+  };
 
+  const runQueryBuilder = async () => {
     try {
-      const response = await getBuildQueryResults(bodyData);
+      const response = await getBuildQueryResults(queryData());
       setTableData(response);
-      console.log(response);
     } catch (err: any) {
       setAppState("toastState", "isShowing", true);
       setAppState(
@@ -293,6 +329,188 @@ const QueryBuilderPanel = () => {
       setAppState("toastState", "type", "danger");
     }
   };
+
+  const onSaveQuery = async () => {
+    if (!saveAsQueryName()) {
+      setIsInvalidQueryName(true);
+      return;
+    }
+
+    try {
+      const response = await addQueryBuilder(saveAsQueryName(), queryData());
+
+      const savedQueriesResponse = await getSavedQueryBuilders();
+      setSavedQueries(savedQueriesResponse.queries);
+
+      setAppState("toastState", "isShowing", true);
+      setAppState("toastState", "message", response.message);
+      setAppState("toastState", "type", "success");
+
+      setIsInvalidQueryName(false);
+      setIsSaving(false);
+      setSaveAsQueryName("");
+    } catch (err: any) {
+      setAppState("toastState", "isShowing", true);
+      setAppState(
+        "toastState",
+        "message",
+        err.message ??
+          err.validation_error ??
+          "Something went wrong. Please refresh the page"
+      );
+      setAppState("toastState", "type", "danger");
+    }
+  };
+
+  const onCancelSaveQuery = () => {
+    setIsInvalidQueryName(false);
+    setIsSaving(false);
+    setIsEditing(false);
+    setSaveAsQueryName("");
+  };
+
+  const savedQueriesAsOptions = () => {
+    let options = savedQueries().map((query) => {
+      return { label: query.name, value: query.id, selected: false };
+    });
+    return [{ label: "-----------", value: 0, selected: true }, ...options];
+  };
+
+  const onSelectSavedQuery = async (id: number) => {
+    setCurrentSavedQueryId(id);
+
+    if (id === 0) {
+      resetQueryBuilder();
+      return;
+    }
+
+    try {
+      const querySelected = savedQueries().find((query) => query.id === id);
+
+      // Update app select field
+      const appEl = document.getElementById('app-name') as HTMLSelectElement;
+      if (appEl) {
+        appEl.value = querySelected?.query.app_name as string;
+        await onAppChange(querySelected?.query.app_name as string);
+      }
+      
+      // Update model select field
+      const modelEl = document.getElementById('model-name') as HTMLSelectElement;
+      if (modelEl) {
+        modelEl.value = querySelected?.query.model_name as string;
+        await onModelChange(querySelected?.query.model_name as string);
+      }
+
+      // Update condition values in fields
+      setConditions(querySelected?.query.conditions as ConditionType[]);
+      conditions().forEach((condition, i) => {
+        let fieldEl = document.getElementById(`field${i}`) as HTMLSelectElement;
+        let operatorEl = document.getElementById(`operator${i}`) as HTMLSelectElement;
+        let fieldValueEl = document.getElementById(`field-value${i}`) as HTMLInputElement;
+
+        fieldEl.value = condition[0];
+        operatorEl.value = condition[1];
+        fieldValueEl.value = condition[2];
+      });
+
+      // Update orderings values in fields
+      setOrderings(querySelected?.query.orderings as string[]);
+      orderings().forEach((ordering, i) => {
+        let orderingEl = document.getElementById(`ordering-field${i}`) as HTMLSelectElement;
+        orderingEl.value = ordering;
+      });
+
+      // Update query limit field
+      setQueryLimit(querySelected?.query.query_limit as number | null);
+      let limitEl = document.getElementById('limit') as HTMLInputElement;
+      limitEl.value = `${querySelected?.query.query_limit ?? ""}`;
+    } catch (err: any) {
+      setAppState("toastState", "isShowing", true);
+      setAppState(
+        "toastState",
+        "message",
+        err.message ?? "Something went wrong. Please refresh the page"
+      );
+      setAppState("toastState", "type", "danger");
+    }
+  };
+
+  const onUpdateSavedQuery = async () => {
+    if (!saveAsQueryName()) {
+      setIsInvalidQueryName(true);
+      return;
+    }
+
+    try {
+      const response = await changeQueryBuilder(
+        saveAsQueryName(), 
+        queryData(), 
+        currentSavedQueryId()
+      );
+
+      const savedQueriesResponse = await getSavedQueryBuilders();
+      setSavedQueries(savedQueriesResponse.queries);
+
+      setAppState("toastState", "isShowing", true);
+      setAppState("toastState", "message", response.message);
+      setAppState("toastState", "type", "success");
+
+      setIsInvalidQueryName(false);
+      setIsEditing(false);
+      setSaveAsQueryName("");
+    } catch (err: any) {
+      setAppState("toastState", "isShowing", true);
+      setAppState(
+        "toastState",
+        "message",
+        err.message ??
+          err.validation_error ??
+          "Something went wrong. Please refresh the page"
+      );
+      setAppState("toastState", "type", "danger");
+    }
+  }
+
+  const onDeleteSavedQuery = async () => {
+    if (currentSavedQueryId() === 0) {
+      setAppState("toastState", "isShowing", true);
+      setAppState(
+        "toastState",
+        "message",
+        "A query must be selected"
+      );
+      setAppState("toastState", "type", "danger");
+
+      return;
+    }
+
+    try {
+      const response = await deleteQueryBuilder(currentSavedQueryId());
+
+      const savedQueriesResponse = await getSavedQueryBuilders();
+      setSavedQueries(savedQueriesResponse.queries);
+
+      setAppState("toastState", "isShowing", true);
+      setAppState("toastState", "message", response.message);
+      setAppState("toastState", "type", "success");
+
+      setSaveAsQueryName("");
+    } catch (err: any) {
+      setAppState("toastState", "isShowing", true);
+      setAppState(
+        "toastState",
+        "message",
+        err.message ??
+          err.validation_error ??
+          "Something went wrong. Please refresh the page"
+      );
+      setAppState("toastState", "type", "danger");
+    }
+  }
+
+  const saveButtonText = () => {
+    return isSaving() ? "Save" : "Update"; 
+  }
 
   return (
     <Show when={isDataReady()}>
@@ -347,7 +565,7 @@ const QueryBuilderPanel = () => {
         <For each={conditions()}>
           {(condition, i) => (
             <div class="flex flex-col sm:flex-row gap-3 sm:items-center mb-2">
-              <div class="w-full sm:w-3/12">
+              <div class="w-full sm:w-4/12">
                 <SelectField
                   selectProps={{
                     id: `field${i()}`,
@@ -359,7 +577,7 @@ const QueryBuilderPanel = () => {
                   }}
                 />
               </div>
-              <div class="w-full sm:w-3/12">
+              <div class="w-full sm:w-4/12">
                 <SelectField
                   selectProps={{
                     id: `operator${i()}`,
@@ -382,7 +600,7 @@ const QueryBuilderPanel = () => {
                   }}
                 />
               </div>
-              <div class="w-full sm:w-/12">
+              <div class="w-full sm:w-4/12">
                 <InputTypeField
                   inputProps={{
                     id: `field-value${i()}`,
@@ -425,7 +643,7 @@ const QueryBuilderPanel = () => {
               <div class="w-9/12 sm:w-1/2">
                 <SelectField
                   selectProps={{
-                    id: `field${i()}`,
+                    id: `ordering-field${i()}`,
                     class: "text-xs",
                   }}
                   options={modelFieldChoices()}
@@ -465,6 +683,98 @@ const QueryBuilderPanel = () => {
               onChangeLimitValue(value);
             }}
           />
+        </div>
+      </BorderedSection>
+
+      <BorderedSection>
+        <div class="flex flex-col gap-2">
+          <div class="flex gap-2">
+            <h3 class="dark:text-white text-sm mb-2">Saved Queries</h3>
+            <Show when={!isEditing()}>
+              <span class="cursor-pointer" onClick={() => setIsSaving(true)}>
+                <SaveIcon width={5} height={5} />
+              </span>
+            </Show>
+            <Show when={currentSavedQueryId() !== 0}>
+              <Show when={!isSaving()}>
+                <span class="cursor-pointer" onClick={() => {
+                  setIsEditing(true);
+                  const queryNameEl = document.getElementById('query-name') as HTMLInputElement;
+                  if (queryNameEl) {
+                    const currentQuery = savedQueries().find(query => query.id === currentSavedQueryId());
+                    queryNameEl.value = currentQuery?.name as string;
+                  }
+                }}>
+                  <PencilEditIcon width={5} height={5} />
+                </span>
+              </Show>
+
+              <Show when={!isSaving() && !isEditing()}>
+                <span class="cursor-pointer" onClick={onDeleteSavedQuery}>
+                  <TrashDeleteIcon width={5} height={5} />
+                </span>
+              </Show>
+            </Show>
+          </div>
+
+          <Show when={!isSaving()}>
+            <div>
+              <SelectField
+                selectProps={{
+                  id: "saved-query",
+                  class: "text-xs",
+                }}
+                options={savedQueriesAsOptions()}
+                onChangeValue={(value, _) => {
+                  onSelectSavedQuery(+value);
+                }}
+              />
+            </div>
+          </Show>
+
+          <Show when={isSaving() || isEditing()}>
+            <div class="flex flex-col gap-2">
+              <div class="w-full sm:w-6/12">
+                <InputTypeField
+                  inputProps={{
+                    id: "query-name",
+                    type: "text",
+                    value: "",
+                    class: "text-xs",
+                    placeholder: "Name of query",
+                  }}
+                  isInvalid={isInvalidQueryName()}
+                  onInvalid={() => {}}
+                  onFocus={() => setIsInvalidQueryName(false)}
+                  onChangeValue={(value, _) => {
+                    setSaveAsQueryName(value);
+                  }}
+                />
+              </div>
+            </div>
+            <div>
+              <button 
+                type="button" 
+                class="button" 
+                onClick={async () => {
+                  if (isSaving()) {
+                    await onSaveQuery();
+                  } else {
+                    await onUpdateSavedQuery();
+                  }  
+                }}
+              >
+                {saveButtonText()}
+              </button>
+              <button
+                type="button"
+                class="button-outline"
+                onClick={onCancelSaveQuery}
+              >
+                Cancel
+              </button>
+            </div>
+          </Show>
         </div>
       </BorderedSection>
 

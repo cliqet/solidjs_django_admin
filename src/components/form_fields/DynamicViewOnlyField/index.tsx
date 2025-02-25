@@ -12,10 +12,6 @@ type DynamicViewOnlyFieldProps = {
 };
 
 const DynamicViewOnlyField: Component<DynamicViewOnlyFieldProps> = (props) => {
-  const noData = () => {
-    return props.modelRecord
-  }
-
   const isDateTime = () => {
     return props.fieldType === FIELDTYPE.DateTimeField;
   }

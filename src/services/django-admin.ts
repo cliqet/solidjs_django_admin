@@ -236,27 +236,3 @@ export async function deleteJobs(
   });
   return response;
 }
-
-export async function getBuildQueryResults(
-  bodyData: any
-): Promise<any> {
-  const response = await sessionClient.fetch({
-    method: "POST",
-    urlSegment: `/django-admin/query-builder`,
-    body: bodyData
-  });
-  return response;
-}
-
-export async function getRawQueryResults(
-  sqlCode: string
-): Promise<any> {
-  const response = await sessionClient.fetch({
-    method: "POST",
-    urlSegment: `/django-admin/raw-query`,
-    body: {
-      query: sqlCode
-    }
-  });
-  return response;
-}

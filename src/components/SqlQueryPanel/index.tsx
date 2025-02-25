@@ -6,7 +6,7 @@ import { EditorView } from "@codemirror/view";
 import { useAppContext } from "src/context/sessionContext";
 import { createSignal, Show } from "solid-js";
 import BorderedSection from "../BorderedSection";
-import { getRawQueryResults } from "src/services/django-admin";
+import { getRawQueryResults } from "src/services/saved-queries";
 import QueryReportsTable, {
   initialTableData,
   ReportsDataType,

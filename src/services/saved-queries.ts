@@ -74,3 +74,54 @@ export async function getSavedQueryBuilders(): Promise<any> {
   });
   return response;
 }
+
+export async function addRawQuery(
+  queryName: string,
+  queryBody: any
+): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "POST",
+    urlSegment: `/django-admin/saved-queries/raw-query/add`,
+    body: {
+      name: queryName,
+      query: queryBody
+    }
+  });
+  return response;
+}
+
+export async function changeRawQuery(
+  queryName: string,
+  queryBody: string,
+  id: number,
+): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "POST",
+    urlSegment: `/django-admin/saved-queries/raw-query/change/${id}`,
+    body: {
+      name: queryName,
+      query: queryBody
+    }
+  });
+  return response;
+}
+
+export async function deleteRawQuery(
+  id: number,
+): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "DELETE",
+    urlSegment: `/django-admin/saved-queries/raw-query/delete/${id}`,
+  });
+  return response;
+}
+
+
+
+export async function getSavedRawQueries(): Promise<any> {
+  const response = await sessionClient.fetch({
+    method: "GET",
+    urlSegment: `/django-admin/saved-queries/raw-query`,
+  });
+  return response;
+}

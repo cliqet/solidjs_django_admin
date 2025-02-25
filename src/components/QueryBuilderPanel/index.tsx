@@ -8,15 +8,14 @@ import SelectField, {
 } from "src/components/form_fields/SelectField";
 import { useAppContext } from "src/context/sessionContext";
 import { AppSettingsType, ModelFieldsObjType } from "src/models/django-admin";
-import {
-  addQueryBuilder,
-  changeQueryBuilder,
-  deleteQueryBuilder,
-  getApps,
-  getBuildQueryResults,
-  getModelFields,
-  getSavedQueryBuilders,
-} from "src/services/django-admin";
+import { getApps, getModelFields } from "src/services/django-admin";
+import { 
+  addQueryBuilder, 
+  changeQueryBuilder, 
+  deleteQueryBuilder, 
+  getBuildQueryResults, 
+  getSavedQueryBuilders
+} from "src/services/saved-queries";
 import BorderedSection from "../BorderedSection";
 import QueryReportsTable, {
   initialTableData,

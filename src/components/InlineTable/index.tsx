@@ -9,7 +9,7 @@ import {
 } from "solid-js";
 import AngleDownIcon from "src/assets/icons/angle-down-icon";
 import AngleUpIcon from "src/assets/icons/angle-up-icon";
-import CheckCircle from "src/assets/icons/check-circle";
+import CheckCircleIcon from "src/assets/icons/check-circle-icon";
 import CloseCircle from "src/assets/icons/close-circle";
 import { FIELDTYPE } from "src/constants/django-admin";
 import {
@@ -220,7 +220,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
 
     if (modelFields()[fieldName].type === FIELDTYPE.BooleanField) {
       if (fieldData) {
-        return <CheckCircle />;
+        return <CheckCircleIcon class="w-6 h-6 text-gray-800" />;
       } else {
         return <CloseCircle />;
       }

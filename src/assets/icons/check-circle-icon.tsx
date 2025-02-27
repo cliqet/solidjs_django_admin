@@ -1,7 +1,13 @@
-const CheckCircle = () => {
+import { Component } from "solid-js";
+
+type CheckCircleIconProps = {
+    class: string;
+}
+
+const CheckCircleIcon: Component<CheckCircleIconProps> = (props) => {
   return (
     <svg
-      class="w-6 h-6 text-gray-800"
+      class={props.class}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -18,4 +24,4 @@ const CheckCircle = () => {
   );
 };
 
-export default CheckCircle;
+export default CheckCircleIcon;

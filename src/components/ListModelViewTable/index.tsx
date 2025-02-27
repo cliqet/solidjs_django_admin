@@ -1,6 +1,6 @@
 import { A } from "@solidjs/router";
 import { Component, For } from "solid-js";
-import CheckCircle from "src/assets/icons/check-circle";
+import CheckCircleIcon from "src/assets/icons/check-circle-icon";
 import CloseCircle from "src/assets/icons/close-circle";
 import { FIELDTYPE } from "src/constants/django-admin";
 import { ModelFieldsObjType } from "src/models/django-admin";
@@ -73,7 +73,7 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
 
     if (props.modelFields[fieldName].type === FIELDTYPE.BooleanField) {
       if (fieldData) {
-        return <CheckCircle />;
+        return <CheckCircleIcon class="w-6 h-6 text-gray-800" />;
       } else {
         return <CloseCircle />;
       }

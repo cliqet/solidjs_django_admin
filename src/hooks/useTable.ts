@@ -70,3 +70,68 @@ export const printTable = (tableId: string, tableName: string, removeFirstCol: b
     console.error('Failed to open print window');
   }
 };
+
+export const exportTableToCSV = (tableId: string, tableName: string, removeFirstCol: boolean = true): void => {
+  // Get the table element
+  const table = document.getElementById(tableId) as HTMLTableElement;
+
+  if (table) {
+    let csvContent = "";
+
+    // Helper function to escape and format cell values
+    const formatCellValue = (value: string) => {
+      if (value.includes('"')) {
+        value = value.replace(/"/g, '""'); // Escape double quotes
+      }
+      return `"${value}"`; // Enclose in double quotes
+    };
+
+    // Get the header row
+    const headers = Array.from(table.querySelectorAll("thead th"));
+    const headerRow = headers
+      .map((header, index) => (removeFirstCol && index === 0) ? "" : formatCellValue(header.textContent?.trim() || ""))
+      .filter(header => header) // Filter out any empty headers
+      .join(",") + "\n";
+    csvContent += headerRow;
+
+    // Get the data rows
+    const rows = Array.from(table.querySelectorAll("tbody tr"));
+    rows.forEach(row => {
+      const cells = Array.from(row.querySelectorAll("td"));
+      const rowData = cells
+        .map((cell, index) => {
+          // Check for boolean class names
+          const isTrue = cell.querySelector('.boolean-true');
+          const isFalse = cell.querySelector('.boolean-false');
+
+          if (isTrue) {
+            return formatCellValue("True");
+          } else if (isFalse) {
+            return formatCellValue("False");
+          }
+
+          // Fallback to text content
+          const cellText = cell.innerText || cell.textContent || "";
+          return (removeFirstCol && index === 0) ? "" : formatCellValue(cellText.trim());
+        })
+        .filter(cell => cell) // Filter out any empty cells
+        .join(",");
+      csvContent += rowData + "\n";
+    });
+
+    // Create a blob and a link to download the CSV file
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${tableName}.csv`);
+
+    // Append link to body
+    document.body.appendChild(link);
+    link.click(); // Trigger the download
+    document.body.removeChild(link); // Remove the link after downloading
+  } else {
+    console.error('Table not found');
+  }
+};

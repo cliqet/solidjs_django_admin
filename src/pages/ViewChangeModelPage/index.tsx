@@ -135,7 +135,7 @@ const ViewChangeModelPage = () => {
       {/** Custom Inlines */}
       <For each={modelAdminSettings().custom_inlines}>
         {(inline, _) => (
-          <div class="p-2 border border-slate-300 rounded-md mb-10">
+          <div class="flex-col p-2 rounded-md my-5 bg-green-100 dark:bg-gray-700">
             <InlineTable
               parentAppLabel={params.appLabel}
               parentModelName={params.modelName}
@@ -149,7 +149,7 @@ const ViewChangeModelPage = () => {
 
       <For each={modelAdminSettings().extra_inlines}>
         {(inline, i) => (
-          <div class="p-2 border border-slate-300 rounded-md mb-2">
+          <div class="flex-col p-2 rounded-md mb-4 bg-green-100 dark:bg-gray-700">
             <DynamicExtraInline componentName={inline} />
           </div>
         )}

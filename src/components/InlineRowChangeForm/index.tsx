@@ -179,7 +179,7 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
 
   return (
     <Show when={isDataReady()}>
-      <div>
+      <div class="bg-white dark:bg-slate-800 p-2 rounded-md">
         <h1 class="text-xl font-bold dark:text-slate-200">
           Change {props.modelAdminSettings.model_name}
         </h1>
@@ -257,7 +257,7 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
 
                           <Show when={modelFieldsEdit()[field].help_text}>
                             <div class="px-1">
-                              <span class="text-xs text-slate-300">
+                              <span class="text-xs text-slate-500 dark:text-slate-300">
                                 {modelFieldsEdit()[field].help_text}
                               </span>
                             </div>

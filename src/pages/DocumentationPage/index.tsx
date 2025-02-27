@@ -69,10 +69,10 @@ const DocumentationPage = () => {
                   >
                     <span class="text-white">{doc.appModelName.toUpperCase()}</span>
                     <Show when={accordionDocs()[i()].isOpen}>
-                      <AngleUpIcon class="w-5 h-5 dark:text-white" />
+                      <AngleUpIcon class="w-5 h-5 text-white" />
                     </Show>
                     <Show when={!accordionDocs()[i()].isOpen}>
-                      <AngleDownIcon class="w-5 h-5 dark:text-white" />
+                      <AngleDownIcon class="w-5 h-5 text-white" />
                     </Show>
                   </button>
                 </h2>

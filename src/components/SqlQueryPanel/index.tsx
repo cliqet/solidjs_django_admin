@@ -246,7 +246,7 @@ const SqlQueryPanel = () => {
             <h3 class="dark:text-white text-sm mb-2">Saved Queries</h3>
             <Show when={!isEditing()}>
               <span class="cursor-pointer" onClick={() => setIsSaving(true)}>
-                <SaveIcon width={5} height={5} />
+                <SaveIcon class="w-5 h-5 dark:text-white" />
               </span>
             </Show>
             <Show when={currentSavedQueryId() !== 0}>

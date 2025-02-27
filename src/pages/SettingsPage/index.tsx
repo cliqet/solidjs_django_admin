@@ -27,7 +27,7 @@ const SettingsPage = () => {
       <div class="p-2 bg-custom-primary-lighter rounded-md flex-col mb-5">
         <div class="flex items-center gap-2">
           <div class="w-8">
-            <ReportsIcon width={7} height={5} />
+            <ReportsIcon class="w-7 h-7 text-white" />
           </div>
           <h3
             onClick={() => navigate(dashboardRoute(authRoute.queryReportsView))}

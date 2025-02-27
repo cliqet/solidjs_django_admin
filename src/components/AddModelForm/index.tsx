@@ -161,7 +161,7 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
                                   href={`/dashboard/${props.modelFields[field].foreignkey_app}/${props.modelFields[field].foreignkey_model?.toLowerCase()}/add`} 
                                   target="_blank"
                                 >
-                                  <PlusIcon width={5} height={5} />
+                                  <PlusIcon class="w-5 h-5 text-custom-primary-lighter" />
                                 </a>
                               </span>
                             </Show>

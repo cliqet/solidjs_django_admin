@@ -137,7 +137,7 @@ const SideBar = () => {
                               )}
                             >
                               <A href={model.addUrl} onClick={onClickModelOrAddOnMobileView}>
-                                <PlusIcon width={4} height={4} />
+                                <PlusIcon class="w-4 h-4 text-custom-primary-lighter" />
                               </A>
                             </Show>
                           </span>

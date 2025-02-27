@@ -558,7 +558,7 @@ const QueryBuilderPanel = () => {
         <div class="flex gap-2">
           <h3 class="dark:text-white text-sm mb-2">Conditions</h3>
           <span class="cursor-pointer" onClick={addConditionRow}>
-            <PlusIcon width={5} height={5} />
+            <PlusIcon class="w-5 h-5 text-custom-primary-lighter"  />
           </span>
         </div>
 
@@ -633,7 +633,7 @@ const QueryBuilderPanel = () => {
         <div class="flex gap-2">
           <h3 class="dark:text-white text-sm mb-2">Ordering</h3>
           <span class="cursor-pointer" onClick={addOrderingRow}>
-            <PlusIcon width={5} height={5} />
+            <PlusIcon class="w-5 h-5 text-custom-primary-lighter" />
           </span>
         </div>
 

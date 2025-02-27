@@ -488,7 +488,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
               onClick={() => setIsRowAddFormOpen((prev) => !prev)}
             >
               <Show when={!isRowAddFormOpen()}>
-                <PlusIcon width={5} height={5} />
+                <PlusIcon class="w-5 h-5 text-custom-primary-lighter"  />
               </Show>
               <Show when={isRowAddFormOpen()}>
                 <CloseCircleIcon class="w-6 h-6 text-gray-800" />

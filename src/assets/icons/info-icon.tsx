@@ -1,14 +1,11 @@
 import { Component } from "solid-js";
+import { IconProps } from "../types";
 
-type InfoIconProps = {
-    width: number;
-    height: number;
-}
 
-const InfoIcon: Component<InfoIconProps> = (props) => {
+const InfoIcon: Component<IconProps> = (props) => {
   return (
     <svg
-      class={`flex-shrink-0 w-${props.width} h-${props.height}`}
+      class={props.class}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       fill="currentColor"

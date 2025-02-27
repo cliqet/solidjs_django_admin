@@ -35,7 +35,7 @@ const ToastAlert: Component = () => {
         role="alert"
       >
         <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg">
-          <InfoIcon width={4} height={4} />
+          <InfoIcon class="w-4 h-4 flex-shrink-0" />
         </div>
 
         <Show when={!appState.toastState.isHtmlMessage}>

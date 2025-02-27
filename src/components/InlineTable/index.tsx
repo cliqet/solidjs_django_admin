@@ -373,7 +373,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
               <For each={listviewData()?.results}>
                 {(record, i) => (
                   <>
-                    <tr class="border-b dark:bg-gray-800 border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
+                    <tr class="border-b bg-white dark:bg-gray-800 border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
                       {/** Dropdown to open change form */}
                       <Show
                         when={hasChangeModelPermission(
@@ -460,7 +460,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                           colspan={props.inline.list_display.length + 1}
                           class="w-full"
                         >
-                          <div class="p-2 border border-slate-300 rounded-md mb-2">
+                          <div class="p-2 rounded-md mb-2">
                             <InlineRowChangeForm
                               appLabel={props.inline.app_label}
                               modelName={props.inline.model_name}
@@ -481,7 +481,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
           </table>
 
           {/** Add row form section */}
-          <div class="flex items-center my-2 gap-2 px-2">
+          <div class="flex items-center my-2 gap-2 p-2 rounded-md bg-white dark:bg-slate-800">
             <span class="dark:text-white text-sm">{addText()}</span>
             <span
               class="cursor-pointer"
@@ -497,7 +497,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
           </div>
 
           <Show when={isRowAddFormOpen()}>
-            <div class="p-2 border border-slate-300 rounded-md mb-2">
+            <div class="p-2 bg-white dark:bg-slate-800 rounded-md mb-2">
               <InlineRowAddForm
                 appLabel={props.inline.app_label}
                 modelName={props.inline.model_name}
@@ -509,7 +509,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
           </Show>
 
           {/** Pagination */}
-          <div class="p-2 border border-slate-300 rounded-md mb-2">
+          <div class="p-2 bg-green-50 dark:bg-slate-600 rounded-md mb-2">
             <div class="flex items-center justify-center">
               <Show when={listviewData()?.previous}>
                 <button

@@ -1,7 +1,11 @@
-const PrintIcon = () => {
+import { Component } from "solid-js";
+import { IconProps } from "../types";
+
+
+const PrintIcon: Component<IconProps> = (props) => {
     return (
       <svg
-        class="w-5 h-5"
+        class={props.class}
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"

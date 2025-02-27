@@ -436,7 +436,7 @@ const ListModelViewPage = () => {
 
         {/** Search */}
         <Show when={modelAdminSettings().search_fields.length > 0}>
-          <div class="flex-col p-2 border border-slate-300 rounded-md mb-2">
+          <div class="flex-col p-2 rounded-md mb-4 bg-green-100 dark:bg-gray-700">
             <SearchInput
               onSearchClick={(searchTerm) => onSearch(searchTerm)}
               onClearSearch={(searchTerm) => onSearch(searchTerm)}
@@ -461,7 +461,7 @@ const ListModelViewPage = () => {
             params.modelName
           )}
         >
-          <div class="flex-col p-2 border border-slate-300 rounded-md mb-2">
+          <div class="flex-col p-2 rounded-md mb-4 bg-green-100 dark:bg-gray-700">
             <span class="dark:text-white text-sm">Actions</span>
             <div class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-1/2">
               <div class="w-full md:w-4/5">
@@ -482,7 +482,7 @@ const ListModelViewPage = () => {
 
         {/** Filters */}
         <Show when={modelAdminSettings().list_filter.length > 0}>
-          <div class="p-2 border border-slate-300 rounded-md mb-2 flex-col">
+          <div class="flex-col p-2 rounded-md mb-4 bg-green-100 dark:bg-gray-700">
             <div class="mb-2 flex justify-between">
               <span class="dark:text-white text-sm">Filters</span>
               <Show when={isFilterOpen()}>
@@ -504,6 +504,7 @@ const ListModelViewPage = () => {
             </div>
             <Show when={filterState()}>
               <div
+                class="bg-yellow-50 dark:bg-slate-800 p-2 rounded-md"
                 classList={{
                   hidden: !isFilterOpen(),
                   visible: isFilterOpen(),
@@ -551,7 +552,7 @@ const ListModelViewPage = () => {
         </Show>
 
         {/** Table */}
-        <div class="p-2 border border-slate-300 rounded-md mb-2">
+        <div class="flex-col p-2 rounded-md mb-2 bg-green-100 dark:bg-gray-700">
           <div class="flex-col mb-2">
             <div class="flex justify-between">
               <h3 class="text-lg dark:text-white">
@@ -613,7 +614,7 @@ const ListModelViewPage = () => {
 
         {/** Table Pagination */}
         <div
-          class="p-2 border border-slate-300 rounded-md mb-10"
+          class="flex-col p-2 rounded-md mb-10 bg-green-100 dark:bg-gray-700"
           classList={{
             hidden: !isParentTableOpen(),
             visible: isParentTableOpen(),

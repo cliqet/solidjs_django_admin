@@ -185,7 +185,7 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
                                   ].foreignkey_model?.toLowerCase()}/add`}
                                   target="_blank"
                                 >
-                                  <PlusIcon width={5} height={5} />
+                                  <PlusIcon class="w-5 h-5 text-custom-primary-lighter"  />
                                 </a>
                               </span>
                             </Show>

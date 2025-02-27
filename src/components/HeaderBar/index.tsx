@@ -48,10 +48,10 @@ const HeaderBar = () => {
           <div class="mr-2">
             <span class="cursor-pointer" onClick={toggleMode}>
               <Show when={appState.themeMode === "dark"}>
-                <MoonIcon width={5} height={5} />
+                <MoonIcon class="w-5 h-5 text-white" />
               </Show>
               <Show when={appState.themeMode === "light"}>
-                <SunIcon width={5} height={5} />
+                <SunIcon class="w-5 h-5 text-white" />
               </Show>
             </span>
           </div>

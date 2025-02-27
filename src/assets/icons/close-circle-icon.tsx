@@ -1,7 +1,10 @@
-const CloseCircle = () => {
+import { Component } from "solid-js";
+import { IconProps } from "../types";
+
+const CloseCircleIcon: Component<IconProps> = (props) => {
   return (
     <svg
-      class="w-6 h-6 text-gray-800"
+      class={props.class}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -18,4 +21,4 @@ const CloseCircle = () => {
   );
 };
 
-export default CloseCircle;
+export default CloseCircleIcon;

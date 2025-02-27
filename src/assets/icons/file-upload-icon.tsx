@@ -1,14 +1,11 @@
 import { Component } from "solid-js";
+import { IconProps } from "../types";
 
-type FileUploadIconProps = {
-  width: number;
-  height: number;
-};
 
-const FileUploadIcon: Component<FileUploadIconProps> = (props) => {
+const FileUploadIcon: Component<IconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height} mb-4 text-gray-500 dark:text-white`}
+      class={props.class}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"

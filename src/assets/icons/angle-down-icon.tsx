@@ -1,14 +1,10 @@
 import { Component } from "solid-js";
+import { IconProps } from "../types";
 
-type AngleUpProps = {
-    width: number;
-    height: number;
-}
-
-const AngleUp: Component<AngleUpProps> = (props) => {
+const AngleDownIcon: Component<IconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height} dark:text-white`}
+      class={props.class}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -21,10 +17,10 @@ const AngleUp: Component<AngleUpProps> = (props) => {
         stroke-linecap="round"
         stroke-linejoin="round"
         stroke-width="2"
-        d="m5 15 7-7 7 7"
+        d="m19 9-7 7-7-7"
       />
     </svg>
   );
 };
 
-export default AngleUp;
+export default AngleDownIcon;

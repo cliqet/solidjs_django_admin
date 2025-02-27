@@ -1,14 +1,11 @@
 import { Component } from "solid-js";
+import { IconProps } from "../types";
 
-type PencilEditIconProps = {
-    width: number;
-    height: number;
-}
 
-const PencilEditIcon: Component<PencilEditIconProps> = (props) => {
+const PencilEditIcon: Component<IconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height} dark:text-white`}
+      class={props.class}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"

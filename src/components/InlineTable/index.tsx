@@ -7,10 +7,10 @@ import {
   onMount,
   Show,
 } from "solid-js";
-import AngleDown from "src/assets/icons/angle-down";
-import AngleUp from "src/assets/icons/angle-up";
-import CheckCircle from "src/assets/icons/check-circle";
-import CloseCircle from "src/assets/icons/close-circle";
+import AngleDownIcon from "src/assets/icons/angle-down-icon";
+import AngleUpIcon from "src/assets/icons/angle-up-icon";
+import CheckCircleIcon from "src/assets/icons/check-circle-icon";
+import CloseCircleIcon from "src/assets/icons/close-circle-icon";
 import { FIELDTYPE } from "src/constants/django-admin";
 import {
   CustomInlineType,
@@ -220,9 +220,9 @@ const InlineTable: Component<InlineTableProps> = (props) => {
 
     if (modelFields()[fieldName].type === FIELDTYPE.BooleanField) {
       if (fieldData) {
-        return <CheckCircle />;
+        return <CheckCircleIcon class="w-6 h-6 text-gray-800" />;
       } else {
-        return <CloseCircle />;
+        return <CloseCircleIcon class="w-6 h-6 text-gray-800" />;
       }
     } else {
       if (links.includes(fieldName)) {
@@ -335,12 +335,12 @@ const InlineTable: Component<InlineTableProps> = (props) => {
           </h3>
           <Show when={isTableOpen()}>
             <span class="cursor-pointer" onClick={() => setIsTableOpen(false)}>
-              <AngleUp width={5} height={5} />
+              <AngleUpIcon class="w-5 h-5 dark:text-white" />
             </span>
           </Show>
           <Show when={!isTableOpen()}>
             <span class="cursor-pointer" onClick={() => setIsTableOpen(true)}>
-              <AngleDown width={5} height={5} />
+              <AngleDownIcon class="w-5 h-5 dark:text-white" />
             </span>
           </Show>
         </div>
@@ -396,7 +396,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                                   tableRowsFormState()[i()]?.isOpen
                                 }
                               >
-                                <AngleUp width={5} height={5} />
+                                <AngleUpIcon class="w-5 h-5 dark:text-white"/>
                               </Show>
                               <Show
                                 when={
@@ -404,7 +404,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                                   !tableRowsFormState()[i()]?.isOpen
                                 }
                               >
-                                <AngleDown width={5} height={5} />
+                                <AngleDownIcon class="w-5 h-5 dark:text-white" />
                               </Show>
                             </span>
                           </div>
@@ -428,7 +428,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                       {/** Row actions */}
                       <td class="relative px-6 py-2 dark:text-white">
                         <button onClick={() => onActionOpenOrClose(i())}>
-                          <EllipsisIcon width={5} height={5} />
+                          <EllipsisIcon class="w-5 h-5 dark:text-white" />
                         </button>
                         <Show when={tableRowsActionState()[i()].isOpen}>
                           <div class="absolute right-0 top-full z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
@@ -488,10 +488,10 @@ const InlineTable: Component<InlineTableProps> = (props) => {
               onClick={() => setIsRowAddFormOpen((prev) => !prev)}
             >
               <Show when={!isRowAddFormOpen()}>
-                <PlusIcon width={5} height={5} />
+                <PlusIcon class="w-5 h-5 text-custom-primary-lighter"  />
               </Show>
               <Show when={isRowAddFormOpen()}>
-                <CloseCircle />
+                <CloseCircleIcon class="w-6 h-6 text-gray-800" />
               </Show>
             </span>
           </div>

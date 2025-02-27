@@ -30,7 +30,7 @@ const FileUploadField: Component<FileUploadFieldProps> = (props) => {
       file: "",
     });
     const [invalidFileMsg, setInvalidFileMsg] = createSignal("");
-  let fileInputRef: HTMLInputElement;
+  let fileInputRef!: HTMLInputElement;
 
   const processFile = (newFile: File) => {
     setInvalidFileMsg("");
@@ -152,7 +152,7 @@ const FileUploadField: Component<FileUploadFieldProps> = (props) => {
           class="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-800"
         >
           <div class="flex flex-col items-center justify-center pt-5 pb-6">
-            <FileUploadIcon width={8} height={8} />
+            <FileUploadIcon class="w-8 h-8 mb-4 text-gray-500 dark:text-white" />
             <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
               <span class="font-semibold">Click to upload</span> or drag and
               drop

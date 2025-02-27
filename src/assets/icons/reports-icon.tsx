@@ -1,14 +1,11 @@
 import { Component } from "solid-js";
+import { IconProps } from "../types";
 
-type ReportsIconProps = {
-    width: number;
-    height: number;
-}
 
-const ReportsIcon: Component<ReportsIconProps> = (props) => {
+const ReportsIcon: Component<IconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height} text-white`}
+      class={props.class}
       stroke="currentColor"
       fill="none"
       stroke-width="2"

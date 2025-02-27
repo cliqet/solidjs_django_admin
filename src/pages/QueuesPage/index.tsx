@@ -167,7 +167,7 @@ const QueuesPage = () => {
           <div class="flex items-center justify-end w-1/2 gap-3">
             <Show when={!isAutoRefresh()}>
               <span class="cursor-pointer" onClick={onManualRefresh}>
-                <RefreshIcon width={5} height={5} />
+                <RefreshIcon class="w-5 h-5 dark:text-white" />
               </span>
             </Show>
 

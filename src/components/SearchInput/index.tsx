@@ -31,7 +31,7 @@ const SearchInput: Component<SearchInputProps> = (props) => {
       <div class="flex flex-col sm:flex-row">
         <div class="relative mt-2 w-full sm:w-1/2">
           <div class="absolute top-0 inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-            <SearchIcon />
+            <SearchIcon class="w-4 h-4 text-gray-500" />
           </div>
           <input
             {...props.inputProps}
@@ -84,7 +84,7 @@ const SearchInput: Component<SearchInputProps> = (props) => {
             }}
             class="absolute top-4 right-3 cursor-pointer"
           >
-            <CloseXIcon width={3} height={3} />
+            <CloseXIcon class="w-3 h-3" />
           </span>
         </div>
 

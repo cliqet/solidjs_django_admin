@@ -1,5 +1,5 @@
-import { createEffect, createSignal, For, onMount, Show } from "solid-js";
-import CloseCircle from "src/assets/icons/close-circle";
+import { createSignal, For, onMount, Show } from "solid-js";
+import CloseCircleIcon from "src/assets/icons/close-circle-icon";
 import PlusIcon from "src/assets/icons/plus-icon";
 import InputTypeField from "src/components/form_fields/InputTypeField";
 import Label from "src/components/form_fields/Label";
@@ -558,7 +558,7 @@ const QueryBuilderPanel = () => {
         <div class="flex gap-2">
           <h3 class="dark:text-white text-sm mb-2">Conditions</h3>
           <span class="cursor-pointer" onClick={addConditionRow}>
-            <PlusIcon width={5} height={5} />
+            <PlusIcon class="w-5 h-5 text-custom-primary-lighter"  />
           </span>
         </div>
 
@@ -621,7 +621,7 @@ const QueryBuilderPanel = () => {
                   class="cursor-pointer"
                   onClick={() => removeConditionRow(i())}
                 >
-                  <CloseCircle />
+                  <CloseCircleIcon class="w-6 h-6 text-gray-800" />
                 </span>
               </div>
             </div>
@@ -633,7 +633,7 @@ const QueryBuilderPanel = () => {
         <div class="flex gap-2">
           <h3 class="dark:text-white text-sm mb-2">Ordering</h3>
           <span class="cursor-pointer" onClick={addOrderingRow}>
-            <PlusIcon width={5} height={5} />
+            <PlusIcon class="w-5 h-5 text-custom-primary-lighter" />
           </span>
         </div>
 
@@ -657,7 +657,7 @@ const QueryBuilderPanel = () => {
                   class="cursor-pointer"
                   onClick={() => removeOrderingRow(i())}
                 >
-                  <CloseCircle />
+                  <CloseCircleIcon class="w-6 h-6 text-gray-800" />
                 </span>
               </div>
             </div>
@@ -692,7 +692,7 @@ const QueryBuilderPanel = () => {
             <h3 class="dark:text-white text-sm mb-2">Saved Queries</h3>
             <Show when={!isEditing()}>
               <span class="cursor-pointer" onClick={() => setIsSaving(true)}>
-                <SaveIcon width={5} height={5} />
+                <SaveIcon class="w-5 h-5 dark:text-white" />
               </span>
             </Show>
             <Show when={currentSavedQueryId() !== 0}>
@@ -706,13 +706,13 @@ const QueryBuilderPanel = () => {
                     setSaveAsQueryName(queryNameEl.value);
                   }
                 }}>
-                  <PencilEditIcon width={5} height={5} />
+                  <PencilEditIcon class="w-5 h-5 dark:text-white" />
                 </span>
               </Show>
 
               <Show when={!isSaving() && !isEditing()}>
                 <span class="cursor-pointer" onClick={onDeleteSavedQuery}>
-                  <TrashDeleteIcon width={5} height={5} />
+                  <TrashDeleteIcon class="w-5 h-5 dark:text-white" />
                 </span>
               </Show>
             </Show>

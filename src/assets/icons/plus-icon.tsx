@@ -1,14 +1,11 @@
 import { Component } from "solid-js";
+import { IconProps } from "../types";
 
-type PlusIconProps = {
-    width: number,
-    height: number
-}
 
-const PlusIcon: Component<PlusIconProps> = (props) => {
+const PlusIcon: Component<IconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height} text-custom-primary-lighter`}
+      class={props.class}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"

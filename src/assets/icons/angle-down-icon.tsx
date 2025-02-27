@@ -1,14 +1,13 @@
 import { Component } from "solid-js";
 
-type AngleDownProps = {
-    width: number;
-    height: number;
+type AngleDownIconProps = {
+    class: string;
 }
 
-const AngleDown: Component<AngleDownProps> = (props) => {
+const AngleDownIcon: Component<AngleDownIconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height} dark:text-white`}
+      class={props.class}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -27,4 +26,4 @@ const AngleDown: Component<AngleDownProps> = (props) => {
   );
 };
 
-export default AngleDown;
+export default AngleDownIcon;

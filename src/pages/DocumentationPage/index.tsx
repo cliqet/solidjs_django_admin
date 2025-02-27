@@ -1,7 +1,7 @@
 import { useNavigate } from "@solidjs/router";
 import { createSignal, For, onMount, Show } from "solid-js";
-import AngleDown from "src/assets/icons/angle-down";
-import AngleUp from "src/assets/icons/angle-up";
+import AngleDownIcon from "src/assets/icons/angle-down-icon";
+import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import { useAppContext } from "src/context/sessionContext";
 import { nonAuthRoute } from "src/hooks/useAdminRoute";
 import { handleFetchError } from "src/hooks/useModelAdmin";
@@ -69,10 +69,10 @@ const DocumentationPage = () => {
                   >
                     <span class="text-white">{doc.appModelName.toUpperCase()}</span>
                     <Show when={accordionDocs()[i()].isOpen}>
-                      <AngleUp width={5} height={5} />
+                      <AngleUpIcon class="w-5 h-5 dark:text-white" />
                     </Show>
                     <Show when={!accordionDocs()[i()].isOpen}>
-                      <AngleDown width={5} height={5} />
+                      <AngleDownIcon class="w-5 h-5 dark:text-white" />
                     </Show>
                   </button>
                 </h2>

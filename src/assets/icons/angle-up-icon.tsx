@@ -1,14 +1,13 @@
 import { Component } from "solid-js";
 
-type AngleUpProps = {
-    width: number;
-    height: number;
+type AngleUpIconProps = {
+    class: string;
 }
 
-const AngleUp: Component<AngleUpProps> = (props) => {
+const AngleUpIcon: Component<AngleUpIconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height} dark:text-white`}
+      class={props.class}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -27,4 +26,4 @@ const AngleUp: Component<AngleUpProps> = (props) => {
   );
 };
 
-export default AngleUp;
+export default AngleUpIcon;

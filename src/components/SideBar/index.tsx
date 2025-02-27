@@ -13,8 +13,8 @@ import { useAppContext } from "src/context/sessionContext";
 import { UserPermissionsType } from "src/models/user";
 import ChevronLeftIcon from "src/assets/icons/chevron-left-icon";
 import ChevronRightIcon from "src/assets/icons/chevron-right-icon";
-import AngleDown from "src/assets/icons/angle-down";
-import AngleUp from "src/assets/icons/angle-up";
+import AngleDownIcon from "src/assets/icons/angle-down-icon";
+import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import { AppSettingsType } from "src/models/django-admin";
 import { nonAuthRoute } from "src/hooks/useAdminRoute";
 
@@ -97,12 +97,12 @@ const SideBar = () => {
                   <span class="font-bold">{app.name}</span>
                   <Show when={appsIsOpen()[i()]}>
                     <span class="cursor-pointer">
-                      <AngleUp width={5} height={5} />
+                      <AngleUpIcon class="w-5 h-5 dark:text-white" />
                     </span>
                   </Show>
                   <Show when={!appsIsOpen()[i()]}>
                     <span class="cursor-pointer">
-                      <AngleDown width={5} height={5} />
+                      <AngleDownIcon class="w-5 h-5 dark:text-white" />
                     </span>
                   </Show>
                 </div>

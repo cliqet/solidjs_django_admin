@@ -30,8 +30,8 @@ import { nonAuthRoute } from "src/hooks/useAdminRoute";
 import { ListviewDataType } from "src/components/ListModelViewTable";
 import Modal from "src/components/Modal";
 import CheckboxField from "src/components/form_fields/CheckboxField";
-import AngleDown from "src/assets/icons/angle-down";
-import AngleUp from "src/assets/icons/angle-up";
+import AngleDownIcon from "src/assets/icons/angle-down-icon";
+import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import ActionModalMessage from "src/components/ActionModalMessage";
 
 type FilterCheckboxType = {
@@ -490,7 +490,7 @@ const ListModelViewPage = () => {
                   onClick={() => setIsFilterOpen(false)}
                   class="cursor-pointer"
                 >
-                  <AngleUp width={5} height={5} />
+                  <AngleUpIcon class="w-5 h-5 dark:text-white" />
                 </span>
               </Show>
               <Show when={!isFilterOpen()}>
@@ -498,7 +498,7 @@ const ListModelViewPage = () => {
                   onClick={() => setIsFilterOpen(true)}
                   class="cursor-pointer"
                 >
-                  <AngleDown width={5} height={5} />
+                  <AngleDownIcon class="w-5 h-5 dark:text-white" />
                 </span>
               </Show>
             </div>
@@ -562,7 +562,7 @@ const ListModelViewPage = () => {
                   class="cursor-pointer"
                   onClick={() => setIsParentTableOpen(false)}
                 >
-                  <AngleUp width={5} height={5} />
+                  <AngleUpIcon class="w-5 h-5 dark:text-white" />
                 </span>
               </Show>
               <Show when={!isParentTableOpen()}>
@@ -570,7 +570,7 @@ const ListModelViewPage = () => {
                   class="cursor-pointer"
                   onClick={() => setIsParentTableOpen(true)}
                 >
-                  <AngleDown width={5} height={5} />
+                  <AngleDownIcon class="w-5 h-5 dark:text-white" />
                 </span>
               </Show>
             </div>

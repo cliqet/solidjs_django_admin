@@ -1,15 +1,15 @@
 import { Component } from "solid-js";
 
 type ChevronLeftIconProps = {
-    width: number;
-    height: number;
+    class: string;
 }
 
 
 const ChevronLeftIcon: Component<ChevronLeftIconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height} text-white`}
+      // class={`w-${props.width} h-${props.height} text-white`}
+      class={props.class}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"

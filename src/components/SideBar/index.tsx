@@ -153,10 +153,10 @@ const SideBar = () => {
         <div class="absolute top-60 right-[-12px] rounded-full h-7 w-7 bg-custom-primary flex items-center justify-left">
           <span class="cursor-pointer" onClick={toggleSidebarWidth}>
             <Show when={appState.isSidebarMinimized}>
-              <ChevronRightIcon width={5} height={5} />
+              <ChevronRightIcon class="w-5 h-5 text-white" />
             </Show>
             <Show when={!appState.isSidebarMinimized}>
-              <ChevronLeftIcon width={5} height={5} />
+              <ChevronLeftIcon class="w-5 h-5 text-white" />
             </Show>
           </span>
         </div>

@@ -4,6 +4,9 @@ import CheckCircleIcon from "src/assets/icons/check-circle-icon";
 import CloseCircleIcon from "src/assets/icons/close-circle-icon";
 import { FIELDTYPE } from "src/constants/django-admin";
 import { ModelFieldsObjType } from "src/models/django-admin";
+import BorderedSection from "../BorderedSection";
+import PrintIcon from "src/assets/icons/print-icon";
+import { printTable } from "src/hooks/useTable";
 
 
 export type ListviewDataType = {
@@ -121,7 +124,20 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
 
   return (
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <table class="w-full text-sm text-left rtl:text-right table-auto">
+      <div class="my-2 rounded-md p-2 bg-white dark:bg-slate-800">
+          <div class="flex gap-5">
+            <span class="cursor-pointer" onClick={() => {
+              printTable(
+                `main-table-${props.appLabel}-${props.modelName}`,
+                `${props.appLabel.toUpperCase()}-${props.modelName.toUpperCase()}`
+              );
+            }}>
+              <PrintIcon class="w-5 h-5 text-custom-primary-lighter" />
+            </span>
+          </div>
+      </div>
+      
+      <table id={`main-table-${props.appLabel}-${props.modelName}`} class="w-full text-sm text-left rtl:text-right table-auto">
         <thead class="text-xs text-white uppercase bg-custom-primary">
           <tr>
             <th scope="col" class="p-4">
@@ -150,7 +166,7 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
         <tbody>
           <For each={props.listviewData.results}>
             {(record, i) => (
-              <tr class="border-b dark:bg-gray-800 border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
+              <tr class="border-b bg-white dark:bg-gray-800 border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
                 <td class="w-4 px-4 py-2">
                   <div class="flex items-center">
                     <input

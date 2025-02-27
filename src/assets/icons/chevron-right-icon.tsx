@@ -1,10 +1,7 @@
 import { Component } from "solid-js";
+import { IconProps } from "../types";
 
-type ChevronRightIconProps = {
-  class: string;
-};
-
-const ChevronRightIcon: Component<ChevronRightIconProps> = (props) => {
+const ChevronRightIcon: Component<IconProps> = (props) => {
   return (
     <svg
       class={props.class}

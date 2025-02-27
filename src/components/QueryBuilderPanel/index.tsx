@@ -1,5 +1,5 @@
-import { createEffect, createSignal, For, onMount, Show } from "solid-js";
-import CloseCircle from "src/assets/icons/close-circle";
+import { createSignal, For, onMount, Show } from "solid-js";
+import CloseCircleIcon from "src/assets/icons/close-circle-icon";
 import PlusIcon from "src/assets/icons/plus-icon";
 import InputTypeField from "src/components/form_fields/InputTypeField";
 import Label from "src/components/form_fields/Label";
@@ -621,7 +621,7 @@ const QueryBuilderPanel = () => {
                   class="cursor-pointer"
                   onClick={() => removeConditionRow(i())}
                 >
-                  <CloseCircle />
+                  <CloseCircleIcon class="w-6 h-6 text-gray-800" />
                 </span>
               </div>
             </div>
@@ -657,7 +657,7 @@ const QueryBuilderPanel = () => {
                   class="cursor-pointer"
                   onClick={() => removeOrderingRow(i())}
                 >
-                  <CloseCircle />
+                  <CloseCircleIcon class="w-6 h-6 text-gray-800" />
                 </span>
               </div>
             </div>

@@ -1,10 +1,7 @@
 import { Component } from "solid-js";
+import { IconProps } from "../types";
 
-type CheckCircleIconProps = {
-    class: string;
-}
-
-const CheckCircleIcon: Component<CheckCircleIconProps> = (props) => {
+const CheckCircleIcon: Component<IconProps> = (props) => {
   return (
     <svg
       class={props.class}

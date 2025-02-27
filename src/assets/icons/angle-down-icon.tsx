@@ -1,10 +1,7 @@
 import { Component } from "solid-js";
+import { IconProps } from "../types";
 
-type AngleDownIconProps = {
-    class: string;
-}
-
-const AngleDownIcon: Component<AngleDownIconProps> = (props) => {
+const AngleDownIcon: Component<IconProps> = (props) => {
   return (
     <svg
       class={props.class}

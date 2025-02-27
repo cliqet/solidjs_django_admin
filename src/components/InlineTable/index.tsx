@@ -10,7 +10,7 @@ import {
 import AngleDownIcon from "src/assets/icons/angle-down-icon";
 import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import CheckCircleIcon from "src/assets/icons/check-circle-icon";
-import CloseCircle from "src/assets/icons/close-circle";
+import CloseCircleIcon from "src/assets/icons/close-circle-icon";
 import { FIELDTYPE } from "src/constants/django-admin";
 import {
   CustomInlineType,
@@ -222,7 +222,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       if (fieldData) {
         return <CheckCircleIcon class="w-6 h-6 text-gray-800" />;
       } else {
-        return <CloseCircle />;
+        return <CloseCircleIcon class="w-6 h-6 text-gray-800" />;
       }
     } else {
       if (links.includes(fieldName)) {
@@ -491,7 +491,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                 <PlusIcon width={5} height={5} />
               </Show>
               <Show when={isRowAddFormOpen()}>
-                <CloseCircle />
+                <CloseCircleIcon class="w-6 h-6 text-gray-800" />
               </Show>
             </span>
           </div>

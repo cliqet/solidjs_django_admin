@@ -1,14 +1,10 @@
 import { Component } from "solid-js";
+import { IconProps } from "../types";
 
-type TrashDeleteIconProps = {
-    width: number;
-    height: number;
-}
-
-const TrashDeleteIcon: Component<TrashDeleteIconProps> = (props) => {
+const TrashDeleteIcon: Component<IconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height} dark:text-white`}
+      class={props.class}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"

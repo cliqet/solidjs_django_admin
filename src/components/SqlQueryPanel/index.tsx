@@ -273,7 +273,7 @@ const SqlQueryPanel = () => {
 
               <Show when={!isSaving() && !isEditing()}>
                 <span class="cursor-pointer" onClick={onDeleteSavedQuery}>
-                  <TrashDeleteIcon width={5} height={5} />
+                  <TrashDeleteIcon class="w-5 h-5 dark:text-white" />
                 </span>
               </Show>
             </Show>

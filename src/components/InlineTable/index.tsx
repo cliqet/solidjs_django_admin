@@ -428,7 +428,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                       {/** Row actions */}
                       <td class="relative px-6 py-2 dark:text-white">
                         <button onClick={() => onActionOpenOrClose(i())}>
-                          <EllipsisIcon width={5} height={5} />
+                          <EllipsisIcon class="w-5 h-5 dark:text-white" />
                         </button>
                         <Show when={tableRowsActionState()[i()].isOpen}>
                           <div class="absolute right-0 top-full z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">

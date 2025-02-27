@@ -1,15 +1,12 @@
 import { Component } from "solid-js";
-
-type EllipsisIconProps = {
-    width: number;
-    height: number;
-}
+import { IconProps } from "../types";
 
 
-const EllipsisIcon: Component<EllipsisIconProps> = (props) => {
+const EllipsisIcon: Component<IconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height} dark:text-white`}
+      // class={`w-${props.width} h-${props.height} dark:text-white`}
+      class={props.class}
       aria-hidden="true"
       fill="currentColor"
       viewBox="0 0 20 20"

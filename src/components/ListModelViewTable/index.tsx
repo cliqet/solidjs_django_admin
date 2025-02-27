@@ -6,7 +6,8 @@ import { FIELDTYPE } from "src/constants/django-admin";
 import { ModelFieldsObjType } from "src/models/django-admin";
 import BorderedSection from "../BorderedSection";
 import PrintIcon from "src/assets/icons/print-icon";
-import { printTable } from "src/hooks/useTable";
+import { exportTableToCSV, printTable } from "src/hooks/useTable";
+import CsvIcon from "src/assets/icons/csv-icon";
 
 
 export type ListviewDataType = {
@@ -76,9 +77,9 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
 
     if (props.modelFields[fieldName].type === FIELDTYPE.BooleanField) {
       if (fieldData) {
-        return <CheckCircleIcon class="w-6 h-6 text-gray-800" />;
+        return <CheckCircleIcon class="w-6 h-6 text-gray-800 boolean-true" />;
       } else {
-        return <CloseCircleIcon class="w-6 h-6 text-gray-800" />;
+        return <CloseCircleIcon class="w-6 h-6 text-gray-800 boolean-false" />;
       }
     } else {
       if (links.includes(fieldName)) {
@@ -133,6 +134,15 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
               );
             }}>
               <PrintIcon class="w-5 h-5 text-custom-primary-lighter" />
+            </span>
+
+            <span class="cursor-pointer" onClick={() => {
+              exportTableToCSV(
+                `main-table-${props.appLabel}-${props.modelName}`,
+                `${props.appLabel.toUpperCase()}-${props.modelName.toUpperCase()}`
+              );
+            }}>
+              <CsvIcon class="w-6 h-6 text-custom-primary-lighter" />
             </span>
           </div>
       </div>

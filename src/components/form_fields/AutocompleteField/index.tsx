@@ -33,8 +33,8 @@ const AutocompletField: Component<AutocompleteFieldProps> = (props) => {
   const [displayedOptions, setDisplayedOptions] = createSignal<
     DropdownOptionsType[]
   >(props.options);
-  let labelInputRef: HTMLInputElement;
-  let valueInputRef: HTMLInputElement;
+  let labelInputRef!: HTMLInputElement;
+  let valueInputRef!: HTMLInputElement;
 
   onMount(() => {
     const selected = displayedOptions().find((option) => option.selected);
@@ -111,7 +111,7 @@ const AutocompletField: Component<AutocompleteFieldProps> = (props) => {
           }}
         />
         <span class="absolute top-3 left-2">
-          <SearchIcon />
+          <SearchIcon class="w-4 h-4 text-gray-500" />
         </span>
         <div
           class="absolute top-1/2 end-3 -translate-y-1/2"

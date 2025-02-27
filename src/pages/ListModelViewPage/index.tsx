@@ -411,7 +411,7 @@ const ListModelViewPage = () => {
         )}
       >
         <div class="flex flex-col sm:flex-row justify-between p-1 items-center mb-2">
-          <h1 class="text-xl dark:text-white">
+          <h1 class="text-xl dark:text-green-400">
             Select {modelAdminSettings().model_name} to change
           </h1>
           <Show
@@ -436,7 +436,7 @@ const ListModelViewPage = () => {
 
         {/** Search */}
         <Show when={modelAdminSettings().search_fields.length > 0}>
-          <div class="flex-col p-2 rounded-md mb-4 bg-green-100 dark:bg-gray-700">
+          <div class="flex-col p-2 rounded-md mb-4 bg-teal-100 dark:bg-gray-700">
             <SearchInput
               onSearchClick={(searchTerm) => onSearch(searchTerm)}
               onClearSearch={(searchTerm) => onSearch(searchTerm)}
@@ -447,7 +447,7 @@ const ListModelViewPage = () => {
                 value: searchTerm(),
               }}
             />
-            <p class="dark:text-white text-xs my-2">
+            <p class="dark:text-gray-300 text-xs my-2">
               {modelAdminSettings().search_help_text}
             </p>
           </div>
@@ -461,8 +461,8 @@ const ListModelViewPage = () => {
             params.modelName
           )}
         >
-          <div class="flex-col p-2 rounded-md mb-4 bg-green-100 dark:bg-gray-700">
-            <span class="dark:text-white text-sm">Actions</span>
+          <div class="flex-col p-2 rounded-md mb-4 bg-teal-100 dark:bg-gray-700">
+            <span class="dark:text-teal-300 text-sm">Actions</span>
             <div class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-1/2">
               <div class="w-full md:w-4/5">
                 <SelectField
@@ -482,9 +482,9 @@ const ListModelViewPage = () => {
 
         {/** Filters */}
         <Show when={modelAdminSettings().list_filter.length > 0}>
-          <div class="flex-col p-2 rounded-md mb-4 bg-green-100 dark:bg-gray-700">
+          <div class="flex-col p-2 rounded-md mb-4 bg-teal-100 dark:bg-gray-700">
             <div class="mb-2 flex justify-between">
-              <span class="dark:text-white text-sm">Filters</span>
+              <span class="dark:text-teal-300 text-sm">Filters</span>
               <Show when={isFilterOpen()}>
                 <span
                   onClick={() => setIsFilterOpen(false)}
@@ -504,7 +504,7 @@ const ListModelViewPage = () => {
             </div>
             <Show when={filterState()}>
               <div
-                class="bg-yellow-50 dark:bg-slate-800 p-2 rounded-md"
+                class="bg-orange-50 dark:bg-slate-800 p-2 rounded-md"
                 classList={{
                   hidden: !isFilterOpen(),
                   visible: isFilterOpen(),
@@ -555,7 +555,7 @@ const ListModelViewPage = () => {
         <div class="flex-col p-2 rounded-md mb-2 bg-green-100 dark:bg-gray-700">
           <div class="flex-col mb-2">
             <div class="flex justify-between">
-              <h3 class="text-lg dark:text-white">
+              <h3 class="text-lg dark:text-green-400">
                 {modelAdminSettings().model_name}
               </h3>
               <Show when={isParentTableOpen()}>

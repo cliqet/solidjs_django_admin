@@ -125,7 +125,7 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
 
   return (
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <div class="my-2 rounded-md p-2 bg-white dark:bg-slate-800">
+      <div class="w-full my-2 rounded-md p-2 bg-white dark:bg-slate-800">
           <div class="flex gap-5">
             <span class="cursor-pointer" onClick={() => {
               printTable(

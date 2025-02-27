@@ -1,14 +1,10 @@
 import { Component } from "solid-js";
+import { IconProps } from "../types";
 
-type RedisIconProps = {
-    width: number;
-    height: number;
-}
-
-const RedisIcon: Component<RedisIconProps> = (props) => {
+const RedisIcon: Component<IconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height} text-white`}
+      class={props.class}
       stroke="currentColor"
       fill="currentColor"
       stroke-width="0"

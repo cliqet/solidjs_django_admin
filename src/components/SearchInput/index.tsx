@@ -84,7 +84,7 @@ const SearchInput: Component<SearchInputProps> = (props) => {
             }}
             class="absolute top-4 right-3 cursor-pointer"
           >
-            <CloseXIcon width={3} height={3} />
+            <CloseXIcon class="w-3 h-3" />
           </span>
         </div>
 

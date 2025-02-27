@@ -1,14 +1,11 @@
 import { Component } from "solid-js";
+import { IconProps } from "../types";
 
-type CloseXIconProps = {
-    width: number;
-    height: number;
-}
 
-const CloseXIcon: Component<CloseXIconProps> = (props) => {
+const CloseXIcon: Component<IconProps> = (props) => {
   return (
     <svg
-      class={`w-${props.width} h-${props.height}`}
+      class={props.class}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"

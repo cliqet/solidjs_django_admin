@@ -62,7 +62,7 @@ const ToastAlert: Component = () => {
           onClick={() => setAppState("toastState", "isShowing", false)}
         >
           <span class="sr-only">Close</span>
-          <CloseXIcon width={3} height={3} />
+          <CloseXIcon class="w-3 h-3" />
         </button>
       </div>
     </Show>

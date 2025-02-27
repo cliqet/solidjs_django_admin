@@ -706,7 +706,7 @@ const QueryBuilderPanel = () => {
                     setSaveAsQueryName(queryNameEl.value);
                   }
                 }}>
-                  <PencilEditIcon width={5} height={5} />
+                  <PencilEditIcon class="w-5 h-5 dark:text-white" />
                 </span>
               </Show>
 

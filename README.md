@@ -46,9 +46,15 @@ Modify the directories according to your environments.
 #### Forms
 <img width="1335" alt="add_form" src="https://github.com/user-attachments/assets/f36bca66-e6bd-4873-a13c-4331106ea7e4" />
 
+### Inlines
+<img width="1376" alt="inlines" src="https://github.com/user-attachments/assets/a3bcac9b-752a-49d5-939d-b0d8aa123604" />
+
+### Change Inline row
+<img width="1376" alt="change_inline" src="https://github.com/user-attachments/assets/58b8fed7-c3e0-4f6a-8eee-2c38b72b9c29" />
+
 #### Listview
-<img width="1335" alt="listview1" src="https://github.com/user-attachments/assets/1d1c3ba1-5ca8-4248-b0bd-e072344d22ce" />
-<img width="1335" alt="listview2" src="https://github.com/user-attachments/assets/2db57c18-2e09-415c-97fa-90fa0f3a4e6d" />
+<img width="1376" alt="listview1" src="https://github.com/user-attachments/assets/70a8a45c-3834-4729-a9a3-ddd6ad5e3ebf" />
+<img width="1376" alt="listview2" src="https://github.com/user-attachments/assets/d0e56849-51aa-452c-82e1-5a14acb8b275" />
 
 #### Documentation 
 <img width="1335" alt="doc_page" src="https://github.com/user-attachments/assets/2a1fd52a-6ea3-4c52-b58a-0434f5826e11" />
@@ -62,6 +68,11 @@ Modify the directories according to your environments.
 ### Raw SQL Query Reports
 <img width="1350" alt="Screenshot 2025-02-14 at 2 26 09 PM" src="https://github.com/user-attachments/assets/252cfb7b-562a-4d09-826f-ad02b2d21d78" />
 
+### Lightmode
+<img width="1376" alt="lightmode" src="https://github.com/user-attachments/assets/b6224e77-eb7e-4693-8ec5-77f8157834c9" />
+
+### Mobile
+<img width="323" alt="mobile" src="https://github.com/user-attachments/assets/56740b2c-cbd0-4217-9012-0d07d3750c62" />
 
 
 

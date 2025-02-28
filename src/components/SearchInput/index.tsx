@@ -23,7 +23,7 @@ const SearchInput: Component<SearchInputProps> = (props) => {
       <div>
         <label
           for="default-search"
-          class="text-sm font-medium text-gray-900 dark:text-white"
+          class="text-sm font-medium text-gray-900 dark:text-teal-300"
         >
           Search
         </label>

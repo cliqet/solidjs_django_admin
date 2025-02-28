@@ -27,6 +27,8 @@ import Modal from "../Modal";
 import ActionModalMessage from "../ActionModalMessage";
 import { nonAuthRoute } from "src/hooks/useAdminRoute";
 import { useNavigate } from "@solidjs/router";
+import AngleUpIcon from "src/assets/icons/angle-up-icon";
+import AngleDownIcon from "src/assets/icons/angle-down-icon";
 
 type ChangeModelFormProps = {
   appLabel: string;
@@ -56,6 +58,7 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
   const { appState, setAppState } = useAppContext();
   const [isModalOpen, setIsModalOpen] = createSignal(false);
   const navigate = useNavigate();
+  const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
   let modalEventPromise: (event: string) => void;
 
   onMount(async () => {
@@ -82,6 +85,10 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
     );
 
     props.setModelFields(newModelFields);
+
+    props.modelAdminSettings.fieldsets.forEach(fieldset => {
+      fieldsetSectionsIsOpen().push(true);
+    });
 
     setIsDataReady(true);
   });
@@ -231,10 +238,40 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
           <For each={props.modelAdminSettings.fieldsets}>
             {(fieldset, i) => (
               <div>
-                <div class="bg-custom-primary p-2 rounded-t-md my-3">
+                <div class="bg-custom-primary p-2 rounded-t-md my-3 flex justify-between">
                   <h3 class="text-white">{fieldset.title}</h3>
+                  <Show when={fieldsetSectionsIsOpen()[i()]}>
+                    <span
+                      onClick={() => {
+                        let sections = [...fieldsetSectionsIsOpen()];
+                        sections[i()] = false;
+                        setFieldsetSectionsIsOpen(sections);
+                      }}
+                      class="cursor-pointer"
+                    >
+                      <AngleUpIcon class="w-5 h-5 dark:text-white" />
+                    </span>
+                  </Show>
+                  <Show when={!fieldsetSectionsIsOpen()[i()]}>
+                    <span
+                      onClick={() => {
+                        let sections = [...fieldsetSectionsIsOpen()];
+                        sections[i()] = true;
+                        setFieldsetSectionsIsOpen(sections);
+                      }}
+                      class="cursor-pointer"
+                    >
+                      <AngleDownIcon class="w-5 h-5 dark:text-white" />
+                    </span>
+                  </Show>
                 </div>
-                <div class="w-full sm:w-3/4 lg:w-1/2">
+                <div 
+                  class="w-full sm:w-3/4 lg:w-1/2"
+                  classList={{
+                    "hidden": !fieldsetSectionsIsOpen()[i()],
+                    "": fieldsetSectionsIsOpen()[i()]
+                  }}
+                >
                   <For each={fieldset.fields}>
                     {(field, j) => (
                       <>

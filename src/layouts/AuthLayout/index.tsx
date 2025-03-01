@@ -27,6 +27,7 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
         const tokenPayload: User = jwtDecode(token);
         setAppState("user", { ...tokenPayload });
       } catch (err) {
+        setAppState("user", null);
         navigate(
           `${nonAuthRoute.loginView}?redirect=${encodeURI(location.pathname)}`
         );
@@ -39,6 +40,7 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
         localStorage.clear();
       }
     } else {
+      setAppState("user", null);
       setAppState("toastState", {
         ...appState.toastState,
         isShowing: true,

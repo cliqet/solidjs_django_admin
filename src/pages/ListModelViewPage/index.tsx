@@ -82,6 +82,7 @@ const ListModelViewPage = () => {
   const [isModalOpen, setIsModalOpen] = createSignal(false);
   const [isFilterOpen, setIsFilterOpen] = createSignal(false);
   const [isParentTableOpen, setIsParentTableOpen] = createSignal(true);
+  const [isPaginated, setIsPaginated] = createSignal(true);
   let modalEventPromise: (event: string) => void;
 
   const resetFilters = () => {
@@ -575,10 +576,33 @@ const ListModelViewPage = () => {
                 </span>
               </Show>
             </div>
-            <div class="flex items-center justify-center">
+
+            <div class="flex items-center justify-center gap-3">
               <span class="dark:text-white text-sm">
                 Page {currentPage()}: Total of {listviewData()?.count} records
               </span>
+              <Show when={isPaginated()}>
+                <span
+                  onClick={() => {
+                    setPageLimit(listviewData()?.count as number);
+                    setIsPaginated(false);
+                  }}
+                  class="text-custom-primary-lighter cursor-pointer underline text-sm"
+                >
+                  View All
+                </span>
+              </Show>
+              <Show when={!isPaginated()}>
+                <span
+                  onClick={() => {
+                    setPageLimit(modelAdminSettings().list_per_page);
+                    setIsPaginated(true);
+                  }}
+                  class="text-custom-primary-lighter cursor-pointer underline text-sm"
+                >
+                  Paginate
+                </span>
+              </Show>
             </div>
           </div>
           <div

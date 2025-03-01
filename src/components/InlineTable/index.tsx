@@ -331,7 +331,14 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       <div class="relative overflow-x-auto shadow-md sm:rounded-lg pb-5">
         <div class="flex justify-between my-2">
           <h3 class="text-lg dark:text-white">
-            {props.inline.model_name_label} Inline
+            Inline: 
+            <a 
+              href={`/dashboard/${props.inline.app_label}/${props.inline.model_name}`}
+              target="_blank" 
+              class="text-custom-primary-lighter cursor-pointer underline"
+            >
+              {props.inline.model_name_label} 
+            </a>
           </h3>
           <Show when={isTableOpen()}>
             <span class="cursor-pointer" onClick={() => setIsTableOpen(false)}>

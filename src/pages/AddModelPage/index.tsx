@@ -23,17 +23,19 @@ const AddModelPage = () => {
 
   createEffect(async () => {
     try {
-      // Setup model fields and model admin settings
+      // Setup model fields, model admin settings and user permissions
       setIsDataReady(false);
 
-      const modelFieldsData = await getModelFields(params.appLabel, params.modelName);
+      const [
+        modelFieldsData, modelAdminSettingsData, permissionsData
+      ] = await Promise.all([
+        getModelFields(params.appLabel, params.modelName),
+        getModelAdminSettings(params.appLabel, params.modelName),
+        getUserPermissions(appState.user?.uid as string)
+      ]);
+
       setModelFields(modelFieldsData.fields);
-
-      const modelAdminSettingsData = await getModelAdminSettings(params.appLabel, params.modelName);
       setModelAdminSettings(modelAdminSettingsData.model_admin_settings);
-
-      // Setup permissions
-      const permissionsData = await getUserPermissions(appState.user?.uid as string);
       setUserPermissions(permissionsData.permissions);
 
       // get all the fields and have each in formFieldState

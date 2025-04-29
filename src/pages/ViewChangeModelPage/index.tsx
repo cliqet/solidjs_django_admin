@@ -47,30 +47,34 @@ const ViewChangeModelPage = () => {
     try {
       setIsDataReady(false);
 
+      const [
+        modelFieldsData,
+        modelAdminSettingsData,
+        permissionsData
+      ] = await Promise.all([
+        getModelFieldsEdit(
+          params.appLabel,
+          params.modelName,
+          params.pk
+        ),
+        getModelAdminSettings(
+          params.appLabel,
+          params.modelName
+        ),
+        getUserPermissions(
+          appState.user?.uid as string
+        )
+      ]);
+
       // Setup model fields and model admin settings
-      const modelFieldsData = await getModelFieldsEdit(
-        params.appLabel,
-        params.modelName,
-        params.pk
-      );
-
       setModelFields(modelFieldsData.fields);
-
-      const modelAdminSettingsData = await getModelAdminSettings(
-        params.appLabel,
-        params.modelName
-      );
       setModelAdminSettings(modelAdminSettingsData.model_admin_settings);
-
-      // Setup permissions
-      const permissionsData = await getUserPermissions(
-        appState.user?.uid as string
-      );
       setUserPermissions(permissionsData.permissions);
 
       setIsDataReady(true);
     } catch (err: any) {
       const handler = handleFetchError(err);
+      
       if (handler.shouldNavigate) {
         navigate(nonAuthRoute.loginView);
       } else {

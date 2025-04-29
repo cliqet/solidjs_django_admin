@@ -1,4 +1,5 @@
 import { noSessionClient, sessionClient } from "src/hooks/useFetch";
+import { ModelAdminSettingsType } from "src/models/django-admin";
 
 export async function getApps(): Promise<any> {
   const { appList } = await sessionClient.fetch({
@@ -17,7 +18,10 @@ export async function getModelFields(appLabel: string, modelName: string): Promi
   return response;
 }
 
-export async function getModelAdminSettings(appLabel: string, modelName: string): Promise<any> {
+export async function getModelAdminSettings(
+  appLabel: string, 
+  modelName: string
+): Promise<{ model_admin_settings: ModelAdminSettingsType }> {
   const response = await sessionClient.fetch({
     method: "GET",
     urlSegment: `/django-admin/model-admin-settings/${appLabel}/${modelName}`,

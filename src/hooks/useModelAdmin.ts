@@ -209,7 +209,7 @@ export const buildModelFormData = (
     let fieldValue;
 
     // Handle values for file related fields
-    if (["FileField", "ImageField"].includes(modelFields[fieldName].type)) {
+    if ([FIELDTYPE.FileField, FIELDTYPE.ImageField].includes(modelFields[fieldName].type)) {
       const fileMetadata = fieldsInFormState?.[fieldName].metadata;
       if (fileMetadata && fileMetadata.file) {
         fieldValue = fileMetadata.file;
@@ -217,6 +217,8 @@ export const buildModelFormData = (
         fieldValue = "";
         formData.append(fieldName, fieldValue);
       }
+    } else if (modelFields[fieldName].type === FIELDTYPE.JSONField) {
+      formData.append(fieldName, JSON.stringify(fieldsInFormState?.[fieldName as string]?.value))
     } else {
       const value = fieldsInFormState?.[fieldName as string]?.value;
       if (typeof value === "string") {
@@ -379,7 +381,7 @@ export const updateModelFieldsWithDbValues = (
 
     // Handle JSON field value on initialization
     if (newModelFields[fieldName].type === "JSONField") {
-      newModelFields[fieldName].initial = JSON.parse(dbValue);
+      newModelFields[fieldName].initial = dbValue;
     }
 
     // Handle CharFields that have text choices

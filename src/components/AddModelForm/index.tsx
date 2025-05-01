@@ -2,20 +2,12 @@ import { Component, createSignal, For, onMount, Setter, Show } from "solid-js";
 import Label from "../form_fields/Label";
 import DynamicFormField from "../form_fields/DynamicFormField";
 import FieldErrorMessage from "../form_fields/FieldErrorMessage";
-import {
-  buildFieldStateOnError,
-  buildFieldStateOnFieldChange,
-  buildFieldStateOnFocus,
-  buildModelFormData,
-  isReadOnlyField,
-  updateFieldStateOnInvalidFields,
-} from "src/hooks/useModelAdmin";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import {
   FieldsInFormStateType,
   ModelAdminSettingsType,
   ModelFieldsObjType,
 } from "src/models/django-admin";
-import { scrollToTopForm } from "src/hooks/useUI";
 import { useAppContext } from "src/context/sessionContext";
 import { addRecord } from "src/services/django-admin";
 import PlusIcon from "src/assets/icons/plus-icon";
@@ -23,6 +15,7 @@ import { useNavigate } from "@solidjs/router";
 import { FIELDTYPE } from "src/constants/django-admin";
 import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import AngleDownIcon from "src/assets/icons/angle-down-icon";
+import { useUI } from "src/hooks/useUI";
 
 type AddModelFormProps = {
   appLabel: string;
@@ -37,6 +30,15 @@ type AddModelFormProps = {
 const AddModelForm: Component<AddModelFormProps> = (props) => {
   const { appState, setAppState } = useAppContext();
   const navigate = useNavigate();
+  const { scrollToTopForm } = useUI();
+  const {
+    buildFieldStateOnError,
+    buildFieldStateOnFieldChange,
+    buildFieldStateOnFocus,
+    buildModelFormData,
+    isReadOnlyField,
+    updateFieldStateOnInvalidFields,
+  } = useModelAdmin();
   const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
   const [isDataReady, setIsDataReady] = createSignal(false);
 

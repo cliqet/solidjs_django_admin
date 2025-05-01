@@ -1,8 +1,8 @@
 import { Component, Show, For } from "solid-js";
-import { formatDateString } from "src/hooks/useModelAdmin";
-import { ModelFieldType } from "../DynamicFormField";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import { A } from "@solidjs/router";
 import { FIELDTYPE } from "src/constants/django-admin";
+import { ModelFieldType } from "src/models/django-admin";
 
 type DynamicViewOnlyFieldProps = {
   modelRecord: any;
@@ -12,6 +12,8 @@ type DynamicViewOnlyFieldProps = {
 };
 
 const DynamicViewOnlyField: Component<DynamicViewOnlyFieldProps> = (props) => {
+  const { formatDateString } = useModelAdmin();
+
   const isDateTime = () => {
     return props.fieldType === FIELDTYPE.DateTimeField;
   }

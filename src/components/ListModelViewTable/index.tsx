@@ -3,40 +3,15 @@ import { Component, For } from "solid-js";
 import CheckCircleIcon from "src/assets/icons/check-circle-icon";
 import CloseCircleIcon from "src/assets/icons/close-circle-icon";
 import { FIELDTYPE } from "src/constants/django-admin";
-import { ModelFieldsObjType } from "src/models/django-admin";
-import BorderedSection from "../BorderedSection";
+import { ListModelViewTableProps, ModelFieldsObjType } from "src/models/django-admin";
 import PrintIcon from "src/assets/icons/print-icon";
-import { exportTableToCSV, printTable } from "src/hooks/useTable";
+import { useTable } from "src/hooks/useTable";
 import CsvIcon from "src/assets/icons/csv-icon";
 
 
-export type ListviewDataType = {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: any[];
-}
-
-export type TableEventType = 'rowSelectAll' | 'rowSelect';
-
-export type TableMetatdataType = {  
-  rowsSelected?: { id: string; isChecked: boolean; }[];
-  rowSelected?: { id: string; isChecked: boolean; };
-}
-
-type ListModelViewTableProps = {
-  appLabel: string;
-  modelName: string;
-  ordering: string[];
-  listdisplayFields: string[];
-  listdisplayLinks: string[];
-  customChangeLink: string;
-  listviewData: ListviewDataType;
-  modelFields: ModelFieldsObjType;
-  onTableEvent: (tableEvent: TableEventType, metadata: TableMetatdataType) => any;
-}
 
 const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
+  const { exportTableToCSV, printTable } = useTable();
   let checkboxAllRef!: HTMLInputElement;
   let checkboxRowRefs: HTMLInputElement[] = new Array(length).fill(null);
 

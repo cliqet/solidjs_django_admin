@@ -21,17 +21,17 @@ const DateTimeField: Component<DateTimeFieldProps> = (props) => {
 
   onMount(() => {
     if (props.initialValues.date) {
-      dateRef.value = props.initialValues.date;
+      dateRef!.value = props.initialValues.date;
     }
 
     if (props.initialValues.time) {
-      timeRef.value = props.initialValues.time;
+      timeRef!.value = props.initialValues.time;
     }
   })
 
   const datetimeOnChange = (elementId: string) => {
-    const dateValue = dateRef.value;
-    const timeValue = timeRef.value;
+    const dateValue = dateRef!.value;
+    const timeValue = timeRef!.value;
 
     // Do not return anything unless they both have values
     if (!dateValue || !timeValue) {

@@ -1,11 +1,7 @@
 import { createSignal, Show } from "solid-js";
 import { A, useNavigate } from "@solidjs/router";
 import { useAppContext } from "src/context/sessionContext";
-import {
-  authRoute,
-  nonAuthRoute,
-  dashboardRoute,
-} from "src/hooks/useAdminRoute";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
 import { logoutUser } from "src/services/users";
 import MoonIcon from "src/assets/icons/moon-icon";
 import SunIcon from "src/assets/icons/sun-icon";
@@ -16,6 +12,7 @@ const HeaderBar = () => {
   const { appState, setAppState, setToDarkMode, setToLightMode } =
     useAppContext();
   const navigate = useNavigate();
+  const { authRoute, nonAuthRoute, dashboardRoute } = useAdminRoute();
 
   const toggleMode = () => {
     if (appState.themeMode === "light") {

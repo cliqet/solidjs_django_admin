@@ -3,12 +3,7 @@ import { createEffect, createSignal, For, Show } from "solid-js";
 import { getApps } from "src/services/django-admin";
 import { getUserPermissions } from "src/services/users";
 import PlusIcon from "src/assets/icons/plus-icon";
-import {
-  handleFetchError,
-  hasAddModelPermission,
-  hasAppPermission,
-  hasModelPermission,
-} from "src/hooks/useModelAdmin";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import { useAppContext } from "src/context/sessionContext";
 import { UserPermissionsType } from "src/models/user";
 import ChevronLeftIcon from "src/assets/icons/chevron-left-icon";
@@ -16,7 +11,7 @@ import ChevronRightIcon from "src/assets/icons/chevron-right-icon";
 import AngleDownIcon from "src/assets/icons/angle-down-icon";
 import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import { AppSettingsType } from "src/models/django-admin";
-import { nonAuthRoute } from "src/hooks/useAdminRoute";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
 
 
 const SideBar = () => {
@@ -26,6 +21,13 @@ const SideBar = () => {
   const { appState, setAppState, toggleSidebarWidth } = useAppContext();
   const [appsIsOpen, setAppsIsOpen] = createSignal<boolean[]>([]);
   const navigate = useNavigate();
+  const {
+    handleFetchError,
+    hasAddModelPermission,
+    hasAppPermission,
+    hasModelPermission,
+  } = useModelAdmin();
+  const { nonAuthRoute } = useAdminRoute();
 
   createEffect(async () => {
     try {

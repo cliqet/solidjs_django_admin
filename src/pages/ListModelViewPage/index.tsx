@@ -13,6 +13,8 @@ import {
   getModelListview,
 } from "src/services/django-admin";
 import {
+  FilterCheckboxType,
+  FilterStateType,
   initialModelAdminSettings,
   ModelAdminSettingsType,
   ModelFieldsObjType,
@@ -20,13 +22,8 @@ import {
 import { UserPermissionsType } from "src/models/user";
 import { getUserPermissions } from "src/services/users";
 import { useAppContext } from "src/context/sessionContext";
-import {
-  handleFetchError,
-  hasAddModelPermission,
-  hasChangeModelPermission,
-  hasViewModelPermission,
-} from "src/hooks/useModelAdmin";
-import { nonAuthRoute } from "src/hooks/useAdminRoute";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
 import { ListviewDataType } from "src/components/ListModelViewTable";
 import Modal from "src/components/Modal";
 import CheckboxField from "src/components/form_fields/CheckboxField";
@@ -34,20 +31,7 @@ import AngleDownIcon from "src/assets/icons/angle-down-icon";
 import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import ActionModalMessage from "src/components/ActionModalMessage";
 
-type FilterCheckboxType = {
-  field: string;
-  values: {
-    value: string | number | null;
-    label: string;
-    checked: boolean;
-    checkboxId: string;
-  }[];
-};
 
-type FilterStateType = {
-  checkboxes: FilterCheckboxType[];
-  pageFilters: { [key: string]: any[] };
-};
 
 const NO_ACTION = "-";
 
@@ -84,6 +68,13 @@ const ListModelViewPage = () => {
   const [isParentTableOpen, setIsParentTableOpen] = createSignal(true);
   const [isPaginated, setIsPaginated] = createSignal(true);
   let modalEventPromise: (event: string) => void;
+  const {
+    handleFetchError,
+    hasAddModelPermission,
+    hasChangeModelPermission,
+    hasViewModelPermission,
+  } = useModelAdmin();
+  const { nonAuthRoute } = useAdminRoute();
 
   const resetFilters = () => {
     // Set initial filter state

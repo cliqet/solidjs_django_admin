@@ -4,39 +4,17 @@ import CheckboxField from "../CheckboxField";
 import DateField from "../DateField";
 import TimeField from "../TimeField";
 import PasswordField from "../PasswordField";
-import SelectField, { SelectedOptionsType } from "../SelectField";
+import SelectField from "../SelectField";
 import TextareaField from "../TextareaField";
 import FileUploadField from "../FileUploadField";
 import DateTimeField from "../DateTimeField";
-import ManyToManyField, { ManyToManyCheckboxDataType } from "../ManyToManyField";
+import ManyToManyField from "../ManyToManyField";
 import JsonField from "../JsonField";
-import { formatTimeForInput, getFilefieldLimits, splitDateTimeString } from "src/hooks/useModelAdmin";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import HTMLField from "../HTMLField";
 import AutocompletField from "../AutocompleteField";
-import { ModelAdminSettingsType } from "src/models/django-admin";
 import { FIELDTYPE } from "src/constants/django-admin";
-
-
-export type ModelFieldType = {
-  name: string;
-  label: string;
-  is_primary_key: boolean;
-  max_length: number | null;
-  editable: boolean;
-  help_text: string;
-  auto_created: boolean;
-  type: string;
-  initial: any;
-  required: boolean;
-  choices: SelectedOptionsType[] | null;
-  foreignkey_choices?: SelectedOptionsType[] | null;
-  foreignkey_app?: string;
-  foreignkey_model?: string;
-  regex_pattern?: string;
-  min_value?: number;
-  max_value?: number;
-  manytomany_choices?: ManyToManyCheckboxDataType[];
-};
+import { SelectedOptionsType, ManyToManyCheckboxDataType, ModelFieldType, ModelAdminSettingsType } from "src/models/django-admin";
 
 type DynamicFormFieldProps = {
   field: ModelFieldType;
@@ -50,6 +28,12 @@ type DynamicFormFieldProps = {
 };
 
 const DynamicFormField: Component<DynamicFormFieldProps> = (props) => {
+  const {
+    formatTimeForInput, 
+    getFilefieldLimits, 
+    splitDateTimeString,
+  } = useModelAdmin();
+
   const NotReadonlyCharfield = () => {
     return [FIELDTYPE.CharField].includes(props.field.type)&& !props.isReadonly;
   }

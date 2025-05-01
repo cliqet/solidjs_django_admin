@@ -1,10 +1,6 @@
 import { Component, For, JSX } from "solid-js";
+import { SelectedOptionsType } from "src/models/django-admin";
 
-export type SelectedOptionsType = {
-  selected: boolean;
-  value: any;
-  label: string;
-};
 
 type SelectFieldProps = {
   selectProps: {

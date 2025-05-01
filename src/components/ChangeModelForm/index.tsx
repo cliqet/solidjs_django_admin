@@ -2,17 +2,7 @@ import { Component, createSignal, For, onMount, Setter, Show } from "solid-js";
 import Label from "../form_fields/Label";
 import DynamicFormField from "../form_fields/DynamicFormField";
 import FieldErrorMessage from "../form_fields/FieldErrorMessage";
-import {
-  buildFieldStateOnError,
-  buildFieldStateOnFieldChange,
-  buildFieldStateOnFocus,
-  buildModelFormData,
-  handleFetchError,
-  initializeChangeFormFieldState,
-  isReadOnlyField,
-  updateFieldStateOnInvalidFields,
-  updateModelFieldsWithDbValues,
-} from "src/hooks/useModelAdmin";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import {
   FieldsInFormStateType,
   ModelAdminSettingsType,
@@ -20,15 +10,15 @@ import {
 } from "src/models/django-admin";
 import { changeRecord, deleteRecord, getModelRecord } from "src/services/django-admin";
 import { useAppContext } from "src/context/sessionContext";
-import { scrollToTopForm } from "src/hooks/useUI";
 import PlusIcon from "src/assets/icons/plus-icon";
 import { FIELDTYPE } from "src/constants/django-admin";
 import Modal from "../Modal";
 import ActionModalMessage from "../ActionModalMessage";
-import { nonAuthRoute } from "src/hooks/useAdminRoute";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
 import { useNavigate } from "@solidjs/router";
 import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import AngleDownIcon from "src/assets/icons/angle-down-icon";
+import { useUI } from "src/hooks/useUI";
 
 type ChangeModelFormProps = {
   appLabel: string;
@@ -59,6 +49,19 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
   const [isModalOpen, setIsModalOpen] = createSignal(false);
   const navigate = useNavigate();
   const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
+  const { scrollToTopForm } = useUI();
+  const {
+    buildFieldStateOnError,
+    buildFieldStateOnFieldChange,
+    buildFieldStateOnFocus,
+    buildModelFormData,
+    handleFetchError,
+    initializeChangeFormFieldState,
+    isReadOnlyField,
+    updateFieldStateOnInvalidFields,
+    updateModelFieldsWithDbValues,
+  } = useModelAdmin();
+  const { nonAuthRoute } = useAdminRoute();
   let modalEventPromise: (event: string) => void;
 
   onMount(async () => {

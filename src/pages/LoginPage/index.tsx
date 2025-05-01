@@ -1,18 +1,19 @@
 import { loginUser } from "src/services/users";
 import { createEffect, createSignal, Show, onMount } from "solid-js";
 import FieldErrorMessage from "src/components/form_fields/FieldErrorMessage";
-import useStorageEvent from "src/hooks/useStorageEvent";
 import { useNavigate, useLocation } from "@solidjs/router";
 import { useAppContext } from "src/context/sessionContext";
 import { Turnstile, TurnstileRef } from "src/components/Turnstile";
 import { verifyCloudflareToken } from "src/services/django-admin";
-import { authRoute, dashboardRoute } from "src/hooks/useAdminRoute";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
 import { User } from "src/models/user";
 import { jwtDecode } from "jwt-decode";
+import { useStorageEvent } from "src/hooks/useStorageEvent";
 
 
 const LoginPage = () => {
   const { appState, setAppState } = useAppContext();
+  const { authRoute, dashboardRoute } = useAdminRoute();
   const location = useLocation();
   const [turnstileToken, setTurnstileToken] = createSignal("");
   const [isButtonHidden, setIsButtonHidden] = createSignal(false);

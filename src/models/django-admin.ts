@@ -1,4 +1,35 @@
-import { ModelFieldType } from "src/components/form_fields/DynamicFormField";
+export type SelectedOptionsType = {
+  selected: boolean;
+  value: any;
+  label: string;
+};
+
+export type ManyToManyCheckboxDataType = {
+  id: string;
+  checked: boolean;
+  label: string;
+};
+
+export type ModelFieldType = {
+  name: string;
+  label: string;
+  is_primary_key: boolean;
+  max_length: number | null;
+  editable: boolean;
+  help_text: string;
+  auto_created: boolean;
+  type: string;
+  initial: any;
+  required: boolean;
+  choices: SelectedOptionsType[] | null;
+  foreignkey_choices?: SelectedOptionsType[] | null;
+  foreignkey_app?: string;
+  foreignkey_model?: string;
+  regex_pattern?: string;
+  min_value?: number;
+  max_value?: number;
+  manytomany_choices?: ManyToManyCheckboxDataType[];
+};
 
 export type ModelFieldsObjType = {
   [key: string]: ModelFieldType;
@@ -112,3 +143,108 @@ export type AppSettingsType = {
   models: AppModelType[];
 };
 
+export type InlineRowFormProps = {
+  appLabel: string;
+  modelName: string;
+  pk: string;
+  modelAdminSettings: ModelAdminSettingsType;
+  onSave: () => void;
+};
+
+export type AddModelFormProps = {
+  appLabel: string;
+  modelName: string;
+  modelAdminSettings: ModelAdminSettingsType;
+  modelFields: ModelFieldsObjType;
+  onAddFn: () => void;
+};
+
+export type ViewModelFormProps = {
+  appLabel: string;
+  modelName: string;
+  pk: string;
+  modelAdminSettings: ModelAdminSettingsType;
+  modelFields: ModelFieldsObjType;
+};
+
+export type ModelDocumentationType = {
+  id: number;
+  appModelName: string;
+  content: string;
+};
+
+export type AccordionDocType = {
+  id: number;
+  isOpen: boolean;
+}
+
+export type FilterCheckboxType = {
+  field: string;
+  values: {
+    value: string | number | null;
+    label: string;
+    checked: boolean;
+    checkboxId: string;
+  }[];
+};
+
+export type FilterStateType = {
+  checkboxes: FilterCheckboxType[];
+  pageFilters: { [key: string]: any[] };
+};
+
+export type ListviewDataType = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: any[];
+}
+
+export type TableEventType = 'rowSelectAll' | 'rowSelect';
+
+export type TableMetatdataType = {  
+  rowsSelected?: { id: string; isChecked: boolean; }[];
+  rowSelected?: { id: string; isChecked: boolean; };
+}
+
+export type ListModelViewTableProps = {
+  appLabel: string;
+  modelName: string;
+  ordering: string[];
+  listdisplayFields: string[];
+  listdisplayLinks: string[];
+  customChangeLink: string;
+  listviewData: ListviewDataType;
+  modelFields: ModelFieldsObjType;
+  onTableEvent: (tableEvent: TableEventType, metadata: TableMetatdataType) => any;
+}
+
+export type QueueFieldListViewType = ListviewDataType & {
+  table_fields: string[];
+};
+
+export type QueueStatFieldType = {
+  label: string;
+  value: string | number;
+  field: string;
+};
+
+export type QueueType = {
+  fields: QueueStatFieldType[];
+  name: string;
+};
+
+export type JobType = {
+  id: string;
+  created_at: string;
+  started_at: string;
+  enqueued_at: string;
+  ended_at: string;
+  timeout: number;
+  ttl: number | null;
+  meta: any;
+  callable: string;
+  args: string[];
+  kwargs: { [key: string]: any };
+  execution_info: string;
+};

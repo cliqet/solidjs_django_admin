@@ -4,8 +4,8 @@ import { Component, JSX, onMount } from "solid-js";
 import HeaderBar from "src/components/HeaderBar";
 import ToastAlert from "src/components/ToastAlert";
 import { useAppContext } from "src/context/sessionContext";
-import { authRoute, dashboardRoute, nonAuthRoute } from "src/hooks/useAdminRoute";
-import useStorageEvent from "src/hooks/useStorageEvent";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
+import { useStorageEvent } from "src/hooks/useStorageEvent";
 import { User } from "src/models/user";
 
 type NoAuthLayoutProps = {
@@ -17,6 +17,7 @@ const NoAuthLayout: Component<NoAuthLayoutProps> = (props) => {
   const { LOCAL_STORAGE_KEYS } = useStorageEvent();
   const navigate = useNavigate();
   const location = useLocation();
+  const { authRoute, dashboardRoute, nonAuthRoute } = useAdminRoute();
 
   onMount(() => {
     const token = localStorage.getItem(LOCAL_STORAGE_KEYS.token);

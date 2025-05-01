@@ -1,37 +1,23 @@
 import { useParams, useNavigate } from "@solidjs/router";
 import { createSignal, Show, onMount, For } from "solid-js";
-import {
-  hasViewOnlyModelPermission,
-  handleFetchError,
-} from "src/hooks/useModelAdmin";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import { useAppContext } from "src/context/sessionContext";
 import { UserPermissionsType } from "src/models/user";
-import { authRoute, dashboardRoute, nonAuthRoute } from "src/hooks/useAdminRoute";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
 import { getUserPermissions } from "src/services/users";
 import { deleteJobs, getQueuedJob, requeueJobs } from "src/services/django-admin";
 import Label from "src/components/form_fields/Label";
+import { JobType } from "src/models/django-admin";
 
-type JobType = {
-  id: string;
-  created_at: string;
-  started_at: string;
-  enqueued_at: string;
-  ended_at: string;
-  timeout: number;
-  ttl: number | null;
-  meta: any;
-  callable: string;
-  args: string[];
-  kwargs: { [key: string]: any };
-  execution_info: string;
-};
 
 const ViewChangeQueuedJobPage = () => {
   const params = useParams();
   const { appState, setAppState } = useAppContext();
+  const { authRoute, dashboardRoute, nonAuthRoute } = useAdminRoute();
   const navigate = useNavigate();
   const [isDataReady, setIsDataReady] = createSignal(false);
   const [job, setJob] = createSignal<JobType | null>(null);
+  const { hasViewOnlyModelPermission, handleFetchError } = useModelAdmin();
 
   // An object that contains the permissions allowed for the user. It has the app name,
   // where all model names as keys and has permission ids and permission actions

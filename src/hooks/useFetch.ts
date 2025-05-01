@@ -1,8 +1,8 @@
-import useStorageEvent from "./useStorageEvent";
+import { useStorageEvent } from "./useStorageEvent";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
-interface DefaultConfig {
+type DefaultConfig = {
   method: HttpMethod;
   mode: string;
   headers: Headers;
@@ -10,7 +10,7 @@ interface DefaultConfig {
   body?: any;
 }
 
-interface AddtlConfig {
+type AddtlConfig = {
   cache?: "default" | "no-store" | "reload" | "no-cache" | "force-cache" | "only-if-cached";
   redirect?: "follow" | "error" | "manual";
   referrer?: string;
@@ -23,7 +23,7 @@ interface AddtlConfig {
   priority?: "high" | "low" | "auto";
 }
 
-interface NoSessionArgs {
+type NoSessionArgs = {
   method: HttpMethod;
   urlSegment: string;
   body?: any;
@@ -32,7 +32,7 @@ interface NoSessionArgs {
   addtlConfig?: any;
 }
 
-interface SessionArgs extends NoSessionArgs {
+type SessionArgs = NoSessionArgs & {
   tokenOverride?: string;
   interceptorFn?: (response: any, addtlArgs: any, apiRoot: string) => any;
 }

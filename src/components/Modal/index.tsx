@@ -1,8 +1,7 @@
 import { Component, JSX, onCleanup, onMount, Show } from "solid-js";
 import { Portal } from "solid-js/web";
 import CloseModalIcon from "./close-modal-icon";
-
-export type ModalEventType = "close" | "confirm" | "cancel" | "clickedOutside";
+import { ModalEventType } from "src/models/shared";
 
 const Modal: Component<{
   modalEvent: (modalEvent: ModalEventType) => any;
@@ -16,8 +15,8 @@ const Modal: Component<{
 
   const handleClickOutside = (event: any) => {
     if (
-      !innerModalRef.contains(event.target) &&
-      event.target === outerModalRef
+      !innerModalRef!.contains(event.target) &&
+      event.target === outerModalRef!
     ) {
       props.modalEvent("clickedOutside");
     }
@@ -27,22 +26,22 @@ const Modal: Component<{
     if (event.key === "Tab") {
       const activeElement = document.activeElement;
       // Check if the currently focused element is inside the modal
-      if (!innerModalRef.contains(activeElement)) {
+      if (!innerModalRef!.contains(activeElement)) {
         event.preventDefault(); // Prevent tabbing out of the modal
       }
     }
   };
 
   onMount(() => {
-    outerModalRef.addEventListener("click", handleClickOutside);
-    innerModalRef.addEventListener("click", handleClickOutside);
+    outerModalRef!.addEventListener("click", handleClickOutside);
+    innerModalRef!.addEventListener("click", handleClickOutside);
     window.addEventListener("keydown", disableTab);
-    closeBtnRef.focus();
+    closeBtnRef!.focus();
   });
 
   onCleanup(() => {
-    outerModalRef.removeEventListener("click", handleClickOutside);
-    innerModalRef.removeEventListener("click", handleClickOutside);
+    outerModalRef!.removeEventListener("click", handleClickOutside);
+    innerModalRef!.removeEventListener("click", handleClickOutside);
     window.removeEventListener("keydown", disableTab);
   });
 

@@ -6,21 +6,13 @@ import { deleteJobs, getFailedJobs, requeueJobs } from "src/services/django-admi
 import { UserPermissionsType } from "src/models/user";
 import { getUserPermissions } from "src/services/users";
 import { useAppContext } from "src/context/sessionContext";
-import {
-  formatDateString,
-  handleFetchError,
-  hasViewModelPermission,
-} from "src/hooks/useModelAdmin";
-import {
-  authRoute,
-  dashboardRoute,
-  nonAuthRoute,
-} from "src/hooks/useAdminRoute";
-import { ListviewDataType } from "src/components/ListModelViewTable";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
 import Modal from "src/components/Modal";
 import AngleDownIcon from "src/assets/icons/angle-down-icon";
 import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import ActionModalMessage from "src/components/ActionModalMessage";
+import { QueueFieldListViewType } from "src/models/django-admin";
 
 const BULK_ACTION = {
   NO_ACTION: '-',
@@ -28,9 +20,7 @@ const BULK_ACTION = {
   REQUEUE: 'requeue',
 }
 
-type QueueFieldListViewType = ListviewDataType & {
-  table_fields: string[];
-};
+
 
 const QueuesFieldListViewPage = () => {
   const params = useParams();
@@ -53,6 +43,13 @@ const QueuesFieldListViewPage = () => {
 
   const [isModalOpen, setIsModalOpen] = createSignal(false);
   const [isParentTableOpen, setIsParentTableOpen] = createSignal(true);
+  const {
+    formatDateString,
+    handleFetchError,
+    hasViewModelPermission,
+  } = useModelAdmin();
+  const { nonAuthRoute, authRoute, dashboardRoute } = useAdminRoute();
+
   let modalEventPromise: (event: string) => void;
   let checkboxAllRef!: HTMLInputElement;
   let checkboxRowRefs: HTMLInputElement[] = new Array(length).fill(null);

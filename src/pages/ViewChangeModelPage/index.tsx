@@ -5,23 +5,14 @@ import {
   ModelAdminSettingsType,
   initialModelAdminSettings,
 } from "src/models/django-admin";
-import {
-  getModelAdminSettings,
-  getModelFieldsEdit,
-} from "src/services/django-admin";
+import { getModelAdminSettings, getModelFieldsEdit } from "src/services/django-admin";
 import { getUserPermissions } from "src/services/users";
-import {
-  hasViewOnlyModelPermission,
-  hasAppPermission,
-  hasChangeModelPermission,
-  handleFetchError,
-  hasDeleteModelPermission,
-} from "src/hooks/useModelAdmin";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import { useAppContext } from "src/context/sessionContext";
 import ViewModelForm from "src/components/ViewModelForm";
 import { UserPermissionsType } from "src/models/user";
 import ChangeModelForm from "src/components/ChangeModelForm";
-import { nonAuthRoute } from "src/hooks/useAdminRoute";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
 import InlineTable from "src/components/InlineTable";
 import DynamicExtraInline from "src/components/extra_inlines/DynamicExtraInline";
 
@@ -41,6 +32,15 @@ const ViewChangeModelPage = () => {
     createSignal<UserPermissionsType | null>(null);
   const [modelAdminSettings, setModelAdminSettings] =
     createSignal<ModelAdminSettingsType>(initialModelAdminSettings);
+
+  const {
+    hasViewOnlyModelPermission,
+    hasAppPermission,
+    hasChangeModelPermission,
+    handleFetchError,
+    hasDeleteModelPermission,
+  } = useModelAdmin();
+  const { nonAuthRoute } = useAdminRoute();
 
   // setup model fields, model record, user permissions and model admin settings and fieldsInFormState
   createEffect(async () => {

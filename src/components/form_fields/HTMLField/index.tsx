@@ -38,20 +38,20 @@ const HTMLField: Component<HTMLFieldProps> = (props) => {
         // Listen for the change event
         editorInstance.on("change", () => {
           const content = editorInstance.getContent();
-          textareaRef.value = content;
+          textareaRef!.value = content;
           props.onChangeValue(content, props.textareaProps.id);
         });
 
         // Listen for the input event
         editorInstance.on("input", () => {
           const content = editorInstance.getContent();
-          textareaRef.value = content;
+          textareaRef!.value = content;
           props.onChangeValue(content, props.textareaProps.id);
         });
 
         // Listen for the change event
         editorInstance.on("focus", () => {
-          textareaRef.focus();
+          textareaRef!.focus();
 
           // Create a synthetic focus event
           const syntheticEvent = new FocusEvent("focus", {
@@ -60,7 +60,7 @@ const HTMLField: Component<HTMLFieldProps> = (props) => {
           });
 
           // Dispatch the synthetic event on the textarea
-          textareaRef.dispatchEvent(syntheticEvent);
+          textareaRef!.dispatchEvent(syntheticEvent);
         });
 
         // Make sure editor is ready before showing it to prevent 

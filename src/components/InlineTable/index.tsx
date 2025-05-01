@@ -28,7 +28,7 @@ import {
 import { useAppContext } from "src/context/sessionContext";
 import PlusIcon from "src/assets/icons/plus-icon";
 import { UserPermissionsType } from "src/models/user";
-import { hasChangeModelPermission, hasViewModelPermission } from "src/hooks/useModelAdmin";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import InlineRowAddForm from "../InlineRowAddForm";
 import EllipsisIcon from "src/assets/icons/ellipsis-icon";
 
@@ -87,6 +87,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
     createSignal<ModelAdminSettingsType>(initialModelAdminSettings);
 
   const [isTableOpen, setIsTableOpen] = createSignal(true);
+  const { hasChangeModelPermission, hasViewModelPermission } = useModelAdmin();
 
   let tableRowForms: HTMLTableRowElement[] = new Array(length).fill(null);
 

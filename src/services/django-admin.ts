@@ -56,7 +56,11 @@ export async function changeRecord(appLabel: string, modelName: string, pk: stri
   return response;
 }
 
-export async function addRecord(appLabel: string, modelName: string, bodyData: any): Promise<any> {
+export async function addRecord(
+  appLabel: string, 
+  modelName: string, 
+  bodyData: any
+): Promise<{ message: string, pk: string | number }> {
   const response = await sessionClient.fetch({
     method: "POST",
     urlSegment: `/django-admin/add-record/${appLabel}/${modelName}`,

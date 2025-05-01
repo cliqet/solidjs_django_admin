@@ -27,8 +27,15 @@ type AddModelFormProps = {
   canAdd: boolean;
 };
 
+const AddModeOptions = {
+  DEFAULT: 'DEFAULT',
+  ADD_ANOTHER: 'ADD_ANOTHER',
+  ADD_CONTINUE: 'ADD_CONTINUE'
+}
+
 const AddModelForm: Component<AddModelFormProps> = (props) => {
   const { appState, setAppState } = useAppContext();
+  const [ addMode, setAddMode ] = createSignal(AddModeOptions.DEFAULT);
   const navigate = useNavigate();
   const { scrollToTopForm } = useUI();
   const {
@@ -73,7 +80,18 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
         persist: true,
       });
 
-      navigate(`/dashboard/${props.appLabel}/${props.modelName}`);
+      if (addMode() === AddModeOptions.DEFAULT) {
+        navigate(`/dashboard/${props.appLabel}/${props.modelName}`);
+      } else if (addMode() === AddModeOptions.ADD_ANOTHER) {
+        navigate(`/dashboard/${props.appLabel}/${props.modelName}`);
+        setTimeout(() => {
+          navigate(`/dashboard/${props.appLabel}/${props.modelName}/add`);
+        }, 100);
+      } else {
+        navigate(`/dashboard/${props.appLabel}/${props.modelName}/${response.pk}/change`);
+      }
+
+      
     } catch (err: any) {
       if (err.validation_error) {
         const newFieldsState = buildFieldStateOnError(
@@ -288,8 +306,14 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
 
           <Show when={props.canAdd}>
             <div>
-              <button type="submit" class="button">
+              <button type="submit" class="button" onClick={() => setAddMode(AddModeOptions.DEFAULT)}>
                 Add
+              </button>
+              <button type="submit" class="button" onClick={() => setAddMode(AddModeOptions.ADD_ANOTHER)}>
+                Add and Add Another
+              </button>
+              <button type="submit" class="button" onClick={() => setAddMode(AddModeOptions.ADD_CONTINUE)}>
+                Add and Continue
               </button>
             </div>
           </Show>

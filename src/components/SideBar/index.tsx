@@ -33,7 +33,6 @@ const SideBar = () => {
     try {
       // get list of apps
       const appResponse = await getApps();
-      console.log(appResponse)
       setApps(appResponse);
 
       appResponse.forEach(() => {

@@ -2,14 +2,6 @@ import { useStorageEvent } from "./useStorageEvent";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
-type DefaultConfig = {
-  method: HttpMethod;
-  mode: string;
-  headers: Headers;
-  credentials: "omit" | "same-origin" | "include";
-  body?: any;
-}
-
 type AddtlConfig = {
   cache?: "default" | "no-store" | "reload" | "no-cache" | "force-cache" | "only-if-cached";
   redirect?: "follow" | "error" | "manual";
@@ -29,7 +21,7 @@ type NoSessionArgs = {
   body?: any;
   useFormDataHeaders?: boolean;
   headers?: any;
-  addtlConfig?: any;
+  addtlConfig?: AddtlConfig;
 }
 
 type SessionArgs = NoSessionArgs & {
@@ -85,34 +77,24 @@ export const sessionClient = {
       }
     }
 
-    let defaultConfig = {
-      method: args.method,
-      mode: "cors",
-      headers: { ...defaultHeaders, ...args.headers },
-      credentials: "include",
-      body: newBody,
-    };
-
     if (!args.addtlConfig) {
       args.addtlConfig = {};
     }
 
     const response = await fetch(`${domain}${args.urlSegment}`, {
-      ...defaultConfig,
-      ...args.addtlConfig,
-    });
+      method: args.method,
+      mode: "cors",
+      headers: { ...defaultHeaders, ...args.headers },
+      credentials: "include",
+      body: newBody,
+      ...args.addtlConfig
+    })
 
     if (args.interceptorFn) {
       return args.interceptorFn(response, args, domain);
     }
 
     const data = await response.json();
-
-    // force logout if request is unauthorized
-    // if (response.status === 401) {
-    //   localStorage.removeItem(LOCAL_STORAGE_KEYS.token);
-    //   window.location.href = `/login?redirect=${encodeURI(location.pathname)}`;
-    // }
 
     if (response.status >= 400) {
       const status = response.status;
@@ -163,25 +145,16 @@ export const noSessionClient = {
       }
     }
 
-    let defaultConfig : any = {
-      method: args.method,
-      mode: "cors",
-      body: newBody,
-      headers: { ...defaultHeaders, ...args.headers },
-    };
-
     if (!args.addtlConfig) {
       args.addtlConfig = {};
     }
 
-    const requestInit = {
-      ...defaultConfig,
-      ...args.addtlConfig
-    };
-
     const response = await fetch(`${domain}${args.urlSegment}`, {
-      ...defaultConfig,
-      ...args.addtlConfig,
+      method: args.method,
+      mode: "cors",
+      body: newBody,
+      headers: { ...defaultHeaders, ...args.headers },
+      ...args.addtlConfig
     });
 
     const data = await response.json();

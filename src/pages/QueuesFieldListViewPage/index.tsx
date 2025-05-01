@@ -177,14 +177,21 @@ const QueuesFieldListViewPage = () => {
     if (action === BULK_ACTION.REQUEUE) {
       return requeueJobs(params.queueName, rowsSelected());
     }
+
+    return Promise.resolve({
+      success: false,
+      message: "Unknown action"
+    });
   }
 
   const onConfirmedAction = async () => {
     try {
       const response = await dynamicBulkAction(currentAction());
+      
+      const toastType = response.success ? "success" : "danger";
 
       setAppState("toastState", "isShowing", true);
-      setAppState("toastState", "type", "success");
+      setAppState("toastState", "type", toastType);
       setAppState("toastState", "message", response.message);
       setAppState("toastState", "isHtmlMessage", true);
 

@@ -248,3 +248,34 @@ export type JobType = {
   kwargs: { [key: string]: any };
   execution_info: string;
 };
+
+export type FailedJobsType = {
+  results: JobType[];
+  count: number;
+  table_fields: string[];
+}
+
+export type AppModelListType = {
+  label: string;
+  value: string;
+  models: {
+    label: string;
+    value: string;
+  }[];
+};
+
+export type ConditionType = [string, string, any];
+
+export type QueryBuilderType = {
+  app_name: string;
+  model_name: string;
+  conditions: ConditionType[];
+  orderings: string[];
+  query_limit: number | null;
+};
+
+export type SavedQueryType = {
+  id: number;
+  name: string;
+  query: QueryBuilderType;
+};

@@ -7,8 +7,10 @@ type ComponentOptionsType = {
 }
 
 // Store all custom_inlines values and components they should render here
-const componentOptions: ComponentOptionsType = {
-    'sample_extra': () => <SampleExtraInline />
+const componentOptions: ComponentOptionsType = {}
+
+if (__IS_DEMO_MODE__) {
+    componentOptions['sample_extra'] = () => <SampleExtraInline />;
 }
 
 // Renders the Extra Inline Component based on the name defined in the modeladmin.extra_inlines

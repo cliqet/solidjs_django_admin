@@ -1,10 +1,10 @@
 export const useAdminRoute = () => {
-  const nonAuthRoute = {
+  const nonAuthRoute: { [key: string]: string } = {
     loginView: '/login',
     passwordResetLink: '/users/reset/:uidb64/:token',
   }
   
-  const authRoute = {
+  const authRoute: { [key: string]: string } = {
     dashboardHomeView: '/',
     addModelView: '/:appLabel/:modelName/add',
     viewChangeModelView: '/:appLabel/:modelName/:pk/change',
@@ -16,8 +16,11 @@ export const useAdminRoute = () => {
     queuesFieldListView: '/settings/queues/:queueName/:field',
     viewChangeJobView: '/settings/queues/:queueName/:field/:jobId',
   
-    // For demo only and can be deleted
-    customCountryProfileChangeView: '/custom-change/:modelName/:pk/change',
+
+  }
+
+  if (__IS_DEMO_MODE__) {
+    authRoute['customCountryProfileChangeView'] = '/custom-change/:modelName/:pk/change';
   }
   
   /**

@@ -153,7 +153,7 @@ const HeaderBar = () => {
           <Show when={!appState.user}>
             <div class="flex items-center ml-3">
               <div>
-                <A href={dashboardRoute(nonAuthRoute.loginView)}>
+                <A href={nonAuthRoute.loginView}>
                   <span class="text-white text-xs underline mr-2 hover:cursor-pointer">
                     Login
                   </span>

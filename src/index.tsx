@@ -12,7 +12,6 @@ const AuthLayout = lazy(() => import('src/layouts/AuthLayout'));
 const NoAuthLayout = lazy(() => import('src/layouts/NoAuthLayout'));
 
 const App = lazy(() => import('src/App'));
-const Demo = lazy(() => import('src/pages/Demo'));
 const LoginPage = lazy(() => import('src/pages/LoginPage'));
 const NotFoundPage = lazy(() => import('src/pages/NotFoundPage'));
 const PasswordResetLinkPage = lazy(() => import('src/pages/PasswordResetLinkPage'));
@@ -28,7 +27,9 @@ const ViewChangeQueuedJobPage = lazy(() => import('src/pages/ViewChangeQueuedJob
 const ReportsPage = lazy(() => import('src/pages/ReportsPage'));
 
 // For Demo only of custom change link page and can be deleted
+const Demo = lazy(() => import('src/pages/Demo'));
 const CustomCountryProfileChangePage = lazy(() => import('src/pages/CustomCountryProfileChangePage'));
+
 
 const root = document.getElementById("root");
 
@@ -48,7 +49,8 @@ render(
           <Route path="/" component={App}></Route>
 
           {/** Route for demo only and can be deleted */}
-          <Route path={authRoute.customCountryProfileChangeView} component={CustomCountryProfileChangePage}></Route>
+          {__IS_DEMO_MODE__ && <Route path={authRoute.customCountryProfileChangeView} component={CustomCountryProfileChangePage}></Route>}
+          
 
           <Route path={authRoute.addModelView} component={AddModelPage}></Route>
           <Route path={authRoute.viewChangeModelView} component={ViewChangeModelPage}></Route>
@@ -65,8 +67,8 @@ render(
           <Route path={nonAuthRoute.loginView} component={LoginPage}></Route>
           <Route path={nonAuthRoute.passwordResetLink} component={PasswordResetLinkPage}></Route>
 
-          {/** Delete this when starting a new project */}
-          <Route path="/demo" component={Demo}></Route>
+          {/** FOR DEMO ONLY. This can be deleted */}
+          {__IS_DEMO_MODE__ && <Route path="/demo" component={Demo}></Route>}          
           
           <Route path="*" component={NotFoundPage}></Route>
         </Route>

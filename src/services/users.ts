@@ -1,5 +1,6 @@
-import { sessionClient, noSessionClient } from "src/hooks/useFetch";
+import { useFetch } from "src/hooks/useFetch";
 
+const { noSessionClient, sessionClient } = useFetch();
 
 export async function loginUser(email: string, password: string) : Promise<{ access: string }> {
   const response = await noSessionClient.fetch({

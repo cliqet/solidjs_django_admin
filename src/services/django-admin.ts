@@ -1,5 +1,7 @@
-import { noSessionClient, sessionClient } from "src/hooks/useFetch";
+import { useFetch } from "src/hooks/useFetch";
 import { AppSettingsType, FailedJobsType, JobType, ListviewDataType, ModelAdminSettingsType, ModelDocumentationType, QueueType } from "src/models/django-admin";
+
+const { noSessionClient, sessionClient } = useFetch();
 
 export async function getApps(): Promise<AppSettingsType[]> {
   const { appList } = await sessionClient.fetch({

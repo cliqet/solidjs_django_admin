@@ -1,6 +1,8 @@
 import { ReportsDataType } from "src/components/QueryReportsTable";
-import { sessionClient } from "src/hooks/useFetch";
+import { useFetch } from "src/hooks/useFetch";
 import { SavedQueryType } from "src/models/django-admin";
+
+const { sessionClient } = useFetch();
 
 export async function getBuildQueryResults(
   bodyData: any

@@ -29,7 +29,8 @@ const ReportsPage = lazy(() => import('src/pages/ReportsPage'));
 // For Demo only of custom change link page and can be deleted
 const Demo = lazy(() => import('src/pages/Demo'));
 const CustomCountryProfileChangePage = lazy(() => import('src/pages/CustomCountryProfileChangePage'));
-
+const CustomClassificationAddPage = lazy(() => import('src/pages/CustomClassificationAddPage'));
+const CustomClassificationListViewPage = lazy(() => import('src/pages/CustomClassificationListViewPage'));
 
 const root = document.getElementById("root");
 
@@ -50,6 +51,8 @@ render(
 
           {/** Route for demo only and can be deleted */}
           {__IS_DEMO_MODE__ && <Route path={authRoute.customCountryProfileChangeView} component={CustomCountryProfileChangePage}></Route>}
+          {__IS_DEMO_MODE__ && <Route path={authRoute.customClassificationAddView} component={CustomClassificationAddPage}></Route>}
+          {__IS_DEMO_MODE__ && <Route path={authRoute.customClassificationListModelView} component={CustomClassificationListViewPage}></Route>}
           
 
           <Route path={authRoute.addModelView} component={AddModelPage}></Route>

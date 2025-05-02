@@ -21,6 +21,8 @@ export const useAdminRoute = () => {
 
   if (__IS_DEMO_MODE__) {
     authRoute['customCountryProfileChangeView'] = '/custom-change/:modelName/:pk/change';
+    authRoute['customClassificationAddView'] = '/custom/classification/customadd';
+    authRoute['customClassificationListModelView'] = '/custom/classification';
   }
   
   /**

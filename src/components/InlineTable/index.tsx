@@ -152,7 +152,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       ]);
 
 
-      setListviewData(listviewResponse);
+      setListviewData(listviewResponse as ListviewDataType);
 
       // Setup table row forms
       const tableRowForms = createTableRowForms();
@@ -183,7 +183,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
 
     // Get paginated data
     const listviewResponse = await getListviewData();
-    setListviewData(listviewResponse);
+    setListviewData(listviewResponse as ListviewDataType);
   });
 
   const getPkField = (record: any): string => {
@@ -273,7 +273,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
     try {
       // Get paginated data
       const listviewResponse = await getListviewData();
-      setListviewData(listviewResponse);
+      setListviewData(listviewResponse as ListviewDataType);
     } catch (err: any) {
       setAppState("toastState", {
         ...appState.toastState,
@@ -287,7 +287,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
   const onAddRowForm = async () => {
     try {
       const listviewResponse = await getListviewData();
-      setListviewData(listviewResponse);
+      setListviewData(listviewResponse as ListviewDataType);
       setIsRowAddFormOpen(false);
     } catch (err: any) {
       setAppState("toastState", {
@@ -311,7 +311,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
 
       // Get paginated data
       const listviewResponse = await getListviewData();
-      setListviewData(listviewResponse);
+      setListviewData(listviewResponse as ListviewDataType);
     } catch (err: any) {
       setAppState("toastState", {
         ...appState.toastState,

@@ -1,8 +1,4 @@
 import SearchInput from "src/components/SearchInput";
-import ListModelViewTable, {
-  TableEventType,
-  TableMetatdataType,
-} from "src/components/ListModelViewTable";
 import SelectField from "src/components/form_fields/SelectField";
 import { useNavigate, useParams } from "@solidjs/router";
 import { createEffect, createSignal, For, Show } from "solid-js";
@@ -16,20 +12,23 @@ import {
   FilterCheckboxType,
   FilterStateType,
   initialModelAdminSettings,
+  ListviewDataType,
   ModelAdminSettingsType,
   ModelFieldsObjType,
+  TableEventType,
+  TableMetatdataType,
 } from "src/models/django-admin";
 import { UserPermissionsType } from "src/models/user";
 import { getUserPermissions } from "src/services/users";
 import { useAppContext } from "src/context/sessionContext";
 import { useModelAdmin } from "src/hooks/useModelAdmin";
 import { useAdminRoute } from "src/hooks/useAdminRoute";
-import { ListviewDataType } from "src/components/ListModelViewTable";
 import Modal from "src/components/Modal";
 import CheckboxField from "src/components/form_fields/CheckboxField";
 import AngleDownIcon from "src/assets/icons/angle-down-icon";
 import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import ActionModalMessage from "src/components/ActionModalMessage";
+import ListModelViewTable from "src/components/ListModelViewTable";
 
 
 

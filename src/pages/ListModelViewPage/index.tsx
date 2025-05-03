@@ -265,7 +265,8 @@ const ListModelViewPage = () => {
       setAppState("toastState", "isShowing", true);
       setAppState("toastState", "type", "success");
       setAppState("toastState", "message", response.message);
-
+      setAppState("toastState", "isHtmlMessage", true);
+      
       resetState();
     } catch (err: any) {
       const handler = handleFetchError(err);
@@ -275,6 +276,7 @@ const ListModelViewPage = () => {
         setAppState("toastState", "type", "danger");
         setAppState("toastState", "isShowing", true);
         setAppState("toastState", "message", err.message ?? handler.message);
+        setAppState("toastState", "isHtmlMessage", true);
       }
     }
   };

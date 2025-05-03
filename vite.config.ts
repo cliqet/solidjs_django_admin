@@ -20,7 +20,8 @@ export default defineConfig(() => {
       __ENVIRONMENT__: `"${appConfig.application.environment}"`,
       __API_DOMAIN__: `"${appConfig.application.api_domain}"`,
       __API_ROOT_DOMAIN__: `"${appConfig.application.api_root_domain}"`,
-      __TURNSTILE_SITEKEY__: `"${appConfig.integration.turnstile.site_key}"`
+      __TURNSTILE_SITEKEY__: `"${appConfig.integration.turnstile.site_key}"`,
+      __IS_DEMO_MODE__: `${appConfig.application.is_demo_mode}`
     },
     resolve: {
       alias: {

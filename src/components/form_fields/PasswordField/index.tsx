@@ -3,7 +3,7 @@ import Label from "../Label";
 import { sendPasswordResetLink } from "src/services/django-admin";
 import { useParams } from "@solidjs/router";
 import { useAppContext } from "src/context/sessionContext";
-import { scrollToTopForm } from "src/hooks/useUI";
+import { useUI } from "src/hooks/useUI";
 
 type PasswordFieldProps = {
   inputProps: {
@@ -27,6 +27,7 @@ const PasswordField: Component<PasswordFieldProps> = (props) => {
     isValid: false,
   });
   const [isChangingOnEdit, setIsChangingOnEdit] = createSignal(false);
+  const { scrollToTopForm } = useUI();
   let password1Ref: HTMLInputElement;
   let password2Ref: HTMLInputElement;
 
@@ -34,19 +35,19 @@ const PasswordField: Component<PasswordFieldProps> = (props) => {
     const element = e.target as HTMLInputElement;
     const regex = /\d/;
 
-    if (regex.test(password1Ref.value)) {
+    if (regex.test(password1Ref!.value)) {
       setPasswordState({ ...passwordState(), hasOneDigit: true });
     } else {
       setPasswordState({ ...passwordState(), hasOneDigit: false });
     }
 
-    if (password1Ref.value.length >= 8) {
+    if (password1Ref!.value.length >= 8) {
       setPasswordState({ ...passwordState(), hasMinLength: true });
     } else {
       setPasswordState({ ...passwordState(), hasMinLength: false });
     }
 
-    if (password1Ref.value === password2Ref.value) {
+    if (password1Ref!.value === password2Ref!.value) {
       setPasswordState({ ...passwordState(), isEqualPasswords: true });
     } else {
       setPasswordState({ ...passwordState(), isEqualPasswords: false });
@@ -63,9 +64,9 @@ const PasswordField: Component<PasswordFieldProps> = (props) => {
     }
 
     if (element.id === "password") {
-      props.onChangeValue(password1Ref.value, props.inputProps.id);
+      props.onChangeValue(password1Ref!.value, props.inputProps.id);
     } else {
-      props.onChangeValue(password2Ref.value, `${props.inputProps.id}2`);
+      props.onChangeValue(password2Ref!.value, `${props.inputProps.id}2`);
     }
   };
 

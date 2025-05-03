@@ -4,12 +4,8 @@ import FieldErrorMessage from "src/components/form_fields/FieldErrorMessage";
 import Label from "src/components/form_fields/Label";
 import PasswordField from "src/components/form_fields/PasswordField";
 import { useAppContext } from "src/context/sessionContext";
-import { nonAuthRoute } from "src/hooks/useAdminRoute";
-import {
-  buildFieldStateOnFieldChange,
-  buildFieldStateOnFocus,
-  updateFieldStateOnInvalidFields,
-} from "src/hooks/useModelAdmin";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import { FieldsInFormStateType } from "src/models/django-admin";
 import {
   resetPasswordViaLink,
@@ -34,16 +30,23 @@ const initialState = {
 const PasswordResetLinkPage = () => {
   const params = useParams();
   const navigate = useNavigate();
-  const { appState, setAppState } = useAppContext();
+  const { setAppState } = useAppContext();
   const [isValidLink, setIsValidLink] = createSignal(false);
   const [isDataReady, setIsDataReady] = createSignal(false);
   const [formFieldState, setFormFieldState] =
     createSignal<FieldsInFormStateType>(initialState);
+  const {
+    buildFieldStateOnFieldChange,
+    buildFieldStateOnFocus,
+    updateFieldStateOnInvalidFields,
+  } = useModelAdmin();
+  const { nonAuthRoute } = useAdminRoute();
 
   const handleOnFocus = () => {
     const newFieldState = buildFieldStateOnFocus(formFieldState(), "password");
     setFormFieldState(newFieldState);
   };
+
 
   onMount(async () => {
     try {

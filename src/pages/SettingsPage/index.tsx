@@ -1,10 +1,11 @@
 import { useNavigate } from "@solidjs/router";
 import PostgresIcon from "src/assets/icons/postgres-icon";
 import RedisIcon from "src/assets/icons/redis-icon";
-import { authRoute, dashboardRoute } from "src/hooks/useAdminRoute";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
 
 const SettingsPage = () => {
   const navigate = useNavigate();
+  const { authRoute, dashboardRoute } = useAdminRoute();
 
   return (
     <div class="flex-col justify-between p-1 items-center">

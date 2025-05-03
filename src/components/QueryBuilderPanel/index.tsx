@@ -3,11 +3,9 @@ import CloseCircleIcon from "src/assets/icons/close-circle-icon";
 import PlusIcon from "src/assets/icons/plus-icon";
 import InputTypeField from "src/components/form_fields/InputTypeField";
 import Label from "src/components/form_fields/Label";
-import SelectField, {
-  SelectedOptionsType,
-} from "src/components/form_fields/SelectField";
+import SelectField from "src/components/form_fields/SelectField";
 import { useAppContext } from "src/context/sessionContext";
-import { AppSettingsType, ModelFieldsObjType } from "src/models/django-admin";
+import { AppModelListType, AppSettingsType, ConditionType, ModelFieldsObjType, SavedQueryType, SelectedOptionsType } from "src/models/django-admin";
 import { getApps, getModelFields } from "src/services/django-admin";
 import { 
   addQueryBuilder, 
@@ -25,30 +23,7 @@ import SaveIcon from "src/assets/icons/save-icon";
 import PencilEditIcon from "src/assets/icons/pencil-edit-icon";
 import TrashDeleteIcon from "src/assets/icons/trash-delete-icon";
 
-type AppModelListType = {
-  label: string;
-  value: string;
-  models: {
-    label: string;
-    value: string;
-  }[];
-};
 
-type ConditionType = [string, string, any];
-
-type QueryBuilderType = {
-  app_name: string;
-  model_name: string;
-  conditions: ConditionType[];
-  orderings: string[];
-  query_limit: number | null;
-};
-
-type SavedQueryType = {
-  id: number;
-  name: string;
-  query: QueryBuilderType;
-};
 
 const QueryBuilderPanel = () => {
   const [conditions, setConditions] = createSignal<ConditionType[]>([]);

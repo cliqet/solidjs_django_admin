@@ -1,8 +1,17 @@
 import { createContext, onCleanup, onMount, ParentComponent, useContext } from "solid-js";
 import { SetStoreFunction, createStore } from "solid-js/store";
-import { isExtraSmallScreen, isLargeScreen, isMediumScreen, isSmallScreen, ScreenSizeType } from "src/hooks/useScreenWidth";
-import useStorageEvent from "src/hooks/useStorageEvent";
+import { useScreenWidth } from "src/hooks/useScreenWidth";
 import { User } from "src/models/user";
+import { ScreenSizeType } from "src/models/shared";
+import { useStorageEvent } from "src/hooks/useStorageEvent";
+
+const { 
+  isExtraSmallScreen, 
+  isLargeScreen, 
+  isMediumScreen, 
+  isSmallScreen
+} = useScreenWidth();
+
 
 export type ToastType = "success" | "warning" | "danger";
 
@@ -17,7 +26,6 @@ export type ToastState = {
 export type AppStoreType = {
     user: User | null,  // the current user based on the token and contains all properties of users
     isLoading: boolean,  // loading state to be used while fetching resources
-    // isForcedLoggedOut: boolean,  // state when user is forcefully logged out due to idle time
     toastState: ToastState,  // store state of Toast to be shown
     themeMode: "light" | "dark",
     isSidebarMinimized: boolean,
@@ -27,7 +35,6 @@ export type AppStoreType = {
 export default createStore<AppStoreType>({
     user: null,
     isLoading: false,
-    // isForcedLoggedOut: false,
     toastState: {
         isShowing: false,
         message: "",
@@ -44,7 +51,6 @@ export default createStore<AppStoreType>({
 const initialAppContext: AppStoreType = {
   user: null,
   isLoading: false,
-  // isForcedLoggedOut: false,
   toastState: {
     isShowing: false,
     message: "",

@@ -1,8 +1,4 @@
 import SearchInput from "src/components/SearchInput";
-import ListModelViewTable, {
-  TableEventType,
-  TableMetatdataType,
-} from "src/components/ListModelViewTable";
 import SelectField from "src/components/form_fields/SelectField";
 import { useNavigate, useParams } from "@solidjs/router";
 import { createEffect, createSignal, For, Show } from "solid-js";
@@ -13,41 +9,28 @@ import {
   getModelListview,
 } from "src/services/django-admin";
 import {
+  FilterCheckboxType,
+  FilterStateType,
   initialModelAdminSettings,
+  ListviewDataType,
   ModelAdminSettingsType,
   ModelFieldsObjType,
+  TableEventType,
+  TableMetatdataType,
 } from "src/models/django-admin";
 import { UserPermissionsType } from "src/models/user";
 import { getUserPermissions } from "src/services/users";
 import { useAppContext } from "src/context/sessionContext";
-import {
-  handleFetchError,
-  hasAddModelPermission,
-  hasChangeModelPermission,
-  hasViewModelPermission,
-} from "src/hooks/useModelAdmin";
-import { nonAuthRoute } from "src/hooks/useAdminRoute";
-import { ListviewDataType } from "src/components/ListModelViewTable";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
 import Modal from "src/components/Modal";
 import CheckboxField from "src/components/form_fields/CheckboxField";
 import AngleDownIcon from "src/assets/icons/angle-down-icon";
 import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import ActionModalMessage from "src/components/ActionModalMessage";
+import ListModelViewTable from "src/components/ListModelViewTable";
 
-type FilterCheckboxType = {
-  field: string;
-  values: {
-    value: string | number | null;
-    label: string;
-    checked: boolean;
-    checkboxId: string;
-  }[];
-};
 
-type FilterStateType = {
-  checkboxes: FilterCheckboxType[];
-  pageFilters: { [key: string]: any[] };
-};
 
 const NO_ACTION = "-";
 
@@ -84,6 +67,13 @@ const ListModelViewPage = () => {
   const [isParentTableOpen, setIsParentTableOpen] = createSignal(true);
   const [isPaginated, setIsPaginated] = createSignal(true);
   let modalEventPromise: (event: string) => void;
+  const {
+    handleFetchError,
+    hasAddModelPermission,
+    hasChangeModelPermission,
+    hasViewModelPermission,
+  } = useModelAdmin();
+  const { nonAuthRoute } = useAdminRoute();
 
   const resetFilters = () => {
     // Set initial filter state
@@ -275,7 +265,8 @@ const ListModelViewPage = () => {
       setAppState("toastState", "isShowing", true);
       setAppState("toastState", "type", "success");
       setAppState("toastState", "message", response.message);
-
+      setAppState("toastState", "isHtmlMessage", true);
+      
       resetState();
     } catch (err: any) {
       const handler = handleFetchError(err);
@@ -285,6 +276,7 @@ const ListModelViewPage = () => {
         setAppState("toastState", "type", "danger");
         setAppState("toastState", "isShowing", true);
         setAppState("toastState", "message", err.message ?? handler.message);
+        setAppState("toastState", "isHtmlMessage", true);
       }
     }
   };

@@ -2,20 +2,12 @@ import { Component, createSignal, For, onMount, Setter, Show } from "solid-js";
 import Label from "../form_fields/Label";
 import DynamicFormField from "../form_fields/DynamicFormField";
 import FieldErrorMessage from "../form_fields/FieldErrorMessage";
-import {
-  buildFieldStateOnError,
-  buildFieldStateOnFieldChange,
-  buildFieldStateOnFocus,
-  buildModelFormData,
-  isReadOnlyField,
-  updateFieldStateOnInvalidFields,
-} from "src/hooks/useModelAdmin";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import {
   FieldsInFormStateType,
   ModelAdminSettingsType,
   ModelFieldsObjType,
 } from "src/models/django-admin";
-import { scrollToTopForm } from "src/hooks/useUI";
 import { useAppContext } from "src/context/sessionContext";
 import { addRecord } from "src/services/django-admin";
 import PlusIcon from "src/assets/icons/plus-icon";
@@ -23,6 +15,7 @@ import { useNavigate } from "@solidjs/router";
 import { FIELDTYPE } from "src/constants/django-admin";
 import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import AngleDownIcon from "src/assets/icons/angle-down-icon";
+import { useUI } from "src/hooks/useUI";
 
 type AddModelFormProps = {
   appLabel: string;
@@ -34,9 +27,25 @@ type AddModelFormProps = {
   canAdd: boolean;
 };
 
+const AddModeOptions = {
+  DEFAULT: 'DEFAULT',
+  ADD_ANOTHER: 'ADD_ANOTHER',
+  ADD_CONTINUE: 'ADD_CONTINUE'
+}
+
 const AddModelForm: Component<AddModelFormProps> = (props) => {
   const { appState, setAppState } = useAppContext();
+  const [ addMode, setAddMode ] = createSignal(AddModeOptions.DEFAULT);
   const navigate = useNavigate();
+  const { scrollToTopForm } = useUI();
+  const {
+    buildFieldStateOnError,
+    buildFieldStateOnFieldChange,
+    buildFieldStateOnFocus,
+    buildModelFormData,
+    isReadOnlyField,
+    updateFieldStateOnInvalidFields,
+  } = useModelAdmin();
   const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
   const [isDataReady, setIsDataReady] = createSignal(false);
 
@@ -71,7 +80,18 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
         persist: true,
       });
 
-      navigate(`/dashboard/${props.appLabel}/${props.modelName}`);
+      if (addMode() === AddModeOptions.DEFAULT) {
+        navigate(`/dashboard/${props.appLabel}/${props.modelName}`);
+      } else if (addMode() === AddModeOptions.ADD_ANOTHER) {
+        navigate(`/dashboard/${props.appLabel}/${props.modelName}`);
+        setTimeout(() => {
+          navigate(`/dashboard/${props.appLabel}/${props.modelName}/add`);
+        }, 100);
+      } else {
+        navigate(`/dashboard/${props.appLabel}/${props.modelName}/${response.pk}/change`);
+      }
+
+      
     } catch (err: any) {
       if (err.validation_error) {
         const newFieldsState = buildFieldStateOnError(
@@ -286,8 +306,14 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
 
           <Show when={props.canAdd}>
             <div>
-              <button type="submit" class="button">
+              <button type="submit" class="button" onClick={() => setAddMode(AddModeOptions.DEFAULT)}>
                 Add
+              </button>
+              <button type="submit" class="button" onClick={() => setAddMode(AddModeOptions.ADD_ANOTHER)}>
+                Add and Add Another
+              </button>
+              <button type="submit" class="button" onClick={() => setAddMode(AddModeOptions.ADD_CONTINUE)}>
+                Add and Continue
               </button>
             </div>
           </Show>

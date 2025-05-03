@@ -1,4 +1,3 @@
-import { create } from "domain";
 import { Component, JSX, Show, createSignal, onMount } from "solid-js";
 import FileUploadIcon from "src/assets/icons/file-upload-icon";
 

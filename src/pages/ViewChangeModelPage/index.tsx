@@ -5,23 +5,14 @@ import {
   ModelAdminSettingsType,
   initialModelAdminSettings,
 } from "src/models/django-admin";
-import {
-  getModelAdminSettings,
-  getModelFieldsEdit,
-} from "src/services/django-admin";
+import { getModelAdminSettings, getModelFieldsEdit } from "src/services/django-admin";
 import { getUserPermissions } from "src/services/users";
-import {
-  hasViewOnlyModelPermission,
-  hasAppPermission,
-  hasChangeModelPermission,
-  handleFetchError,
-  hasDeleteModelPermission,
-} from "src/hooks/useModelAdmin";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import { useAppContext } from "src/context/sessionContext";
 import ViewModelForm from "src/components/ViewModelForm";
 import { UserPermissionsType } from "src/models/user";
 import ChangeModelForm from "src/components/ChangeModelForm";
-import { nonAuthRoute } from "src/hooks/useAdminRoute";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
 import InlineTable from "src/components/InlineTable";
 import DynamicExtraInline from "src/components/extra_inlines/DynamicExtraInline";
 
@@ -42,35 +33,48 @@ const ViewChangeModelPage = () => {
   const [modelAdminSettings, setModelAdminSettings] =
     createSignal<ModelAdminSettingsType>(initialModelAdminSettings);
 
+  const {
+    hasViewOnlyModelPermission,
+    hasAppPermission,
+    hasChangeModelPermission,
+    handleFetchError,
+    hasDeleteModelPermission,
+  } = useModelAdmin();
+  const { nonAuthRoute } = useAdminRoute();
+
   // setup model fields, model record, user permissions and model admin settings and fieldsInFormState
   createEffect(async () => {
     try {
       setIsDataReady(false);
 
+      const [
+        modelFieldsData,
+        modelAdminSettingsData,
+        permissionsData
+      ] = await Promise.all([
+        getModelFieldsEdit(
+          params.appLabel,
+          params.modelName,
+          params.pk
+        ),
+        getModelAdminSettings(
+          params.appLabel,
+          params.modelName
+        ),
+        getUserPermissions(
+          appState.user?.uid as string
+        )
+      ]);
+
       // Setup model fields and model admin settings
-      const modelFieldsData = await getModelFieldsEdit(
-        params.appLabel,
-        params.modelName,
-        params.pk
-      );
-
       setModelFields(modelFieldsData.fields);
-
-      const modelAdminSettingsData = await getModelAdminSettings(
-        params.appLabel,
-        params.modelName
-      );
       setModelAdminSettings(modelAdminSettingsData.model_admin_settings);
-
-      // Setup permissions
-      const permissionsData = await getUserPermissions(
-        appState.user?.uid as string
-      );
       setUserPermissions(permissionsData.permissions);
 
       setIsDataReady(true);
     } catch (err: any) {
       const handler = handleFetchError(err);
+      
       if (handler.shouldNavigate) {
         navigate(nonAuthRoute.loginView);
       } else {

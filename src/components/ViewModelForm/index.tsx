@@ -1,19 +1,9 @@
 import { Component, createSignal, For, onMount, Show } from "solid-js";
-import {
-  ModelAdminSettingsType,
-  ModelFieldsObjType,
-} from "src/models/django-admin";
+import { ModelFieldsObjType, ViewModelFormProps } from "src/models/django-admin";
 import Label from "../form_fields/Label";
 import DynamicViewOnlyField from "../form_fields/DynamicViewOnlyField";
 import { getModelRecord } from "src/services/django-admin";
 
-type ViewModelFormProps = {
-  appLabel: string;
-  modelName: string;
-  pk: string;
-  modelAdminSettings: ModelAdminSettingsType;
-  modelFields: ModelFieldsObjType;
-};
 
 const ViewModelForm: Component<ViewModelFormProps> = (props) => {
   const [isDataReady, setIsDataReady] = createSignal(false);

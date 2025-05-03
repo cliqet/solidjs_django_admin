@@ -3,26 +3,19 @@ import { createSignal, For, onMount, Show } from "solid-js";
 import AngleDownIcon from "src/assets/icons/angle-down-icon";
 import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import { useAppContext } from "src/context/sessionContext";
-import { nonAuthRoute } from "src/hooks/useAdminRoute";
-import { handleFetchError } from "src/hooks/useModelAdmin";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
+import { AccordionDocType, ModelDocumentationType } from "src/models/django-admin";
 import { getModelDocs } from "src/services/django-admin";
 
-type ModelDocumentationType = {
-  id: number;
-  appModelName: string;
-  content: string;
-};
-
-type AccordionDocType = {
-  id: number;
-  isOpen: boolean;
-}
 
 const DocumentationPage = () => {
   const navigate = useNavigate();
-  const { appState, setAppState } = useAppContext();
+  const { setAppState } = useAppContext();
   const [docs, setDocs] = createSignal<ModelDocumentationType[]>([]);
   const [accordionDocs, setAccordionDocs] = createSignal<AccordionDocType[]>([]);
+  const { handleFetchError } = useModelAdmin();
+  const { nonAuthRoute } = useAdminRoute();
 
 
   onMount(async () => {

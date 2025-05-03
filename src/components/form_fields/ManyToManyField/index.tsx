@@ -1,12 +1,7 @@
 import { Component, For, JSX, createSignal, onMount } from "solid-js";
+import { ManyToManyCheckboxDataType } from "src/models/django-admin";
 
-export type ManyToManyCheckboxDataType = {
-  id: string;
-  checked: boolean;
-  label: string;
-};
-
-export type ManyToManyInitialValuesType = string|number[];
+type ManyToManyInitialValuesType = string|number[];
 
 type ManyToManyFieldProps = {
   fieldName: string;
@@ -20,7 +15,6 @@ type ManyToManyFieldProps = {
   onInvalid: (e: Event, id: string, validationMessage: string) => void;
   isInvalid: boolean;
   onFocus: (e: Event) => void;
-  // extraOnCheckFunction?: (itemSelected: ManyToManyCheckboxDataType, selectedData?: ManyToManyCheckboxDataType[]) => any;
 };
 
 const ManyToManyField: Component<ManyToManyFieldProps> = (props) => {
@@ -50,9 +44,9 @@ const ManyToManyField: Component<ManyToManyFieldProps> = (props) => {
     setSelectedData(initialSelectedData);
 
     if (selectedData().length === 0) {
-      inputRef.value = "";
+      inputRef!.value = "";
     } else {
-      inputRef.value = JSON.stringify(selectedData());
+      inputRef!.value = JSON.stringify(selectedData());
     }
   });
 
@@ -102,14 +96,14 @@ const ManyToManyField: Component<ManyToManyFieldProps> = (props) => {
     props.onChangeValue(selectedIds, props.buttonProps.id);
 
     if (selectedData().length === 0) {
-      inputRef.value = "";
+      inputRef!.value = "";
     } else {
-      inputRef.value = JSON.stringify(selectedData());
+      inputRef!.value = JSON.stringify(selectedData());
     }
   };
 
   const onSelectAll = () => {
-    searchfieldRef.value = "";
+    searchfieldRef!.value = "";
     setDisplayedData(allData());
     const copyAllData = displayedData().map((item, i) => {
       checkboxRefs[i].checked = true;
@@ -120,11 +114,11 @@ const ManyToManyField: Component<ManyToManyFieldProps> = (props) => {
     const selectedIds = selectedData().map((item) => item.id);
     props.onChangeValue(selectedIds, props.buttonProps.id);
 
-    inputRef.value = JSON.stringify(selectedData());
+    inputRef!.value = JSON.stringify(selectedData());
   };
 
   const onUnselectAll = () => {
-    searchfieldRef.value = "";
+    searchfieldRef!.value = "";
     setDisplayedData(allData());
     displayedData().forEach((item, i) => {
       checkboxRefs[i].checked = false;
@@ -134,11 +128,11 @@ const ManyToManyField: Component<ManyToManyFieldProps> = (props) => {
     const selectedIds = selectedData().map((item) => item.id);
     props.onChangeValue(selectedIds, props.buttonProps.id);
 
-    inputRef.value = "";
+    inputRef!.value = "";
   };
 
   const onButtonClick = () => {
-    inputRef.focus();
+    inputRef!.focus();
 
     // Create a synthetic focus event
     const syntheticEvent = new FocusEvent("focus", {
@@ -147,7 +141,7 @@ const ManyToManyField: Component<ManyToManyFieldProps> = (props) => {
     });
 
     // Dispatch the synthetic event on the textarea
-    inputRef.dispatchEvent(syntheticEvent);
+    inputRef!.dispatchEvent(syntheticEvent);
 
     setIsDropdownOpen(!isDropdownOpen());
   };

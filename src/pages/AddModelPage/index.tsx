@@ -4,15 +4,16 @@ import { createSignal, createEffect, Show } from "solid-js";
 import { getModelAdminSettings, getModelFields } from "src/services/django-admin";
 import { ModelFieldsObjType, ModelAdminSettingsType, FieldsInFormStateType, initialModelAdminSettings } from "src/models/django-admin";
 import { useAppContext } from "src/context/sessionContext";
-import { handleFetchError, hasAddModelPermission, initializeAddFormFieldState } from "src/hooks/useModelAdmin";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import { UserPermissionsType } from "src/models/user";
 import { getUserPermissions } from "src/services/users";
-import { nonAuthRoute } from "src/hooks/useAdminRoute";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
 
 
 const AddModelPage = () => {
   const params = useParams();
   const navigate = useNavigate();
+  const { nonAuthRoute } = useAdminRoute();
   const { appState, setAppState } = useAppContext();
   const [isDataReady, setIsDataReady] = createSignal(false);
   const [modelFields, setModelFields] = createSignal<ModelFieldsObjType>({});
@@ -20,20 +21,23 @@ const AddModelPage = () => {
   const [modelAdminSettings, setModelAdminSettings] =
     createSignal<ModelAdminSettingsType>(initialModelAdminSettings);
   const [fieldsInFormState, setFieldsInFormState] = createSignal<FieldsInFormStateType | null>(null);
+  const { handleFetchError, hasAddModelPermission, initializeAddFormFieldState } = useModelAdmin();
 
   createEffect(async () => {
     try {
-      // Setup model fields and model admin settings
+      // Setup model fields, model admin settings and user permissions
       setIsDataReady(false);
 
-      const modelFieldsData = await getModelFields(params.appLabel, params.modelName);
+      const [
+        modelFieldsData, modelAdminSettingsData, permissionsData
+      ] = await Promise.all([
+        getModelFields(params.appLabel, params.modelName),
+        getModelAdminSettings(params.appLabel, params.modelName),
+        getUserPermissions(appState.user?.uid as string)
+      ]);
+
       setModelFields(modelFieldsData.fields);
-
-      const modelAdminSettingsData = await getModelAdminSettings(params.appLabel, params.modelName);
       setModelAdminSettings(modelAdminSettingsData.model_admin_settings);
-
-      // Setup permissions
-      const permissionsData = await getUserPermissions(appState.user?.uid as string);
       setUserPermissions(permissionsData.permissions);
 
       // get all the fields and have each in formFieldState

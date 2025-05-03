@@ -19,7 +19,7 @@ const JsonField: Component<JsonFieldProps> = (props) => {
   let inputRef: HTMLInputElement;
 
   onMount(() => {
-    inputRef.value = props.initialValue ? props.initialValue : '';
+    inputRef!.value = props.initialValue ? props.initialValue : '';
   });
 
   createEffect(() => {
@@ -29,7 +29,7 @@ const JsonField: Component<JsonFieldProps> = (props) => {
       mode: "tree",
       onChange: () => {
         let editorText = JSON.stringify(editor.get());
-        inputRef.value = editorText;
+        inputRef!.value = editorText;
         props.onChangeValue(editorText, props.id);
       },
       onFocus: (e) => {

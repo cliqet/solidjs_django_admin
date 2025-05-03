@@ -28,7 +28,7 @@ import {
 import { useAppContext } from "src/context/sessionContext";
 import PlusIcon from "src/assets/icons/plus-icon";
 import { UserPermissionsType } from "src/models/user";
-import { hasChangeModelPermission, hasViewModelPermission } from "src/hooks/useModelAdmin";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import InlineRowAddForm from "../InlineRowAddForm";
 import EllipsisIcon from "src/assets/icons/ellipsis-icon";
 
@@ -87,6 +87,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
     createSignal<ModelAdminSettingsType>(initialModelAdminSettings);
 
   const [isTableOpen, setIsTableOpen] = createSignal(true);
+  const { hasChangeModelPermission, hasViewModelPermission } = useModelAdmin();
 
   let tableRowForms: HTMLTableRowElement[] = new Array(length).fill(null);
 
@@ -134,11 +135,24 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       // Setup page limit
       setPageLimit(props.inline.list_per_page);
 
-      // Get paginated data
-      const listviewResponse = await getListviewData(
-        props.inline.list_per_page
-      );
-      setListviewData(listviewResponse);
+      const [
+        listviewResponse,
+        modelFieldsData,
+        modelAdminSettingsData
+      ] = await Promise.all([
+        getListviewData(props.inline.list_per_page),
+        getModelFields(
+          props.inline.app_label,
+          props.inline.model_name
+        ),
+        getModelAdminSettings(
+          props.inline.app_label,
+          props.inline.model_name
+        )
+      ]);
+
+
+      setListviewData(listviewResponse as ListviewDataType);
 
       // Setup table row forms
       const tableRowForms = createTableRowForms();
@@ -148,18 +162,8 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       const tableRowActions = createTableRowActions();
       setTableRowsActionState(tableRowActions);
 
-      // Setup model fields for table use
-      const modelFieldsData = await getModelFields(
-        props.inline.app_label,
-        props.inline.model_name
-      );
       setModelFields(modelFieldsData.fields);
 
-      // Set model admin settings
-      const modelAdminSettingsData = await getModelAdminSettings(
-        props.inline.app_label,
-        props.inline.model_name
-      );
       setModelAdminSettings(modelAdminSettingsData.model_admin_settings);
 
       setIsTableRowFormsReady(true);
@@ -179,7 +183,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
 
     // Get paginated data
     const listviewResponse = await getListviewData();
-    setListviewData(listviewResponse);
+    setListviewData(listviewResponse as ListviewDataType);
   });
 
   const getPkField = (record: any): string => {
@@ -269,7 +273,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
     try {
       // Get paginated data
       const listviewResponse = await getListviewData();
-      setListviewData(listviewResponse);
+      setListviewData(listviewResponse as ListviewDataType);
     } catch (err: any) {
       setAppState("toastState", {
         ...appState.toastState,
@@ -283,7 +287,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
   const onAddRowForm = async () => {
     try {
       const listviewResponse = await getListviewData();
-      setListviewData(listviewResponse);
+      setListviewData(listviewResponse as ListviewDataType);
       setIsRowAddFormOpen(false);
     } catch (err: any) {
       setAppState("toastState", {
@@ -307,7 +311,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
 
       // Get paginated data
       const listviewResponse = await getListviewData();
-      setListviewData(listviewResponse);
+      setListviewData(listviewResponse as ListviewDataType);
     } catch (err: any) {
       setAppState("toastState", {
         ...appState.toastState,
@@ -433,7 +437,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                       </For>
 
                       {/** Row actions */}
-                      <td class="relative px-6 py-2 dark:text-white">
+                      <td class="relative px-6 py-2 dark:text-white flex justify-end">
                         <button onClick={() => onActionOpenOrClose(i())}>
                           <EllipsisIcon class="w-5 h-5 dark:text-white" />
                         </button>
@@ -461,10 +465,10 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                     >
                       <tr
                         ref={tableRowForms[i()]}
-                        class="border-b border-gray-700"
+                        class="border-b border-gray-700 w-full"
                       >
                         <td
-                          colspan={props.inline.list_display.length + 1}
+                          colspan={props.inline.list_display.length + 3}
                           class="w-full"
                         >
                           <div class="p-2 rounded-md mb-2">
@@ -504,7 +508,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
           </div>
 
           <Show when={isRowAddFormOpen()}>
-            <div class="p-2 bg-white dark:bg-slate-800 rounded-md mb-2">
+            <div class="p-2 bg-white dark:bg-slate-800 rounded-md mb-2 border border-custom-primary-lighter">
               <InlineRowAddForm
                 appLabel={props.inline.app_label}
                 modelName={props.inline.model_name}

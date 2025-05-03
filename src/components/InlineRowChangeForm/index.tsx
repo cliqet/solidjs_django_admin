@@ -2,36 +2,32 @@ import { Component, createSignal, For, onMount, Setter, Show } from "solid-js";
 import Label from "../form_fields/Label";
 import DynamicFormField from "../form_fields/DynamicFormField";
 import FieldErrorMessage from "../form_fields/FieldErrorMessage";
-import {
-  buildFieldStateOnError,
-  buildFieldStateOnFieldChange,
-  buildFieldStateOnFocus,
-  buildModelFormData,
-  initializeChangeFormFieldState,
-  isReadOnlyField,
-  updateFieldStateOnInvalidFields,
-  updateModelFieldsWithDbValues,
-} from "src/hooks/useModelAdmin";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
 import {
   FieldsInFormStateType,
+  InlineRowFormProps,
   ModelAdminSettingsType,
   ModelFieldsObjType,
 } from "src/models/django-admin";
 import { changeRecord, getModelFieldsEdit, getModelRecord } from "src/services/django-admin";
 import { useAppContext } from "src/context/sessionContext";
-import { scrollToTopForm } from "src/hooks/useUI";
+import { useUI } from "src/hooks/useUI";
 import PlusIcon from "src/assets/icons/plus-icon";
 import { FIELDTYPE } from "src/constants/django-admin";
 
-type InlineRowFormProps = {
-  appLabel: string;
-  modelName: string;
-  pk: string;
-  modelAdminSettings: ModelAdminSettingsType;
-  onSave: () => void;
-};
 
 const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
+  const { scrollToTopForm } = useUI();
+  const {
+    buildFieldStateOnError,
+    buildFieldStateOnFieldChange,
+    buildFieldStateOnFocus,
+    buildModelFormData,
+    initializeChangeFormFieldState,
+    isReadOnlyField,
+    updateFieldStateOnInvalidFields,
+    updateModelFieldsWithDbValues,
+  } = useModelAdmin();
   const [isDataReady, setIsDataReady] = createSignal(false);
 
   // An object which contains the values from the db for the record
@@ -179,7 +175,7 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
 
   return (
     <Show when={isDataReady()}>
-      <div class="bg-white dark:bg-slate-800 p-2 rounded-md">
+      <div class="bg-white dark:bg-slate-800 p-2 rounded-md border border-custom-primary-lighter">
         <h1 class="text-xl font-bold dark:text-slate-200">
           Change {props.modelAdminSettings.model_name}
         </h1>

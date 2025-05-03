@@ -11,24 +11,12 @@ import CheckboxField from "src/components/form_fields/CheckboxField";
 import InputTypeField from "src/components/form_fields/InputTypeField";
 import SelectField from "src/components/form_fields/SelectField";
 import { useAppContext } from "src/context/sessionContext";
-import {
-  authRoute,
-  dashboardRoute,
-  nonAuthRoute,
-} from "src/hooks/useAdminRoute";
-import { handleFetchError } from "src/hooks/useModelAdmin";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
+import { useModelAdmin } from "src/hooks/useModelAdmin";
+import { QueueStatFieldType, QueueType } from "src/models/django-admin";
 import { getWorkerQueues } from "src/services/django-admin";
 
-type QueueStatFieldType = {
-  label: string;
-  value: string | number;
-  field: string;
-};
 
-type QueueType = {
-  fields: QueueStatFieldType[];
-  name: string;
-};
 
 const REFRESH_UNITS = {
   SECONDS: "seconds",
@@ -45,6 +33,13 @@ const QueuesPage = () => {
   const [refreshUnit, setRefreshUnit] = createSignal(REFRESH_UNITS.MINUTES);
   const navigate = useNavigate();
   const { setAppState } = useAppContext();
+  const { handleFetchError } = useModelAdmin();
+  const {
+    authRoute,
+    dashboardRoute,
+    nonAuthRoute,
+  } = useAdminRoute();
+
   let intervalId: NodeJS.Timeout | null;
 
   const renderQueueStatField = (

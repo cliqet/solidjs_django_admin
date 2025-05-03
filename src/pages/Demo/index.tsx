@@ -7,7 +7,6 @@ import DateField from "src/components/form_fields/DateField";
 import TextareaField from "src/components/form_fields/TextareaField";
 import RadioField from "src/components/form_fields/RadioField";
 import FileUploadField from "src/components/form_fields/FileUploadField";
-import ToggleSwitchField from "src/components/form_fields/CheckboxField";
 import TimeField from "src/components/form_fields/TimeField";
 import ManyToManyField from "src/components/form_fields/ManyToManyField";
 import AutocompletField from "src/components/form_fields/AutocompleteField";

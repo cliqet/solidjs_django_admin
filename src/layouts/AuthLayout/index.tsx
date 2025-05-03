@@ -2,13 +2,13 @@ import { Component, ErrorBoundary, JSX, onMount } from "solid-js";
 import HeaderBar from "src/components/HeaderBar";
 import SideBar from "src/components/SideBar";
 import { useAppContext } from "src/context/sessionContext";
-import useStorageEvent from "src/hooks/useStorageEvent";
 import { User } from "src/models/user";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "@solidjs/router";
-import { nonAuthRoute } from "src/hooks/useAdminRoute";
+import { useAdminRoute } from "src/hooks/useAdminRoute";
 import ToastAlert from "src/components/ToastAlert";
 import ErrorBoundaryContent from "src/components/ErrorBoundaryContent";
+import { useStorageEvent } from "src/hooks/useStorageEvent";
 
 type AuthLayoutProps = {
   children?: JSX.Element | JSX.Element[]; // Type for children
@@ -18,6 +18,7 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
   const { appState, setAppState } = useAppContext();
   const { LOCAL_STORAGE_KEYS } = useStorageEvent();
   const navigate = useNavigate();
+  const { nonAuthRoute } = useAdminRoute();
 
   onMount(() => {
     const token = localStorage.getItem(LOCAL_STORAGE_KEYS.token);

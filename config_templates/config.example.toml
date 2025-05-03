@@ -11,6 +11,9 @@
   # Required string: Valid values are dev or prod
   environment = "dev"
 
+  # Required bool: Whether to use demo ui.
+  is_demo_mode = false 
+
 [integration]
   [integration.turnstile]
     # Required String: Cloudflare sitekey

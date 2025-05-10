@@ -154,7 +154,7 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
                 <div class="bg-custom-primary p-2 rounded-t-md my-3">
                   <h3 class="text-white">{fieldset.title}</h3>
                 </div>
-                <div class="w-1/2">
+                <div class="w-full md:w-1/2">
                   <For each={fieldset.fields}>
                     {(field, j) => (
                       <>

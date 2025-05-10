@@ -289,6 +289,12 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       const listviewResponse = await getListviewData();
       setListviewData(listviewResponse as ListviewDataType);
       setIsRowAddFormOpen(false);
+
+      let newRowActions = [...tableRowsActionState()];
+      newRowActions.forEach((action, i) => {
+        newRowActions[i].isOpen = false;
+      });
+      setTableRowsActionState(newRowActions);
     } catch (err: any) {
       setAppState("toastState", {
         ...appState.toastState,

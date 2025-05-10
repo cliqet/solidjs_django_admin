@@ -18,4 +18,5 @@ export const FIELDTYPE = {
   HTMLField: 'HTMLField',
   ManyToManyField: 'ManyToManyField',
   OneToOneField: 'OneToOneField',
+  SlugField: 'SlugField',
 }

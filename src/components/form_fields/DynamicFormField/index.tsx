@@ -35,7 +35,7 @@ const DynamicFormField: Component<DynamicFormFieldProps> = (props) => {
   } = useModelAdmin();
 
   const NotReadonlyCharfield = () => {
-    return [FIELDTYPE.CharField].includes(props.field.type)&& !props.isReadonly;
+    return [FIELDTYPE.CharField, FIELDTYPE.SlugField].includes(props.field.type)&& !props.isReadonly;
   }
 
   const IsIntegerField = () => {

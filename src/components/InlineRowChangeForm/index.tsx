@@ -27,6 +27,7 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
     isReadOnlyField,
     updateFieldStateOnInvalidFields,
     updateModelFieldsWithDbValues,
+    helpTextPrefix,
   } = useModelAdmin();
   const [isDataReady, setIsDataReady] = createSignal(false);
 
@@ -252,9 +253,14 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
                           />
 
                           <Show when={modelFieldsEdit()[field].help_text}>
-                            <div class="px-1">
-                              <span class="text-xs text-slate-500 dark:text-slate-300">
-                                {modelFieldsEdit()[field].help_text}
+                            <div class="px-1 py-1 text-xs text-slate-500 dark:text-slate-300 leading-tight">
+                              <span
+                                innerHTML={
+                                  `${helpTextPrefix(
+                                    modelFieldsEdit()[field].required
+                                  )}${modelFieldsEdit()[field].help_text}`
+                                }
+                              >
                               </span>
                             </div>
                           </Show>

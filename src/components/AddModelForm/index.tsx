@@ -45,6 +45,7 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
     buildModelFormData,
     isReadOnlyField,
     updateFieldStateOnInvalidFields,
+    helpTextPrefix,
   } = useModelAdmin();
   const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
   const [isDataReady, setIsDataReady] = createSignal(false);
@@ -158,10 +159,6 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
     props.setFieldsInFormState(newFieldsState);
   };
 
-  const helpTextPrefix = (isRequired: boolean) => {
-    return isRequired ? "Required: " : "Optional: ";
-  };
-
   return (
     <Show when={isDataReady()}>
       <div>
@@ -269,14 +266,18 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
                             modelAdminSettings={props.modelAdminSettings}
                           />
 
-                          <div class="px-1">
-                            <span class="text-xs text-slate-500 dark:text-slate-300">
-                              {helpTextPrefix(
-                                props.modelFields[field].required
-                              )}
-                              {props.modelFields[field].help_text}
-                            </span>
-                          </div>
+                          <Show when={props.modelFields[field].help_text}>
+                            <div class="px-1 py-1 text-xs text-slate-500 dark:text-slate-300 leading-tight">
+                              <span
+                                innerHTML={
+                                  `${helpTextPrefix(
+                                    props.modelFields[field].required
+                                  )}${props.modelFields[field].help_text}`
+                                }
+                              >
+                              </span>
+                            </div>
+                          </Show>
 
                           <Show
                             when={

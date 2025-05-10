@@ -11,7 +11,6 @@ import { useUI } from "src/hooks/useUI";
 import { useAppContext } from "src/context/sessionContext";
 import { addRecord } from "src/services/django-admin";
 import PlusIcon from "src/assets/icons/plus-icon";
-import { useNavigate } from "@solidjs/router";
 import { FIELDTYPE } from "src/constants/django-admin";
 
 
@@ -25,9 +24,9 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
     initializeAddFormFieldState,
     isReadOnlyField,
     updateFieldStateOnInvalidFields,
+    helpTextPrefix,
   } = useModelAdmin();
   const { appState, setAppState } = useAppContext();
-  const navigate = useNavigate();
   const [fieldsInFormState, setFieldsInFormState] =
     createSignal<FieldsInFormStateType | null>(null);
   const formId = `add-inline-${crypto.randomUUID()}`;
@@ -136,10 +135,6 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
     setFieldsInFormState(newFieldsState);
   };
 
-  const helpTextPrefix = (isRequired: boolean) => {
-    return isRequired ? "Required: " : "Optional: ";
-  };
-
   return (
     <>
       <div>
@@ -216,14 +211,18 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
                             modelAdminSettings={props.modelAdminSettings}
                           />
 
-                          <div class="px-1">
-                            <span class="text-xs text-slate-500 dark:text-slate-300">
-                              {helpTextPrefix(
-                                props.modelFields[field].required
-                              )}
-                              {props.modelFields[field].help_text}
-                            </span>
-                          </div>
+                          <Show when={props.modelFields[field].help_text}>
+                            <div class="px-1 py-1 text-xs text-slate-500 dark:text-slate-300 leading-tight">
+                              <span
+                                innerHTML={
+                                  `${helpTextPrefix(
+                                    props.modelFields[field].required
+                                  )}${props.modelFields[field].help_text}`
+                                }
+                              >
+                              </span>
+                            </div>
+                          </Show>
 
                           <Show
                             when={

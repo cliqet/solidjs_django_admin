@@ -560,6 +560,9 @@ export const useModelAdmin = () => {
     return formFields;
   };
 
+  const helpTextPrefix = (isRequired: boolean) => {
+    return isRequired ? "Required: " : "Optional: ";
+  };
 
   return {
     isReadOnlyField,
@@ -583,6 +586,7 @@ export const useModelAdmin = () => {
     updateModelFieldsWithDbValues,
     initializeChangeFormFieldState,
     initializeAddFormFieldState,
+    helpTextPrefix,
   }
 }
 

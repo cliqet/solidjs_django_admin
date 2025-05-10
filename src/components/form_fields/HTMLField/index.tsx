@@ -26,7 +26,8 @@ const HTMLField: Component<HTMLFieldProps> = (props) => {
       license_key: "gpl",
       menubar: "file edit view insert format tools table help",
       width: "auto",
-      height: "600px",
+      height: "150px",
+      resize: true,
       setup: (editorInstance) => {
         setEditor(editorInstance as Editor);
 

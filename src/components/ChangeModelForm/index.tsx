@@ -60,6 +60,7 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
     isReadOnlyField,
     updateFieldStateOnInvalidFields,
     updateModelFieldsWithDbValues,
+    helpTextPrefix,
   } = useModelAdmin();
   const { nonAuthRoute } = useAdminRoute();
   let modalEventPromise: (event: string) => void;
@@ -338,9 +339,14 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
                           />
 
                           <Show when={props.modelFields[field].help_text}>
-                            <div class="px-1">
-                              <span class="text-xs text-slate-500 dark:text-slate-300">
-                                {props.modelFields[field].help_text}
+                            <div class="px-1 py-1 text-xs text-slate-500 dark:text-slate-300 leading-tight">
+                              <span
+                                innerHTML={
+                                  `${helpTextPrefix(
+                                    props.modelFields[field].required
+                                  )}${props.modelFields[field].help_text}`
+                                }
+                              >
                               </span>
                             </div>
                           </Show>

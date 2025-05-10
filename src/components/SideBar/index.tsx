@@ -124,7 +124,7 @@ const SideBar = () => {
                           model.objectName.toLowerCase()
                         )}
                       >
-                        <ul class="inline-flex items-center font-medium h-8 rounded-md px-3 text-sm justify-start">
+                        <ul class="inline-flex items-center font-medium my-1 rounded-md px-3 text-sm justify-start">
                           <div class="mr-2">
                             <A href={model.adminUrl} class="hover:underline" onClick={onClickModelOrAddOnMobileView}>
                               {model.name}

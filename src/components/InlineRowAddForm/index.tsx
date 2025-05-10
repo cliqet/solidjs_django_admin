@@ -6,8 +6,6 @@ import { useModelAdmin } from "src/hooks/useModelAdmin";
 import {
   AddModelFormProps,
   FieldsInFormStateType,
-  ModelAdminSettingsType,
-  ModelFieldsObjType,
 } from "src/models/django-admin";
 import { useUI } from "src/hooks/useUI";
 import { useAppContext } from "src/context/sessionContext";

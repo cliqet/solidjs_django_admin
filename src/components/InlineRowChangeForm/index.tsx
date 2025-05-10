@@ -6,7 +6,6 @@ import { useModelAdmin } from "src/hooks/useModelAdmin";
 import {
   FieldsInFormStateType,
   InlineRowFormProps,
-  ModelAdminSettingsType,
   ModelFieldsObjType,
 } from "src/models/django-admin";
 import { changeRecord, getModelFieldsEdit, getModelRecord } from "src/services/django-admin";
@@ -21,13 +20,13 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
   const {
     buildFieldStateOnError,
     buildFieldStateOnFieldChange,
-    buildFieldStateOnFocus,
     buildModelFormData,
     initializeChangeFormFieldState,
     isReadOnlyField,
     updateFieldStateOnInvalidFields,
     updateModelFieldsWithDbValues,
     helpTextPrefix,
+    handleOnFocus,
   } = useModelAdmin();
   const [isDataReady, setIsDataReady] = createSignal(false);
 
@@ -166,14 +165,6 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
     scrollToTopForm("change-model-row-form");
   };
 
-  const handleOnFocus = (field: string) => {
-    const newFieldsState = buildFieldStateOnFocus(
-      fieldsInFormState() as FieldsInFormStateType,
-      field
-    );
-    setFieldsInFormState(newFieldsState);
-  };
-
   return (
     <Show when={isDataReady()}>
       <div class="bg-white dark:bg-slate-800 p-2 rounded-md border border-custom-primary-lighter">
@@ -220,7 +211,11 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
                           </div>
 
                           <DynamicFormField
-                            onFocus={() => handleOnFocus(field)}
+                            onFocus={() => handleOnFocus(
+                              field, 
+                              fieldsInFormState() as FieldsInFormStateType, 
+                              setFieldsInFormState as Setter<FieldsInFormStateType>
+                            )}
                             onInvalid={(
                               e: Event,
                               id: string,

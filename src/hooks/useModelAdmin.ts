@@ -1,4 +1,4 @@
-import { Setter } from "solid-js";
+import { Accessor, Setter } from "solid-js";
 import { FIELDTYPE } from "src/constants/django-admin";
 import {
   FieldsetType,
@@ -564,6 +564,19 @@ export const useModelAdmin = () => {
     return isRequired ? "Required: " : "Optional: ";
   };
 
+  const handleOnFocus = (
+    field: string,
+    fieldsInFormState: FieldsInFormStateType,
+    setFieldsInFormState: Setter<FieldsInFormStateType>
+  ) => {
+    const newFieldsState = buildFieldStateOnFocus(
+      fieldsInFormState,
+      field
+    );
+    setFieldsInFormState(newFieldsState);
+  };
+
+
   return {
     isReadOnlyField,
     hasAppPermission,
@@ -587,6 +600,7 @@ export const useModelAdmin = () => {
     initializeChangeFormFieldState,
     initializeAddFormFieldState,
     helpTextPrefix,
+    handleOnFocus,
   }
 }
 

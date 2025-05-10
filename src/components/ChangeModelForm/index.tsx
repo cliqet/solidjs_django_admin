@@ -1,4 +1,4 @@
-import { Component, createSignal, For, onMount, Setter, Show } from "solid-js";
+import { Accessor, Component, createSignal, For, onMount, Setter, Show } from "solid-js";
 import Label from "../form_fields/Label";
 import DynamicFormField from "../form_fields/DynamicFormField";
 import FieldErrorMessage from "../form_fields/FieldErrorMessage";
@@ -53,7 +53,6 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
   const {
     buildFieldStateOnError,
     buildFieldStateOnFieldChange,
-    buildFieldStateOnFocus,
     buildModelFormData,
     handleFetchError,
     initializeChangeFormFieldState,
@@ -61,6 +60,7 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
     updateFieldStateOnInvalidFields,
     updateModelFieldsWithDbValues,
     helpTextPrefix,
+    handleOnFocus,
   } = useModelAdmin();
   const { nonAuthRoute } = useAdminRoute();
   let modalEventPromise: (event: string) => void;
@@ -223,14 +223,6 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
     scrollToTopForm("change-model-form");
   };
 
-  const handleOnFocus = (field: string) => {
-    const newFieldsState = buildFieldStateOnFocus(
-      fieldsInFormState() as FieldsInFormStateType,
-      field
-    );
-    setFieldsInFormState(newFieldsState);
-  };
-
   return (
     <Show when={isDataReady()}>
       <div>
@@ -307,7 +299,11 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
                           </div>
 
                           <DynamicFormField
-                            onFocus={() => handleOnFocus(field)}
+                            onFocus={() => handleOnFocus(
+                              field, 
+                              fieldsInFormState() as FieldsInFormStateType, 
+                              setFieldsInFormState as Setter<FieldsInFormStateType>
+                            )}
                             onInvalid={(
                               e: Event,
                               id: string,

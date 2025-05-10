@@ -19,12 +19,12 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
   const {
     buildFieldStateOnError,
     buildFieldStateOnFieldChange,
-    buildFieldStateOnFocus,
     buildModelFormData,
     initializeAddFormFieldState,
     isReadOnlyField,
     updateFieldStateOnInvalidFields,
     helpTextPrefix,
+    handleOnFocus,
   } = useModelAdmin();
   const { appState, setAppState } = useAppContext();
   const [fieldsInFormState, setFieldsInFormState] =
@@ -127,14 +127,6 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
     scrollToTopForm(formId);
   };
 
-  const handleOnFocus = (field: string) => {
-    const newFieldsState = buildFieldStateOnFocus(
-      fieldsInFormState() as FieldsInFormStateType,
-      field
-    );
-    setFieldsInFormState(newFieldsState);
-  };
-
   return (
     <>
       <div>
@@ -180,7 +172,11 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
                             </Show>
                           </div>
                           <DynamicFormField
-                            onFocus={() => handleOnFocus(field)}
+                            onFocus={() => handleOnFocus(
+                              field, 
+                              fieldsInFormState() as FieldsInFormStateType, 
+                              setFieldsInFormState as Setter<FieldsInFormStateType>
+                            )}
                             onInvalid={(
                               e: Event,
                               id: string,

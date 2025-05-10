@@ -41,11 +41,11 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
   const {
     buildFieldStateOnError,
     buildFieldStateOnFieldChange,
-    buildFieldStateOnFocus,
     buildModelFormData,
     isReadOnlyField,
     updateFieldStateOnInvalidFields,
     helpTextPrefix,
+    handleOnFocus,
   } = useModelAdmin();
   const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
   const [isDataReady, setIsDataReady] = createSignal(false);
@@ -151,14 +151,6 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
     scrollToTopForm("add-model-form");
   };
 
-  const handleOnFocus = (field: string) => {
-    const newFieldsState = buildFieldStateOnFocus(
-      props.fieldsInFormState as FieldsInFormStateType,
-      field
-    );
-    props.setFieldsInFormState(newFieldsState);
-  };
-
   return (
     <Show when={isDataReady()}>
       <div>
@@ -235,7 +227,12 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
                             </Show>
                           </div>
                           <DynamicFormField
-                            onFocus={() => handleOnFocus(field)}
+                            onFocus={() => handleOnFocus(
+                              field, 
+                              props.fieldsInFormState as FieldsInFormStateType, 
+                              props.setFieldsInFormState as Setter<FieldsInFormStateType>
+                            )}
+                            // onFocus={() => handleOnFocus(field)}
                             onInvalid={(
                               e: Event,
                               id: string,

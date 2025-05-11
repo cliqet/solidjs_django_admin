@@ -19,7 +19,6 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
   const { scrollToTopForm } = useUI();
   const {
     buildFieldStateOnError,
-    buildFieldStateOnFieldChange,
     buildModelFormData,
     initializeChangeFormFieldState,
     isReadOnlyField,
@@ -27,6 +26,7 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
     updateModelFieldsWithDbValues,
     helpTextPrefix,
     handleOnFocus,
+    handleFieldChangeValue,
   } = useModelAdmin();
   const [isDataReady, setIsDataReady] = createSignal(false);
 
@@ -130,22 +130,6 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
     }
   };
 
-  // Update fields state for every changes in value of fields
-  const handleFieldChangeValue = (
-    value: any,
-    fieldName: string,
-    metadata?: any
-  ) => {
-    const newFieldsState = buildFieldStateOnFieldChange(
-      fieldsInFormState() as FieldsInFormStateType,
-      fieldName,
-      value,
-      metadata
-  );
-
-    setFieldsInFormState(newFieldsState);
-  };
-
   return (
     <Show when={isDataReady()}>
       <div class="bg-white dark:bg-slate-800 p-2 rounded-md border border-custom-primary-lighter">
@@ -218,6 +202,8 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
                               handleFieldChangeValue(
                                 value,
                                 fieldName,
+                                fieldsInFormState() as FieldsInFormStateType,
+                                setFieldsInFormState as Setter<FieldsInFormStateType>,
                                 metadata
                               );
                             }}

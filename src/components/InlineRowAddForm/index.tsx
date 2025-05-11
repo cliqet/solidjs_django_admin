@@ -18,13 +18,13 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
   const { scrollToTopForm } = useUI();
   const {
     buildFieldStateOnError,
-    buildFieldStateOnFieldChange,
     buildModelFormData,
     initializeAddFormFieldState,
     isReadOnlyField,
     handleInvalidFields,
     helpTextPrefix,
     handleOnFocus,
+    handleFieldChangeValue,
   } = useModelAdmin();
   const { appState, setAppState } = useAppContext();
   const [fieldsInFormState, setFieldsInFormState] =
@@ -91,22 +91,6 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
       // Scroll up to show error message
       scrollToTopForm(formId);
     }
-  };
-
-  // Update fields state for every changes in value of fields
-  const handleFieldChangeValue = (
-    value: any,
-    fieldName: string,
-    metadata?: any
-  ) => {
-    const newFieldsState = buildFieldStateOnFieldChange(
-      fieldsInFormState() as FieldsInFormStateType,
-      fieldName,
-      value,
-      metadata
-    );
-
-    setFieldsInFormState(newFieldsState);
   };
 
   return (
@@ -181,6 +165,8 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
                               handleFieldChangeValue(
                                 value,
                                 fieldName,
+                                fieldsInFormState() as FieldsInFormStateType,
+                                setFieldsInFormState as Setter<FieldsInFormStateType>,
                                 metadata
                               );
                             }}

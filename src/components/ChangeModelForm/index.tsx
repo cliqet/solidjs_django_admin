@@ -52,7 +52,6 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
   const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
   const {
     buildFieldStateOnError,
-    buildFieldStateOnFieldChange,
     buildModelFormData,
     handleFetchError,
     initializeChangeFormFieldState,
@@ -61,6 +60,7 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
     updateModelFieldsWithDbValues,
     helpTextPrefix,
     handleOnFocus,
+    handleFieldChangeValue,
   } = useModelAdmin();
   const { nonAuthRoute } = useAdminRoute();
   let modalEventPromise: (event: string) => void;
@@ -189,22 +189,6 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
     }
   };
 
-  // Update fields state for every changes in value of fields
-  const handleFieldChangeValue = (
-    value: any,
-    fieldName: string,
-    metadata?: any
-  ) => {
-    const newFieldsState = buildFieldStateOnFieldChange(
-      fieldsInFormState() as FieldsInFormStateType,
-      fieldName,
-      value,
-      metadata
-    );
-
-    setFieldsInFormState(newFieldsState);
-  };
-
   return (
     <Show when={isDataReady()}>
       <div>
@@ -308,6 +292,8 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
                               handleFieldChangeValue(
                                 value,
                                 fieldName,
+                                fieldsInFormState() as FieldsInFormStateType,
+                                setFieldsInFormState as Setter<FieldsInFormStateType>,
                                 metadata
                               );
                             }}

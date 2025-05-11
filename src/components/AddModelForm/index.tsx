@@ -40,12 +40,12 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
   const { scrollToTopForm } = useUI();
   const {
     buildFieldStateOnError,
-    buildFieldStateOnFieldChange,
     buildModelFormData,
     isReadOnlyField,
     handleInvalidFields,
     helpTextPrefix,
     handleOnFocus,
+    handleFieldChangeValue,
   } = useModelAdmin();
   const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
   const [isDataReady, setIsDataReady] = createSignal(false);
@@ -115,22 +115,6 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
       // Scroll up to show error message
       scrollToTopForm("add-model-form");
     }
-  };
-
-  // Update fields state for every changes in value of fields
-  const handleFieldChangeValue = (
-    value: any,
-    fieldName: string,
-    metadata?: any
-  ) => {
-    const newFieldsState = buildFieldStateOnFieldChange(
-      props.fieldsInFormState as FieldsInFormStateType,
-      fieldName,
-      value,
-      metadata
-    );
-
-    props.setFieldsInFormState(newFieldsState);
   };
 
   return (
@@ -237,6 +221,8 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
                               handleFieldChangeValue(
                                 value,
                                 fieldName,
+                                props.fieldsInFormState as FieldsInFormStateType,
+                                props.setFieldsInFormState as Setter<FieldsInFormStateType>,
                                 metadata
                               );
                             }}

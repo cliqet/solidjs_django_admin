@@ -1,4 +1,4 @@
-import { Accessor, Setter } from "solid-js";
+import { Setter } from "solid-js";
 import { FIELDTYPE } from "src/constants/django-admin";
 import {
   FieldsetType,

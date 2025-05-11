@@ -1,4 +1,4 @@
-import { Accessor, Component, createSignal, For, onMount, Setter, Show } from "solid-js";
+import { Component, createSignal, For, onMount, Setter, Show } from "solid-js";
 import Label from "../form_fields/Label";
 import DynamicFormField from "../form_fields/DynamicFormField";
 import FieldErrorMessage from "../form_fields/FieldErrorMessage";
@@ -48,8 +48,8 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
   const { appState, setAppState } = useAppContext();
   const [isModalOpen, setIsModalOpen] = createSignal(false);
   const navigate = useNavigate();
-  const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
   const { scrollToTopForm } = useUI();
+  const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
   const {
     buildFieldStateOnError,
     buildFieldStateOnFieldChange,
@@ -57,7 +57,7 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
     handleFetchError,
     initializeChangeFormFieldState,
     isReadOnlyField,
-    updateFieldStateOnInvalidFields,
+    handleInvalidFields,
     updateModelFieldsWithDbValues,
     helpTextPrefix,
     handleOnFocus,
@@ -205,24 +205,6 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
     setFieldsInFormState(newFieldsState);
   };
 
-  const handleInvalidFields = (
-    e: Event,
-    id: string,
-    validationMessage: string
-  ) => {
-    // prevent default error of browser for field
-    e.preventDefault();
-
-    updateFieldStateOnInvalidFields(
-      id,
-      fieldsInFormState() as FieldsInFormStateType,
-      validationMessage,
-      setFieldsInFormState as Setter<FieldsInFormStateType>
-    );
-
-    scrollToTopForm("change-model-form");
-  };
-
   return (
     <Show when={isDataReady()}>
       <div>
@@ -309,7 +291,14 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
                               id: string,
                               validationMessage: string
                             ) => {
-                              handleInvalidFields(e, id, validationMessage);
+                              handleInvalidFields(
+                                e, 
+                                id, 
+                                validationMessage,
+                                fieldsInFormState() as FieldsInFormStateType,
+                                setFieldsInFormState as Setter<FieldsInFormStateType>
+                              );
+                              scrollToTopForm("change-model-form");
                             }}
                             onFieldChangeValue={(
                               value,

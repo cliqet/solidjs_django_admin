@@ -576,6 +576,24 @@ export const useModelAdmin = () => {
     setFieldsInFormState(newFieldsState);
   };
 
+  const handleInvalidFields = (
+    e: Event,
+    id: string,
+    validationMessage: string,
+    fieldsInFormState: FieldsInFormStateType,
+    setFieldsInFormState: Setter<FieldsInFormStateType>,
+  ) => {
+    // prevent default error of browser for field
+    e.preventDefault();
+
+    updateFieldStateOnInvalidFields(
+      id,
+      fieldsInFormState,
+      validationMessage,
+      setFieldsInFormState
+    );
+  };
+
 
   return {
     isReadOnlyField,
@@ -601,6 +619,7 @@ export const useModelAdmin = () => {
     initializeAddFormFieldState,
     helpTextPrefix,
     handleOnFocus,
+    handleInvalidFields,
   }
 }
 

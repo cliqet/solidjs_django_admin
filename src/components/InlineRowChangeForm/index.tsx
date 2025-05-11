@@ -23,7 +23,7 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
     buildModelFormData,
     initializeChangeFormFieldState,
     isReadOnlyField,
-    updateFieldStateOnInvalidFields,
+    handleInvalidFields,
     updateModelFieldsWithDbValues,
     helpTextPrefix,
     handleOnFocus,
@@ -131,7 +131,6 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
   };
 
   // Update fields state for every changes in value of fields
-  
   const handleFieldChangeValue = (
     value: any,
     fieldName: string,
@@ -145,24 +144,6 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
   );
 
     setFieldsInFormState(newFieldsState);
-  };
-
-  const handleInvalidFields = (
-    e: Event,
-    id: string,
-    validationMessage: string
-  ) => {
-    // prevent default error of browser for field
-    e.preventDefault();
-
-    updateFieldStateOnInvalidFields(
-      id,
-      fieldsInFormState() as FieldsInFormStateType,
-      validationMessage,
-      setFieldsInFormState as Setter<FieldsInFormStateType>
-    );
-
-    scrollToTopForm("change-model-row-form");
   };
 
   return (
@@ -221,7 +202,13 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
                               id: string,
                               validationMessage: string
                             ) => {
-                              handleInvalidFields(e, id, validationMessage);
+                              handleInvalidFields(
+                                e, 
+                                id, 
+                                validationMessage,
+                                fieldsInFormState() as FieldsInFormStateType,
+                                setFieldsInFormState as Setter<FieldsInFormStateType>
+                              );
                             }}
                             onFieldChangeValue={(
                               value,

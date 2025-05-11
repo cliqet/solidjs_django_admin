@@ -43,7 +43,7 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
     buildFieldStateOnFieldChange,
     buildModelFormData,
     isReadOnlyField,
-    updateFieldStateOnInvalidFields,
+    handleInvalidFields,
     helpTextPrefix,
     handleOnFocus,
   } = useModelAdmin();
@@ -133,24 +133,6 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
     props.setFieldsInFormState(newFieldsState);
   };
 
-  const handleInvalidFields = (
-    e: Event,
-    id: string,
-    validationMessage: string
-  ) => {
-    // prevent default error of browser for field
-    e.preventDefault();
-
-    updateFieldStateOnInvalidFields(
-      id,
-      props.fieldsInFormState as FieldsInFormStateType,
-      validationMessage,
-      props.setFieldsInFormState as Setter<FieldsInFormStateType>
-    );
-
-    scrollToTopForm("add-model-form");
-  };
-
   return (
     <Show when={isDataReady()}>
       <div>
@@ -238,7 +220,14 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
                               id: string,
                               validationMessage: string
                             ) => {
-                              handleInvalidFields(e, id, validationMessage);
+                              handleInvalidFields(
+                                e, 
+                                id, 
+                                validationMessage,
+                                props.fieldsInFormState as FieldsInFormStateType,
+                                props.setFieldsInFormState as Setter<FieldsInFormStateType>
+                              );
+                              scrollToTopForm("add-model-form");
                             }}
                             onFieldChangeValue={(
                               value,

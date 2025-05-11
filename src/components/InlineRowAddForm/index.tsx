@@ -22,7 +22,7 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
     buildModelFormData,
     initializeAddFormFieldState,
     isReadOnlyField,
-    updateFieldStateOnInvalidFields,
+    handleInvalidFields,
     helpTextPrefix,
     handleOnFocus,
   } = useModelAdmin();
@@ -109,24 +109,6 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
     setFieldsInFormState(newFieldsState);
   };
 
-  const handleInvalidFields = (
-    e: Event,
-    id: string,
-    validationMessage: string
-  ) => {
-    // prevent default error of browser for field
-    e.preventDefault();
-
-    updateFieldStateOnInvalidFields(
-      id,
-      fieldsInFormState() as FieldsInFormStateType,
-      validationMessage,
-      setFieldsInFormState as Setter<FieldsInFormStateType>
-    );
-
-    scrollToTopForm(formId);
-  };
-
   return (
     <>
       <div>
@@ -182,7 +164,14 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
                               id: string,
                               validationMessage: string
                             ) => {
-                              handleInvalidFields(e, id, validationMessage);
+                              handleInvalidFields(
+                                e, 
+                                id, 
+                                validationMessage,
+                                fieldsInFormState() as FieldsInFormStateType,
+                                setFieldsInFormState as Setter<FieldsInFormStateType>
+                              );
+                              scrollToTopForm(formId);
                             }}
                             onFieldChangeValue={(
                               value,

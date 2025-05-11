@@ -11,7 +11,6 @@ import { useUI } from "src/hooks/useUI";
 import { useAppContext } from "src/context/sessionContext";
 import { addRecord } from "src/services/django-admin";
 import PlusIcon from "src/assets/icons/plus-icon";
-import { useNavigate } from "@solidjs/router";
 import { FIELDTYPE } from "src/constants/django-admin";
 
 
@@ -19,15 +18,15 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
   const { scrollToTopForm } = useUI();
   const {
     buildFieldStateOnError,
-    buildFieldStateOnFieldChange,
-    buildFieldStateOnFocus,
     buildModelFormData,
     initializeAddFormFieldState,
     isReadOnlyField,
-    updateFieldStateOnInvalidFields,
+    handleInvalidFields,
+    helpTextPrefix,
+    handleOnFocus,
+    handleFieldChangeValue,
   } = useModelAdmin();
   const { appState, setAppState } = useAppContext();
-  const navigate = useNavigate();
   const [fieldsInFormState, setFieldsInFormState] =
     createSignal<FieldsInFormStateType | null>(null);
   const formId = `add-inline-${crypto.randomUUID()}`;
@@ -94,52 +93,6 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
     }
   };
 
-  // Update fields state for every changes in value of fields
-  const handleFieldChangeValue = (
-    value: any,
-    fieldName: string,
-    metadata?: any
-  ) => {
-    const newFieldsState = buildFieldStateOnFieldChange(
-      fieldsInFormState() as FieldsInFormStateType,
-      fieldName,
-      value,
-      metadata
-    );
-
-    setFieldsInFormState(newFieldsState);
-  };
-
-  const handleInvalidFields = (
-    e: Event,
-    id: string,
-    validationMessage: string
-  ) => {
-    // prevent default error of browser for field
-    e.preventDefault();
-
-    updateFieldStateOnInvalidFields(
-      id,
-      fieldsInFormState() as FieldsInFormStateType,
-      validationMessage,
-      setFieldsInFormState as Setter<FieldsInFormStateType>
-    );
-
-    scrollToTopForm(formId);
-  };
-
-  const handleOnFocus = (field: string) => {
-    const newFieldsState = buildFieldStateOnFocus(
-      fieldsInFormState() as FieldsInFormStateType,
-      field
-    );
-    setFieldsInFormState(newFieldsState);
-  };
-
-  const helpTextPrefix = (isRequired: boolean) => {
-    return isRequired ? "Required: " : "Optional: ";
-  };
-
   return (
     <>
       <div>
@@ -185,13 +138,24 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
                             </Show>
                           </div>
                           <DynamicFormField
-                            onFocus={() => handleOnFocus(field)}
+                            onFocus={() => handleOnFocus(
+                              field, 
+                              fieldsInFormState() as FieldsInFormStateType, 
+                              setFieldsInFormState as Setter<FieldsInFormStateType>
+                            )}
                             onInvalid={(
                               e: Event,
                               id: string,
                               validationMessage: string
                             ) => {
-                              handleInvalidFields(e, id, validationMessage);
+                              handleInvalidFields(
+                                e, 
+                                id, 
+                                validationMessage,
+                                fieldsInFormState() as FieldsInFormStateType,
+                                setFieldsInFormState as Setter<FieldsInFormStateType>
+                              );
+                              scrollToTopForm(formId);
                             }}
                             onFieldChangeValue={(
                               value,
@@ -201,6 +165,8 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
                               handleFieldChangeValue(
                                 value,
                                 fieldName,
+                                fieldsInFormState() as FieldsInFormStateType,
+                                setFieldsInFormState as Setter<FieldsInFormStateType>,
                                 metadata
                               );
                             }}
@@ -216,14 +182,18 @@ const InlineRowAddForm: Component<AddModelFormProps> = (props) => {
                             modelAdminSettings={props.modelAdminSettings}
                           />
 
-                          <div class="px-1">
-                            <span class="text-xs text-slate-500 dark:text-slate-300">
-                              {helpTextPrefix(
-                                props.modelFields[field].required
-                              )}
-                              {props.modelFields[field].help_text}
-                            </span>
-                          </div>
+                          <Show when={props.modelFields[field].help_text}>
+                            <div class="px-1 py-1 text-xs text-slate-500 dark:text-slate-300 leading-tight">
+                              <span
+                                innerHTML={
+                                  `${helpTextPrefix(
+                                    props.modelFields[field].required
+                                  )}${props.modelFields[field].help_text}`
+                                }
+                              >
+                              </span>
+                            </div>
+                          </Show>
 
                           <Show
                             when={

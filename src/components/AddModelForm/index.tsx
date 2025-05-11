@@ -40,11 +40,12 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
   const { scrollToTopForm } = useUI();
   const {
     buildFieldStateOnError,
-    buildFieldStateOnFieldChange,
-    buildFieldStateOnFocus,
     buildModelFormData,
     isReadOnlyField,
-    updateFieldStateOnInvalidFields,
+    handleInvalidFields,
+    helpTextPrefix,
+    handleOnFocus,
+    handleFieldChangeValue,
   } = useModelAdmin();
   const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
   const [isDataReady, setIsDataReady] = createSignal(false);
@@ -114,52 +115,6 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
       // Scroll up to show error message
       scrollToTopForm("add-model-form");
     }
-  };
-
-  // Update fields state for every changes in value of fields
-  const handleFieldChangeValue = (
-    value: any,
-    fieldName: string,
-    metadata?: any
-  ) => {
-    const newFieldsState = buildFieldStateOnFieldChange(
-      props.fieldsInFormState as FieldsInFormStateType,
-      fieldName,
-      value,
-      metadata
-    );
-
-    props.setFieldsInFormState(newFieldsState);
-  };
-
-  const handleInvalidFields = (
-    e: Event,
-    id: string,
-    validationMessage: string
-  ) => {
-    // prevent default error of browser for field
-    e.preventDefault();
-
-    updateFieldStateOnInvalidFields(
-      id,
-      props.fieldsInFormState as FieldsInFormStateType,
-      validationMessage,
-      props.setFieldsInFormState as Setter<FieldsInFormStateType>
-    );
-
-    scrollToTopForm("add-model-form");
-  };
-
-  const handleOnFocus = (field: string) => {
-    const newFieldsState = buildFieldStateOnFocus(
-      props.fieldsInFormState as FieldsInFormStateType,
-      field
-    );
-    props.setFieldsInFormState(newFieldsState);
-  };
-
-  const helpTextPrefix = (isRequired: boolean) => {
-    return isRequired ? "Required: " : "Optional: ";
   };
 
   return (
@@ -238,13 +193,25 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
                             </Show>
                           </div>
                           <DynamicFormField
-                            onFocus={() => handleOnFocus(field)}
+                            onFocus={() => handleOnFocus(
+                              field, 
+                              props.fieldsInFormState as FieldsInFormStateType, 
+                              props.setFieldsInFormState as Setter<FieldsInFormStateType>
+                            )}
+                            // onFocus={() => handleOnFocus(field)}
                             onInvalid={(
                               e: Event,
                               id: string,
                               validationMessage: string
                             ) => {
-                              handleInvalidFields(e, id, validationMessage);
+                              handleInvalidFields(
+                                e, 
+                                id, 
+                                validationMessage,
+                                props.fieldsInFormState as FieldsInFormStateType,
+                                props.setFieldsInFormState as Setter<FieldsInFormStateType>
+                              );
+                              scrollToTopForm("add-model-form");
                             }}
                             onFieldChangeValue={(
                               value,
@@ -254,6 +221,8 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
                               handleFieldChangeValue(
                                 value,
                                 fieldName,
+                                props.fieldsInFormState as FieldsInFormStateType,
+                                props.setFieldsInFormState as Setter<FieldsInFormStateType>,
                                 metadata
                               );
                             }}
@@ -269,14 +238,18 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
                             modelAdminSettings={props.modelAdminSettings}
                           />
 
-                          <div class="px-1">
-                            <span class="text-xs text-slate-500 dark:text-slate-300">
-                              {helpTextPrefix(
-                                props.modelFields[field].required
-                              )}
-                              {props.modelFields[field].help_text}
-                            </span>
-                          </div>
+                          <Show when={props.modelFields[field].help_text}>
+                            <div class="px-1 py-1 text-xs text-slate-500 dark:text-slate-300 leading-tight">
+                              <span
+                                innerHTML={
+                                  `${helpTextPrefix(
+                                    props.modelFields[field].required
+                                  )}${props.modelFields[field].help_text}`
+                                }
+                              >
+                              </span>
+                            </div>
+                          </Show>
 
                           <Show
                             when={

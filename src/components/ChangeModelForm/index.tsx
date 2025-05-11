@@ -48,18 +48,19 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
   const { appState, setAppState } = useAppContext();
   const [isModalOpen, setIsModalOpen] = createSignal(false);
   const navigate = useNavigate();
-  const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
   const { scrollToTopForm } = useUI();
+  const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
   const {
     buildFieldStateOnError,
-    buildFieldStateOnFieldChange,
-    buildFieldStateOnFocus,
     buildModelFormData,
     handleFetchError,
     initializeChangeFormFieldState,
     isReadOnlyField,
-    updateFieldStateOnInvalidFields,
+    handleInvalidFields,
     updateModelFieldsWithDbValues,
+    helpTextPrefix,
+    handleOnFocus,
+    handleFieldChangeValue,
   } = useModelAdmin();
   const { nonAuthRoute } = useAdminRoute();
   let modalEventPromise: (event: string) => void;
@@ -188,48 +189,6 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
     }
   };
 
-  // Update fields state for every changes in value of fields
-  const handleFieldChangeValue = (
-    value: any,
-    fieldName: string,
-    metadata?: any
-  ) => {
-    const newFieldsState = buildFieldStateOnFieldChange(
-      fieldsInFormState() as FieldsInFormStateType,
-      fieldName,
-      value,
-      metadata
-    );
-
-    setFieldsInFormState(newFieldsState);
-  };
-
-  const handleInvalidFields = (
-    e: Event,
-    id: string,
-    validationMessage: string
-  ) => {
-    // prevent default error of browser for field
-    e.preventDefault();
-
-    updateFieldStateOnInvalidFields(
-      id,
-      fieldsInFormState() as FieldsInFormStateType,
-      validationMessage,
-      setFieldsInFormState as Setter<FieldsInFormStateType>
-    );
-
-    scrollToTopForm("change-model-form");
-  };
-
-  const handleOnFocus = (field: string) => {
-    const newFieldsState = buildFieldStateOnFocus(
-      fieldsInFormState() as FieldsInFormStateType,
-      field
-    );
-    setFieldsInFormState(newFieldsState);
-  };
-
   return (
     <Show when={isDataReady()}>
       <div>
@@ -306,13 +265,24 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
                           </div>
 
                           <DynamicFormField
-                            onFocus={() => handleOnFocus(field)}
+                            onFocus={() => handleOnFocus(
+                              field, 
+                              fieldsInFormState() as FieldsInFormStateType, 
+                              setFieldsInFormState as Setter<FieldsInFormStateType>
+                            )}
                             onInvalid={(
                               e: Event,
                               id: string,
                               validationMessage: string
                             ) => {
-                              handleInvalidFields(e, id, validationMessage);
+                              handleInvalidFields(
+                                e, 
+                                id, 
+                                validationMessage,
+                                fieldsInFormState() as FieldsInFormStateType,
+                                setFieldsInFormState as Setter<FieldsInFormStateType>
+                              );
+                              scrollToTopForm("change-model-form");
                             }}
                             onFieldChangeValue={(
                               value,
@@ -322,6 +292,8 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
                               handleFieldChangeValue(
                                 value,
                                 fieldName,
+                                fieldsInFormState() as FieldsInFormStateType,
+                                setFieldsInFormState as Setter<FieldsInFormStateType>,
                                 metadata
                               );
                             }}
@@ -338,9 +310,14 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
                           />
 
                           <Show when={props.modelFields[field].help_text}>
-                            <div class="px-1">
-                              <span class="text-xs text-slate-500 dark:text-slate-300">
-                                {props.modelFields[field].help_text}
+                            <div class="px-1 py-1 text-xs text-slate-500 dark:text-slate-300 leading-tight">
+                              <span
+                                innerHTML={
+                                  `${helpTextPrefix(
+                                    props.modelFields[field].required
+                                  )}${props.modelFields[field].help_text}`
+                                }
+                              >
                               </span>
                             </div>
                           </Show>

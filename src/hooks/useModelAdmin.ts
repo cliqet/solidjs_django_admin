@@ -560,6 +560,58 @@ export const useModelAdmin = () => {
     return formFields;
   };
 
+  const helpTextPrefix = (isRequired: boolean) => {
+    return isRequired ? "Required: " : "Optional: ";
+  };
+
+  const handleOnFocus = (
+    field: string,
+    fieldsInFormState: FieldsInFormStateType,
+    setFieldsInFormState: Setter<FieldsInFormStateType>
+  ) => {
+    const newFieldsState = buildFieldStateOnFocus(
+      fieldsInFormState,
+      field
+    );
+    setFieldsInFormState(newFieldsState);
+  };
+
+  const handleInvalidFields = (
+    e: Event,
+    id: string,
+    validationMessage: string,
+    fieldsInFormState: FieldsInFormStateType,
+    setFieldsInFormState: Setter<FieldsInFormStateType>,
+  ) => {
+    // prevent default error of browser for field
+    e.preventDefault();
+
+    updateFieldStateOnInvalidFields(
+      id,
+      fieldsInFormState,
+      validationMessage,
+      setFieldsInFormState
+    );
+  };
+
+  // Update fields state for every changes in value of fields
+  const handleFieldChangeValue = (
+    value: any,
+    fieldName: string,
+    fieldsInFormState: FieldsInFormStateType,
+    setFieldsInFormState: Setter<FieldsInFormStateType>,
+    metadata?: any,
+  ) => {
+    const newFieldsState = buildFieldStateOnFieldChange(
+      fieldsInFormState,
+      fieldName,
+      value,
+      metadata
+    );
+
+    setFieldsInFormState(newFieldsState);
+  };
+
 
   return {
     isReadOnlyField,
@@ -583,6 +635,10 @@ export const useModelAdmin = () => {
     updateModelFieldsWithDbValues,
     initializeChangeFormFieldState,
     initializeAddFormFieldState,
+    helpTextPrefix,
+    handleOnFocus,
+    handleInvalidFields,
+    handleFieldChangeValue,
   }
 }
 

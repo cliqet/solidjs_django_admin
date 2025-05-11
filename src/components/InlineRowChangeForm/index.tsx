@@ -6,7 +6,6 @@ import { useModelAdmin } from "src/hooks/useModelAdmin";
 import {
   FieldsInFormStateType,
   InlineRowFormProps,
-  ModelAdminSettingsType,
   ModelFieldsObjType,
 } from "src/models/django-admin";
 import { changeRecord, getModelFieldsEdit, getModelRecord } from "src/services/django-admin";
@@ -20,13 +19,14 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
   const { scrollToTopForm } = useUI();
   const {
     buildFieldStateOnError,
-    buildFieldStateOnFieldChange,
-    buildFieldStateOnFocus,
     buildModelFormData,
     initializeChangeFormFieldState,
     isReadOnlyField,
-    updateFieldStateOnInvalidFields,
+    handleInvalidFields,
     updateModelFieldsWithDbValues,
+    helpTextPrefix,
+    handleOnFocus,
+    handleFieldChangeValue,
   } = useModelAdmin();
   const [isDataReady, setIsDataReady] = createSignal(false);
 
@@ -130,49 +130,6 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
     }
   };
 
-  // Update fields state for every changes in value of fields
-  
-  const handleFieldChangeValue = (
-    value: any,
-    fieldName: string,
-    metadata?: any
-  ) => {
-    const newFieldsState = buildFieldStateOnFieldChange(
-      fieldsInFormState() as FieldsInFormStateType,
-      fieldName,
-      value,
-      metadata
-  );
-
-    setFieldsInFormState(newFieldsState);
-  };
-
-  const handleInvalidFields = (
-    e: Event,
-    id: string,
-    validationMessage: string
-  ) => {
-    // prevent default error of browser for field
-    e.preventDefault();
-
-    updateFieldStateOnInvalidFields(
-      id,
-      fieldsInFormState() as FieldsInFormStateType,
-      validationMessage,
-      setFieldsInFormState as Setter<FieldsInFormStateType>
-    );
-
-    scrollToTopForm("change-model-row-form");
-  };
-
-  const handleOnFocus = (field: string) => {
-    const newFieldsState = buildFieldStateOnFocus(
-      fieldsInFormState() as FieldsInFormStateType,
-      field
-    );
-    setFieldsInFormState(newFieldsState);
-  };
-
   return (
     <Show when={isDataReady()}>
       <div class="bg-white dark:bg-slate-800 p-2 rounded-md border border-custom-primary-lighter">
@@ -219,13 +176,23 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
                           </div>
 
                           <DynamicFormField
-                            onFocus={() => handleOnFocus(field)}
+                            onFocus={() => handleOnFocus(
+                              field, 
+                              fieldsInFormState() as FieldsInFormStateType, 
+                              setFieldsInFormState as Setter<FieldsInFormStateType>
+                            )}
                             onInvalid={(
                               e: Event,
                               id: string,
                               validationMessage: string
                             ) => {
-                              handleInvalidFields(e, id, validationMessage);
+                              handleInvalidFields(
+                                e, 
+                                id, 
+                                validationMessage,
+                                fieldsInFormState() as FieldsInFormStateType,
+                                setFieldsInFormState as Setter<FieldsInFormStateType>
+                              );
                             }}
                             onFieldChangeValue={(
                               value,
@@ -235,6 +202,8 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
                               handleFieldChangeValue(
                                 value,
                                 fieldName,
+                                fieldsInFormState() as FieldsInFormStateType,
+                                setFieldsInFormState as Setter<FieldsInFormStateType>,
                                 metadata
                               );
                             }}
@@ -252,9 +221,14 @@ const InlineRowChangeForm: Component<InlineRowFormProps> = (props) => {
                           />
 
                           <Show when={modelFieldsEdit()[field].help_text}>
-                            <div class="px-1">
-                              <span class="text-xs text-slate-500 dark:text-slate-300">
-                                {modelFieldsEdit()[field].help_text}
+                            <div class="px-1 py-1 text-xs text-slate-500 dark:text-slate-300 leading-tight">
+                              <span
+                                innerHTML={
+                                  `${helpTextPrefix(
+                                    modelFieldsEdit()[field].required
+                                  )}${modelFieldsEdit()[field].help_text}`
+                                }
+                              >
                               </span>
                             </div>
                           </Show>

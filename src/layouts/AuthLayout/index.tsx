@@ -68,12 +68,12 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
             }}
             class="border-l border-slate-300 container px-4 pt-4 pb-20 flex-1 overflow-auto dark:bg-gray-800 no-scrollbar"
           >
-            {/* <ErrorBoundary
+            <ErrorBoundary
               fallback={(err, reset) => <ErrorBoundaryContent error={err} />}
-            > */}
+            >
               <ToastAlert />
               {props.children}
-            {/* </ErrorBoundary> */}
+            </ErrorBoundary>
           </div>
         </div>
       </div>

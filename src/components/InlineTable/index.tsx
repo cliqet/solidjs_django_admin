@@ -151,7 +151,6 @@ const InlineTable: Component<InlineTableProps> = (props) => {
         )
       ]);
 
-
       setListviewData(listviewResponse as ListviewDataType);
 
       // Setup table row forms
@@ -181,9 +180,21 @@ const InlineTable: Component<InlineTableProps> = (props) => {
     pageLimit();
     pageOffset();
 
+    setIsTableRowFormsReady(false);
+
     // Get paginated data
     const listviewResponse = await getListviewData();
     setListviewData(listviewResponse as ListviewDataType);
+
+    // Setup table row forms
+    const tableRowForms = createTableRowForms();
+    setTableRowsFormState(tableRowForms);
+
+    // Setup table row actions
+    const tableRowActions = createTableRowActions();
+    setTableRowsActionState(tableRowActions);
+
+    setIsTableRowFormsReady(true);
   });
 
   const getPkField = (record: any): string => {
@@ -271,9 +282,21 @@ const InlineTable: Component<InlineTableProps> = (props) => {
     onRowClick(index, pk);
 
     try {
+      setIsTableRowFormsReady(false);
+
       // Get paginated data
       const listviewResponse = await getListviewData();
       setListviewData(listviewResponse as ListviewDataType);
+
+      // Setup table row forms
+      const tableRowForms = createTableRowForms();
+      setTableRowsFormState(tableRowForms);
+
+      // Setup table row actions
+      const tableRowActions = createTableRowActions();
+      setTableRowsActionState(tableRowActions);
+
+      setIsTableRowFormsReady(true);
     } catch (err: any) {
       setAppState("toastState", {
         ...appState.toastState,
@@ -286,15 +309,21 @@ const InlineTable: Component<InlineTableProps> = (props) => {
 
   const onAddRowForm = async () => {
     try {
+      setIsTableRowFormsReady(false);
+
       const listviewResponse = await getListviewData();
       setListviewData(listviewResponse as ListviewDataType);
       setIsRowAddFormOpen(false);
 
-      let newRowActions = [...tableRowsActionState()];
-      newRowActions.forEach((action, i) => {
-        newRowActions[i].isOpen = false;
-      });
-      setTableRowsActionState(newRowActions);
+      // Setup table row forms
+      const tableRowForms = createTableRowForms();
+      setTableRowsFormState(tableRowForms);
+
+      // Setup table row actions
+      const tableRowActions = createTableRowActions();
+      setTableRowsActionState(tableRowActions);
+
+      setIsTableRowFormsReady(true);
     } catch (err: any) {
       setAppState("toastState", {
         ...appState.toastState,
@@ -318,6 +347,10 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       // Get paginated data
       const listviewResponse = await getListviewData();
       setListviewData(listviewResponse as ListviewDataType);
+
+      // Setup table row forms
+      const tableRowForms = createTableRowForms();
+      setTableRowsFormState(tableRowForms);
     } catch (err: any) {
       setAppState("toastState", {
         ...appState.toastState,

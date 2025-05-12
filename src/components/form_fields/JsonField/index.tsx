@@ -1,7 +1,7 @@
 import JSONEditor from "jsoneditor";
 import { JSONEditorOptions } from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
-import { Component, createEffect, onMount } from "solid-js";
+import { Component, createEffect, onMount, onCleanup } from "solid-js";
 
 type JsonFieldProps = {
   id: string;
@@ -39,6 +39,12 @@ const JsonField: Component<JsonFieldProps> = (props) => {
     if (container) {
       editor = new JSONEditor(container, options);
       editor.set(props.initialValue);
+    }
+  });
+
+  onCleanup(() => {
+    if (editor) {
+      editor.destroy();
     }
   });
 

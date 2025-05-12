@@ -134,6 +134,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
     try {
       // Setup page limit
       setPageLimit(props.inline.list_per_page);
+      const parentPk = props.parentPk;
 
       const [
         listviewResponse,
@@ -147,7 +148,8 @@ const InlineTable: Component<InlineTableProps> = (props) => {
         ),
         getModelAdminSettings(
           props.inline.app_label,
-          props.inline.model_name
+          props.inline.model_name,
+          parentPk,
         )
       ]);
 
@@ -216,7 +218,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
     fieldData = record[fieldName];
 
     // Handle field data that have choices. Use the string for forms
-    if (modelFields()[fieldName].choices) {
+    if (modelFields()[fieldName]?.choices) {
       const choice = modelFields()[fieldName].choices?.find((choice) => {
         return choice.value === fieldData;
       });
@@ -224,7 +226,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
     }
 
     // Handle foreignkeys where pk are stored. Use label in foreignkey_choices
-    if (modelFields()[fieldName].foreignkey_choices) {
+    if (modelFields()[fieldName]?.foreignkey_choices) {
       const choice = modelFields()[fieldName].foreignkey_choices?.find(
         (choice) => {
           return choice.value === fieldData;
@@ -233,7 +235,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       fieldData = choice?.label;
     }
 
-    if (modelFields()[fieldName].type === FIELDTYPE.BooleanField) {
+    if (modelFields()[fieldName]?.type === FIELDTYPE.BooleanField) {
       if (fieldData) {
         return <CheckCircleIcon class="w-6 h-6 text-gray-800" />;
       } else {

@@ -59,7 +59,8 @@ const ViewChangeModelPage = () => {
         ),
         getModelAdminSettings(
           params.appLabel,
-          params.modelName
+          params.modelName,
+          params.pk
         ),
         getUserPermissions(
           appState.user?.uid as string

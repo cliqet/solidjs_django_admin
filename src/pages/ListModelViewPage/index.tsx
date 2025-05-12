@@ -144,7 +144,8 @@ const ListModelViewPage = () => {
 
       const modelAdminSettingsData = await getModelAdminSettings(
         params.appLabel,
-        params.modelName
+        params.modelName,
+        0
       );
       setModelAdminSettings(modelAdminSettingsData.model_admin_settings);
 

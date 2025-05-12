@@ -53,7 +53,6 @@ const DynamicFormField: Component<DynamicFormFieldProps> = (props) => {
   }
 
   const HasDropdown = () => {
-    // TODO: include OneToOneField
     return props.field.choices || props.field.foreignkey_choices;
   }
 
@@ -66,7 +65,7 @@ const DynamicFormField: Component<DynamicFormFieldProps> = (props) => {
     const isInAutocomplete = props.modelAdminSettings.autocomplete_fields.includes(props.field.name);
     return (NotReadonlyCharfield() || IsForeignKey()) && HasDropdown() && isInAutocomplete;
   }
-
+ 
   return (
     <>
       <Show when={props.isReadonly || props.field.type === FIELDTYPE.BigAutoField}>

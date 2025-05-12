@@ -23,13 +23,21 @@ export async function getModelFields(
   return response;
 }
 
+/**
+ * 
+ * @param appLabel 
+ * @param modelName 
+ * @param pk pass any string or number if you do not have a foreign key. 0 is recommended
+ * @returns 
+ */
 export async function getModelAdminSettings(
   appLabel: string, 
-  modelName: string
+  modelName: string,
+  pk: string | number
 ): Promise<{ model_admin_settings: ModelAdminSettingsType }> {
   const response = await sessionClient.fetch({
     method: "GET",
-    urlSegment: `/django-admin/model-admin-settings/${appLabel}/${modelName}`,
+    urlSegment: `/django-admin/model-admin-settings/${appLabel}/${modelName}/${pk}`,
   });
   return response;
 }

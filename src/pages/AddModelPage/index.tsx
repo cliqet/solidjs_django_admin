@@ -32,7 +32,7 @@ const AddModelPage = () => {
         modelFieldsData, modelAdminSettingsData, permissionsData
       ] = await Promise.all([
         getModelFields(params.appLabel, params.modelName),
-        getModelAdminSettings(params.appLabel, params.modelName),
+        getModelAdminSettings(params.appLabel, params.modelName, 0),
         getUserPermissions(appState.user?.uid as string)
       ]);
 

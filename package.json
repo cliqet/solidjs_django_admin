@@ -36,7 +36,7 @@
     "jwt-decode": "^4.0.0",
     "postcss": "^8.4.49",
     "solid-js": "^1.9.3",
-    "tailwind-merge": "^2.5.5",
+    "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "tinymce": "^7.6.0",
     "toml": "^3.0.0"

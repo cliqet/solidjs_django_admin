@@ -33,7 +33,7 @@ const HeaderBar = () => {
     <>
       <nav
         id="header-bar"
-        class="fixed flex items-center justify-between top-0 h-20 px-4 z-40 w-full border-b bg-custom-primary dark:bg-custom-dark dark:border-gray-700"
+        class="fixed flex items-center justify-between top-0 h-20 px-4 z-40 w-full border-b bg-custom-primary dark:bg-black dark:border-gray-700"
       >
         <div class="flex items-center justify-start">
           <span class="ml-2 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap text-white dark:text-cyan-400">

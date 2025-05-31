@@ -95,7 +95,7 @@ const PasswordField: Component<PasswordFieldProps> = (props) => {
         <div>
           <span class="dark:text-white mr-3">*************</span>
           <button onClick={() => setIsChangingOnEdit(true)} class="button mr-3">Change Password</button>
-          <span onClick={emailPasswordReset} class="dark:text-white text-sm underline cursor-pointer">Email Password Reset</span>
+          <span onClick={emailPasswordReset} class="text-custom-primary-lighter text-sm underline cursor-pointer">Email Password Reset</span>
         </div>
       </Show>
 

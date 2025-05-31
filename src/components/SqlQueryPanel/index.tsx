@@ -227,7 +227,7 @@ const SqlQueryPanel = () => {
 
   return (
     <Show when={isDataReady()}>
-      <h3 class="dark:text-white text-sm my-3">
+      <h3 class="text-red-500 text-sm my-3">
         NOTE: Any queries that update the state of the db is not allowed.
       </h3>
 
@@ -246,7 +246,7 @@ const SqlQueryPanel = () => {
             <h3 class="dark:text-white text-sm mb-2">Saved Queries</h3>
             <Show when={!isEditing()}>
               <span class="cursor-pointer" onClick={() => setIsSaving(true)}>
-                <SaveIcon class="w-5 h-5 dark:text-white" />
+                <SaveIcon class="w-5 h-5 text-green-500" />
               </span>
             </Show>
             <Show when={currentSavedQueryId() !== 0}>

@@ -56,7 +56,7 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
 
   return (
     <div>
-      <div class="h-screen flex flex-col overflow-hidden dark:bg-gray-800">
+      <div class="h-screen flex flex-col overflow-hidden dark:bg-black">
         <HeaderBar />
 
         <div class="pt-20 flex flex-1 overflow-hidden">
@@ -64,9 +64,10 @@ const AuthLayout: Component<AuthLayoutProps> = (props: any) => {
           <div
             id="auth-main"
             classList={{
-              "hidden": !appState.isSidebarMinimized && appState.screenSize === 'xs'
+              "hidden": !appState.isSidebarMinimized && appState.screenSize === 'xs',
+              "custom-scrollbar-dark": appState.themeMode === "dark",
             }}
-            class="border-l border-slate-300 container px-4 pt-4 pb-20 flex-1 overflow-auto dark:bg-gray-800 no-scrollbar"
+            class="border-l border-slate-300 container px-4 pt-4 pb-20 flex-1 overflow-auto dark:bg-black"
           >
             <ErrorBoundary
               fallback={(err, reset) => <ErrorBoundaryContent error={err} />}

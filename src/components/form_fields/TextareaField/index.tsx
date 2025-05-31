@@ -15,6 +15,7 @@ const TextareaField: Component<TextareaFieldProps> = (props) => {
     <textarea
       {...props.textareaProps}
       id={props.textareaProps?.id}
+      class="w-full"
       classList={{
         "invalid-input": props.isInvalid,
         "valid-input": !props.isInvalid,

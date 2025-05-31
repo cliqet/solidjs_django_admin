@@ -66,7 +66,7 @@ const SideBar = () => {
     <Show when={apps() && userPermissions()}>
       <div
         id="logo-sidebar"
-        class="relative h-full dark:bg-gray-800 p-2 dark:text-white text-sm overflow-y-auto overflow-x-hidden no-scrollbar"
+        class="relative h-full dark:bg-black p-2 dark:text-white text-sm overflow-y-auto overflow-x-hidden no-scrollbar"
         classList={{
           "w-full md:w-1/4 lg:w-1/5": !appState.isSidebarMinimized,
           "w-5": appState.isSidebarMinimized,
@@ -94,7 +94,7 @@ const SideBar = () => {
                     openStates[i()] = !openStates[i()];
                     setAppsIsOpen(openStates);
                   }}
-                  class="bg-custom-primary-lighter text-white px-2 py-1 flex items-center rounded-sm justify-between"
+                  class="bg-custom-primary text-white px-2 py-1 flex items-center rounded-sm justify-between"
                 >
                   <span class="font-bold">{app.name}</span>
                   <Show when={appsIsOpen()[i()]}>
@@ -126,7 +126,7 @@ const SideBar = () => {
                       >
                         <ul class="inline-flex items-center font-medium my-1 rounded-md px-3 text-sm justify-start">
                           <div class="mr-2">
-                            <A href={model.adminUrl} class="hover:underline" onClick={onClickModelOrAddOnMobileView}>
+                            <A href={model.adminUrl} class="hover:underline hover:text-orange-500" onClick={onClickModelOrAddOnMobileView}>
                               {model.name}
                             </A>
                           </div>
@@ -139,7 +139,7 @@ const SideBar = () => {
                               )}
                             >
                               <A href={model.addUrl} onClick={onClickModelOrAddOnMobileView}>
-                                <PlusIcon class="w-4 h-4 text-custom-primary-lighter" />
+                                <PlusIcon class="w-4 h-4 text-orange-500" />
                               </A>
                             </Show>
                           </span>

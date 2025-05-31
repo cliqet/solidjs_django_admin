@@ -28,6 +28,7 @@ const HTMLField: Component<HTMLFieldProps> = (props) => {
       width: "auto",
       height: "150px",
       resize: true,
+      highlight_on_focus: false,
       setup: (editorInstance) => {
         setEditor(editorInstance as Editor);
 

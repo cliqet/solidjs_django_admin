@@ -21,8 +21,8 @@ const DateField: Component<DateFieldProps> = (props) => {
         placeholder="mm/dd/yyyy"
         onChange={(e) => props.onChangeValue(e.target.value, props.inputProps.id)}
         classList={{
-          "border border-gray-300 text-sm rounded-lg focus:ring-custom-primary-lighter focus:border-custom-primary-lighter block w-full p-2.5": !props.isInvalid,
-          "border border-red-500 text-sm rounded-lg block w-full p-2.5": props.isInvalid,
+          "border border-gray-300 text-sm rounded-lg focus:ring-custom-primary-lighter focus:border-custom-primary-lighter block w-full p-2": !props.isInvalid,
+          "border border-red-500 text-sm rounded-lg block w-full p-2": props.isInvalid,
         }}
         onInvalid={(e) => {
           if (props.inputProps.required) {

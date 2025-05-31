@@ -108,7 +108,7 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
                 `${props.appLabel.toUpperCase()}-${props.modelName.toUpperCase()}`
               );
             }}>
-              <PrintIcon class="w-5 h-5 text-custom-primary-lighter" />
+              <PrintIcon class="w-5 h-5 text-orange-500" />
             </span>
 
             <span class="cursor-pointer" onClick={() => {
@@ -117,7 +117,7 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
                 `${props.appLabel.toUpperCase()}-${props.modelName.toUpperCase()}`
               );
             }}>
-              <CsvIcon class="w-6 h-6 text-custom-primary-lighter" />
+              <CsvIcon class="w-6 h-6 text-green-500" />
             </span>
           </div>
       </div>

@@ -97,7 +97,7 @@ const DateTimeField: Component<DateTimeFieldProps> = (props) => {
           }}
           onFocus={(e) => props.onFocus(e)}
         />
-        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-custom-primary-lighter border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:text-gray-400 dark:border-gray-600">
+        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-orange-500 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:text-gray-400 dark:border-gray-600">
           <svg
             class="w-4 h-4 text-white"
             aria-hidden="true"

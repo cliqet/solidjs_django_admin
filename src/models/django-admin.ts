@@ -274,8 +274,14 @@ export type QueryBuilderType = {
   query_limit: number | null;
 };
 
-export type SavedQueryType = {
+export type SavedQueryBuilderType = {
   id: number;
   name: string;
   query: QueryBuilderType;
+};
+
+export type SavedRawQueryType = {
+  id: number;
+  name: string;
+  query: string;
 };

@@ -166,7 +166,7 @@ const ManyToManyField: Component<ManyToManyFieldProps> = (props) => {
         {...props.buttonProps}
         id={`${props.buttonProps.id}-btn`}
         onClick={onButtonClick}
-        class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-custom-primary-lighter rounded-lg hover:bg-custom-primary focus:ring-4 focus:outline-none focus:ring-custom-primary-lighter"
+        class="inline-flex items-center p-2 text-sm font-medium text-center text-white bg-orange-500 rounded-lg hover:bg-orange-400 focus:ring-2 focus:outline-none focus:ring-orange-500"
         classList={{
           "border border-red-500": props.isInvalid,
           "border-none": !props.isInvalid,

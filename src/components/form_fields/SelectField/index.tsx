@@ -29,8 +29,8 @@ const SelectField: Component<SelectFieldProps> = (props) => {
         }
       }}
       classList={{
-        "block w-full p-2 text-sm border border-red-500 rounded-lg": props.isInvalid,
-        "block w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-custom-primary-lighter focus:border-custom-primary-lighter": !props.isInvalid
+        "block w-auto px-2 py-1 text-sm border border-red-500 rounded-lg": props.isInvalid,
+        "block w-auto px-2 py-1 text-sm border border-gray-300 rounded-lg focus:ring-custom-primary-lighter focus:border-custom-primary-lighter": !props.isInvalid
       }} 
     >
       <For each={props.options}>

@@ -5,7 +5,7 @@ import InputTypeField from "src/components/form_fields/InputTypeField";
 import Label from "src/components/form_fields/Label";
 import SelectField from "src/components/form_fields/SelectField";
 import { useAppContext } from "src/context/sessionContext";
-import { AppModelListType, AppSettingsType, ConditionType, ModelFieldsObjType, SavedQueryType, SelectedOptionsType } from "src/models/django-admin";
+import { AppModelListType, AppSettingsType, ConditionType, ModelFieldsObjType, SavedQueryBuilderType, SelectedOptionsType } from "src/models/django-admin";
 import { getApps, getModelFields } from "src/services/django-admin";
 import { 
   addQueryBuilder, 
@@ -47,7 +47,7 @@ const QueryBuilderPanel = () => {
   const [isEditing, setIsEditing] = createSignal(false);
   const [isInvalidQueryName, setIsInvalidQueryName] = createSignal(false);
   const [saveAsQueryName, setSaveAsQueryName] = createSignal("");
-  const [savedQueries, setSavedQueries] = createSignal<SavedQueryType[]>([]);
+  const [savedQueries, setSavedQueries] = createSignal<SavedQueryBuilderType[]>([]);
   const [currentSavedQueryId, setCurrentSavedQueryId] = createSignal<number>(0);
 
   const resetQueryBuilder = () => {
@@ -533,7 +533,7 @@ const QueryBuilderPanel = () => {
         <div class="flex gap-2">
           <h3 class="dark:text-white text-sm mb-2">Conditions</h3>
           <span class="cursor-pointer" onClick={addConditionRow}>
-            <PlusIcon class="w-5 h-5 text-custom-primary-lighter"  />
+            <PlusIcon class="w-5 h-5 text-orange-500"  />
           </span>
         </div>
 
@@ -608,7 +608,7 @@ const QueryBuilderPanel = () => {
         <div class="flex gap-2">
           <h3 class="dark:text-white text-sm mb-2">Ordering</h3>
           <span class="cursor-pointer" onClick={addOrderingRow}>
-            <PlusIcon class="w-5 h-5 text-custom-primary-lighter" />
+            <PlusIcon class="w-5 h-5 text-orange-500" />
           </span>
         </div>
 
@@ -667,7 +667,7 @@ const QueryBuilderPanel = () => {
             <h3 class="dark:text-white text-sm mb-2">Saved Queries</h3>
             <Show when={!isEditing()}>
               <span class="cursor-pointer" onClick={() => setIsSaving(true)}>
-                <SaveIcon class="w-5 h-5 dark:text-white" />
+                <SaveIcon class="w-5 h-5 text-green-500" />
               </span>
             </Show>
             <Show when={currentSavedQueryId() !== 0}>

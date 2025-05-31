@@ -43,7 +43,7 @@ export default createStore<AppStoreType>({
         isHtmlMessage: false,
     },
     themeMode: "dark",
-    isSidebarMinimized: true,
+    isSidebarMinimized: false,
     screenSize: 'lg',
 });
 
@@ -59,7 +59,7 @@ const initialAppContext: AppStoreType = {
     isHtmlMessage: false,
   },
   themeMode: "dark",
-  isSidebarMinimized: true,
+  isSidebarMinimized: false,
   screenSize: 'lg',
 };
 
@@ -96,6 +96,9 @@ export const AppContextProvider: ParentComponent = (props) => {
 
   onMount(() => {
     setScreenSize();
+    if (isExtraSmallScreen()) {
+      setContext("isSidebarMinimized", true);
+    }
     window.addEventListener('resize', setScreenSize);
   });
 

@@ -258,7 +258,7 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
                                   ].foreignkey_model?.toLowerCase()}/add`}
                                   target="_blank"
                                 >
-                                  <PlusIcon class="w-5 h-5 text-custom-primary-lighter" />
+                                  <PlusIcon class="w-5 h-5 text-orange-500" />
                                 </a>
                               </span>
                             </Show>

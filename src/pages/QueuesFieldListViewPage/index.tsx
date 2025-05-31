@@ -2,7 +2,11 @@ import SearchInput from "src/components/SearchInput";
 import SelectField from "src/components/form_fields/SelectField";
 import { A, useNavigate, useParams } from "@solidjs/router";
 import { createSignal, For, onMount, Show } from "solid-js";
-import { deleteJobs, getFailedJobs, requeueJobs } from "src/services/django-admin";
+import {
+  deleteJobs,
+  getFailedJobs,
+  requeueJobs,
+} from "src/services/django-admin";
 import { UserPermissionsType } from "src/models/user";
 import { getUserPermissions } from "src/services/users";
 import { useAppContext } from "src/context/sessionContext";
@@ -15,12 +19,10 @@ import ActionModalMessage from "src/components/ActionModalMessage";
 import { QueueFieldListViewType } from "src/models/django-admin";
 
 const BULK_ACTION = {
-  NO_ACTION: '-',
-  DELETE: 'delete',
-  REQUEUE: 'requeue',
-}
-
-
+  NO_ACTION: "-",
+  DELETE: "delete",
+  REQUEUE: "requeue",
+};
 
 const QueuesFieldListViewPage = () => {
   const params = useParams();
@@ -43,11 +45,8 @@ const QueuesFieldListViewPage = () => {
 
   const [isModalOpen, setIsModalOpen] = createSignal(false);
   const [isParentTableOpen, setIsParentTableOpen] = createSignal(true);
-  const {
-    formatDateString,
-    handleFetchError,
-    hasViewModelPermission,
-  } = useModelAdmin();
+  const { formatDateString, handleFetchError, hasViewModelPermission } =
+    useModelAdmin();
   const { nonAuthRoute, authRoute, dashboardRoute } = useAdminRoute();
 
   let modalEventPromise: (event: string) => void;
@@ -78,7 +77,7 @@ const QueuesFieldListViewPage = () => {
   };
 
   /**
-   * 
+   *
    * In case we want to have the other fields as well later on. For now,
    * failed jobs is the important one
    */
@@ -180,14 +179,14 @@ const QueuesFieldListViewPage = () => {
 
     return Promise.resolve({
       success: false,
-      message: "Unknown action"
+      message: "Unknown action",
     });
-  }
+  };
 
   const onConfirmedAction = async () => {
     try {
       const response = await dynamicBulkAction(currentAction());
-      
+
       const toastType = response.success ? "success" : "danger";
 
       setAppState("toastState", "isShowing", true);
@@ -196,8 +195,6 @@ const QueuesFieldListViewPage = () => {
       setAppState("toastState", "isHtmlMessage", true);
 
       resetState();
-
-
     } catch (err: any) {
       const handler = handleFetchError(err);
       if (handler.shouldNavigate) {
@@ -275,7 +272,7 @@ const QueuesFieldListViewPage = () => {
 
     if (!isExisting && isChecked) {
       checkboxRowsSelected.push(checkbox.id);
-    } 
+    }
 
     if (indexToRemove > -1 && !isChecked) {
       checkboxRowsSelected.splice(indexToRemove, 1);
@@ -294,39 +291,39 @@ const QueuesFieldListViewPage = () => {
         )}
       >
         <div class="flex justify-between p-1 items-center mb-2">
-          <h1 class="text-xl dark:text-white">
+          <h1 class="text-xl dark:text-green-400">
             {pageTitle(params.queueName, params.field)} in {params.queueName}{" "}
             queue
           </h1>
         </div>
 
         {/** Search */}
-        <div class="p-2 border border-slate-300 rounded-md mb-2">
-          <SearchInput
-            onSearchClick={(searchTerm) => onSearch(searchTerm)}
-            onClearSearch={(searchTerm) => onSearch(searchTerm)}
-            inputProps={{
-              id: "table-search",
-              placeholder: "Search here...",
-              required: true,
-              value: searchTerm(),
-            }}
-          />
-          <p class="dark:text-white text-xs my-2">Search by id, callable</p>
+        <div class="flex-col p-2 rounded-md mb-4 bg-teal-100 dark:bg-gray-700">
+          <div class="flex-col w-full sm:w-1/2 lg:w-2/5">
+            <SearchInput
+              onSearchClick={(searchTerm) => onSearch(searchTerm)}
+              onClearSearch={(searchTerm) => onSearch(searchTerm)}
+              inputProps={{
+                id: "table-search",
+                placeholder: "Search here...",
+                required: true,
+                value: searchTerm(),
+              }}
+            />
+            <p class="dark:text-white text-xs my-2">Search by id, callable</p>
+          </div>
         </div>
 
         {/** Actions */}
-        <div class="p-2 border border-slate-300 rounded-md mb-2">
-          <span class="dark:text-white text-sm">Actions</span>
-          <div class="flex items-center gap-2 w-1/2">
-            <div class="w-4/5">
+        <div class="flex-col p-2 rounded-md mb-4 bg-teal-100 dark:bg-gray-700">
+          <span class="dark:text-teal-300 text-sm">Actions</span>
+          <div class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-1/2">
+            <div class="w-full flex items-center gap-3">
               <SelectField
-                selectProps={{ id: "search-table" }}
+                selectProps={{ id: "search-table", class: "h-8" }}
                 options={customActions()}
                 onChangeValue={(value, fieldName) => onSelectAction(value)}
               />
-            </div>
-            <div class="w-1/5 pr-2">
               <button type="button" class="button mt-2" onClick={onAction}>
                 Go
               </button>
@@ -335,10 +332,10 @@ const QueuesFieldListViewPage = () => {
         </div>
 
         {/** Table */}
-        <div class="p-2 border border-slate-300 rounded-md mb-2">
+        <div class="flex-col p-2 rounded-md mb-2 bg-green-100 dark:bg-gray-700">
           <div class="flex-col mb-2">
             <div class="flex justify-between">
-              <h3 class="text-lg dark:text-white">
+              <h3 class="text-lg dark:text-green-400">
                 {pageTitle(params.queueName, params.field)}
               </h3>
               <Show when={isParentTableOpen()}>
@@ -358,7 +355,7 @@ const QueuesFieldListViewPage = () => {
                 </span>
               </Show>
             </div>
-            <div class="flex items-center justify-center">
+            <div class="flex items-center justify-center gap-3">
               <span class="dark:text-white text-sm">
                 Page {currentPage()}: Total of {currentResults().length} records
               </span>
@@ -456,68 +453,77 @@ const QueuesFieldListViewPage = () => {
 
         {/** Table Pagination */}
         <div
-          class="p-2 border border-slate-300 rounded-md mb-2"
+          class="flex-col p-2 rounded-md mb-10 bg-green-100 dark:bg-gray-700"
           classList={{
             hidden: !isParentTableOpen(),
             visible: isParentTableOpen(),
           }}
         >
-          <div class="flex items-center justify-center">
-            <Show when={currentPage() > 1}>
-              <button
-                onClick={() => {
-                  setPageOffset(0);
-                  setCurrentPage(1);
-                }}
-                class="button"
+          <div class="flex flex-col sm:flex-row items-center justify-center">
+            <div class="flex">
+              <Show when={currentPage() > 1}>
+                <button
+                  onClick={() => {
+                    setPageOffset(0);
+                    setCurrentPage(1);
+                  }}
+                  class="button"
+                >
+                  First
+                </button>
+              </Show>
+              <Show when={currentPage() > 1}>
+                <button
+                  onClick={() => {
+                    setPageOffset((prev) => prev - pageLimit());
+                    setCurrentPage((prev) => prev - 1);
+                  }}
+                  class="button"
+                >
+                  Previous
+                </button>
+              </Show>
+            </div>
+
+            <div class="flex">
+              <Show
+                when={currentResults().length > currentPage() * pageLimit()}
               >
-                First
-              </button>
-            </Show>
-            <Show when={currentPage() > 1}>
-              <button
-                onClick={() => {
-                  setPageOffset((prev) => prev - pageLimit());
-                  setCurrentPage((prev) => prev - 1);
-                }}
-                class="button"
+                <button
+                  onClick={() => {
+                    setPageOffset((prev) => prev + pageLimit());
+                    setCurrentPage((prev) => prev + 1);
+                  }}
+                  class="button"
+                >
+                  Next
+                </button>
+              </Show>
+              <Show
+                when={currentResults().length > currentPage() * pageLimit()}
               >
-                Previous
-              </button>
-            </Show>
-            <Show when={currentResults().length > currentPage() * pageLimit()}>
-              <button
-                onClick={() => {
-                  setPageOffset((prev) => prev + pageLimit());
-                  setCurrentPage((prev) => prev + 1);
-                }}
-                class="button"
-              >
-                Next
-              </button>
-            </Show>
-            <Show when={currentResults().length > currentPage() * pageLimit()}>
-              <button
-                onClick={() => {
-                  let lastPage;
-                  const remainderRecords =
-                    currentResults().length % pageLimit();
-                  if (remainderRecords === 0) {
-                    lastPage = currentResults().length / pageLimit();
-                  } else {
-                    lastPage =
-                      Math.floor(currentResults().length / pageLimit()) + 1;
-                  }
-                  setPageOffset(lastPage * pageLimit() - pageLimit());
-                  setCurrentPage(lastPage);
-                }}
-                class="button"
-              >
-                Last
-              </button>
-            </Show>
+                <button
+                  onClick={() => {
+                    let lastPage;
+                    const remainderRecords =
+                      currentResults().length % pageLimit();
+                    if (remainderRecords === 0) {
+                      lastPage = currentResults().length / pageLimit();
+                    } else {
+                      lastPage =
+                        Math.floor(currentResults().length / pageLimit()) + 1;
+                    }
+                    setPageOffset(lastPage * pageLimit() - pageLimit());
+                    setCurrentPage(lastPage);
+                  }}
+                  class="button"
+                >
+                  Last
+                </button>
+              </Show>
+            </div>
           </div>
-          <div class="flex items-center justify-center">
+          <div class="flex flex-col items-center justify-center">
             <span class="dark:text-white text-sm">
               Page {currentPage()}: Total of {currentResults().length} records
             </span>

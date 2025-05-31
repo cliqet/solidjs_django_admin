@@ -75,7 +75,7 @@ const AutocompletField: Component<AutocompleteFieldProps> = (props) => {
   };
 
   return (
-    <div id="hs-combobox-basic-usage" class="relative">
+    <div id="hs-combobox-basic-usage" class="relative w-auto">
       <div class="relative">
         <input
           ref={valueInputRef!}
@@ -95,8 +95,8 @@ const AutocompletField: Component<AutocompleteFieldProps> = (props) => {
           ref={labelInputRef!}
           class="pl-8"
           classList={{
-            "p-2.5 block w-full border-red-500 rounded-lg text-sm disabled:opacity-50 disabled:pointer-events-none": props.isInvalid,
-            "p-2.5 block w-full border-gray-200 rounded-lg text-sm focus:border-custom-primary-lighter focus:ring-custom-primary-lighter disabled:opacity-50 disabled:pointer-events-none": !props.isInvalid,
+            "px-2 py-1 block w-full border-red-500 rounded-lg text-sm disabled:opacity-50 disabled:pointer-events-none": props.isInvalid,
+            "px-2 py-1 block w-full border-gray-200 rounded-lg text-sm focus:border-custom-primary-lighter focus:ring-custom-primary-lighter disabled:opacity-50 disabled:pointer-events-none": !props.isInvalid,
           }}
           type="text"
           role="combobox"
@@ -110,7 +110,7 @@ const AutocompletField: Component<AutocompleteFieldProps> = (props) => {
             }
           }}
         />
-        <span class="absolute top-3 left-2">
+        <span class="absolute top-2 left-2">
           <SearchIcon class="w-4 h-4 text-gray-500" />
         </span>
         <div
@@ -150,7 +150,7 @@ const AutocompletField: Component<AutocompleteFieldProps> = (props) => {
                   onClick={() => onSelectOption(option.value, option.label)}
                   class="flex justify-between items-center w-full"
                 >
-                  <span>{option.label}</span>
+                  <span class="text-sm">{option.label}</span>
                   <Show when={option.value === currentSelection().value}>
                     <span>
                       <svg

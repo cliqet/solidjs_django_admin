@@ -48,7 +48,7 @@ const QueuesPage = () => {
   ) => {
     if (fieldObj.field === 'failed_jobs') {
       return <A
-        class="underline text-custom-primary-lighter"
+        class="underline text-orange-500"
         href={`${dashboardRoute(authRoute.queuesView)}/${queueName}/${
           fieldObj.field
         }`}
@@ -162,7 +162,7 @@ const QueuesPage = () => {
           <div class="flex items-center justify-end w-1/2 gap-3">
             <Show when={!isAutoRefresh()}>
               <span class="cursor-pointer" onClick={onManualRefresh}>
-                <RefreshIcon class="w-5 h-5 dark:text-white" />
+                <RefreshIcon class="w-5 h-5 text-orange-500" />
               </span>
             </Show>
 

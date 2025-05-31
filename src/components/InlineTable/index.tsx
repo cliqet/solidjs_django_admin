@@ -253,7 +253,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
 
         return (
           <A
-            class="cursor-pointer underline font-semibold"
+            class="cursor-pointer underline font-semibold text-green-700 dark:text-green-300"
             href={`${initialLink}/${pk}/change`}
           >
             {fieldData}
@@ -533,7 +533,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
           </table>
 
           {/** Add row form section */}
-          <div class="flex items-center my-2 gap-2 p-2 rounded-md bg-white dark:bg-slate-800">
+          <div class="flex items-center my-2 gap-2 p-2 rounded-md bg-white dark:bg-black">
             <span class="dark:text-white text-sm">{addText()}</span>
             <span
               class="cursor-pointer"
@@ -549,7 +549,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
           </div>
 
           <Show when={isRowAddFormOpen()}>
-            <div class="p-2 bg-white dark:bg-slate-800 rounded-md mb-2 border border-custom-primary-lighter">
+            <div class="p-2 bg-white dark:bg-black rounded-md mb-2 border border-custom-primary-lighter">
               <InlineRowAddForm
                 appLabel={props.inline.app_label}
                 modelName={props.inline.model_name}

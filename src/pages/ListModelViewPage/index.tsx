@@ -30,8 +30,6 @@ import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import ActionModalMessage from "src/components/ActionModalMessage";
 import ListModelViewTable from "src/components/ListModelViewTable";
 
-
-
 const NO_ACTION = "-";
 
 const ListModelViewPage = () => {
@@ -267,7 +265,7 @@ const ListModelViewPage = () => {
       setAppState("toastState", "type", "success");
       setAppState("toastState", "message", response.message);
       setAppState("toastState", "isHtmlMessage", true);
-      
+
       resetState();
     } catch (err: any) {
       const handler = handleFetchError(err);
@@ -431,19 +429,21 @@ const ListModelViewPage = () => {
         {/** Search */}
         <Show when={modelAdminSettings().search_fields.length > 0}>
           <div class="flex-col p-2 rounded-md mb-4 bg-teal-100 dark:bg-gray-700">
-            <SearchInput
-              onSearchClick={(searchTerm) => onSearch(searchTerm)}
-              onClearSearch={(searchTerm) => onSearch(searchTerm)}
-              inputProps={{
-                id: "table-search",
-                placeholder: "Search here...",
-                required: true,
-                value: searchTerm(),
-              }}
-            />
-            <p class="dark:text-gray-300 text-xs my-2">
-              {modelAdminSettings().search_help_text}
-            </p>
+            <div class="flex-col w-full sm:w-1/2 lg:w-2/5">
+              <SearchInput
+                onSearchClick={(searchTerm) => onSearch(searchTerm)}
+                onClearSearch={(searchTerm) => onSearch(searchTerm)}
+                inputProps={{
+                  id: "table-search",
+                  placeholder: "Search here...",
+                  required: true,
+                  value: searchTerm(),
+                }}
+              />
+              <p class="dark:text-gray-300 text-xs my-2">
+                {modelAdminSettings().search_help_text}
+              </p>
+            </div>
           </div>
         </Show>
 
@@ -458,14 +458,12 @@ const ListModelViewPage = () => {
           <div class="flex-col p-2 rounded-md mb-4 bg-teal-100 dark:bg-gray-700">
             <span class="dark:text-teal-300 text-sm">Actions</span>
             <div class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-1/2">
-              <div class="w-full md:w-4/5">
+              <div class="w-full flex items-center gap-3">
                 <SelectField
-                  selectProps={{ id: "search-table" }}
+                  selectProps={{ id: "search-table", class: "h-8" }}
                   options={customActions()}
                   onChangeValue={(value, fieldName) => onSelectAction(value)}
                 />
-              </div>
-              <div class="w-full md:w-1/5 pr-2">
                 <button type="button" class="button mt-2" onClick={onAction}>
                   Go
                 </button>

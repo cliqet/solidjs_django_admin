@@ -1,6 +1,6 @@
 import { ReportsDataType } from "src/components/QueryReportsTable";
 import { useFetch } from "src/hooks/useFetch";
-import { SavedQueryType } from "src/models/django-admin";
+import { SavedQueryBuilderType, SavedRawQueryType } from "src/models/django-admin";
 
 const { sessionClient } = useFetch();
 
@@ -71,7 +71,7 @@ export async function deleteQueryBuilder(
 
 
 
-export async function getSavedQueryBuilders(): Promise<{ queries: SavedQueryType[] }> {
+export async function getSavedQueryBuilders(): Promise<{ queries: SavedQueryBuilderType[] }> {
   const response = await sessionClient.fetch({
     method: "GET",
     urlSegment: `/django-admin/saved-queries/query-builder`,
@@ -122,7 +122,7 @@ export async function deleteRawQuery(
 
 
 
-export async function getSavedRawQueries(): Promise<{ queries: SavedQueryType[] }> {
+export async function getSavedRawQueries(): Promise<{ queries: SavedRawQueryType[] }> {
   const response = await sessionClient.fetch({
     method: "GET",
     urlSegment: `/django-admin/saved-queries/raw-query`,

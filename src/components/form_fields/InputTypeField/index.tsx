@@ -17,6 +17,7 @@ const InputTypeField: Component<InputTypeFieldProps> = (props) => {
     <input
       {...props.inputProps}
       id={props.inputProps.id}
+      class="w-full"
       classList={{
         "invalid-input": props.isInvalid,
         "valid-input": !props.isInvalid,

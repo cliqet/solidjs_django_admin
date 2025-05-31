@@ -10,7 +10,6 @@ import { User } from "src/models/user";
 import { jwtDecode } from "jwt-decode";
 import { useStorageEvent } from "src/hooks/useStorageEvent";
 
-
 const LoginPage = () => {
   const { appState, setAppState } = useAppContext();
   const { authRoute, dashboardRoute } = useAdminRoute();
@@ -38,7 +37,7 @@ const LoginPage = () => {
     if (token) {
       try {
         const tokenPayload: User = jwtDecode(token);
-        setAppState('user', {...tokenPayload});
+        setAppState("user", { ...tokenPayload });
       } catch (err: any) {
         localStorage.removeItem(LOCAL_STORAGE_KEYS.token);
       }
@@ -48,7 +47,7 @@ const LoginPage = () => {
       navigate(dashboardRoute(authRoute.dashboardHomeView));
       return;
     }
-  })
+  });
 
   const onInvalidEmail = (e: Event) => {
     e.preventDefault();
@@ -172,15 +171,18 @@ const LoginPage = () => {
   };
 
   return (
-    <div class="w-full dark:bg-custom-dark">
+    <div class="w-full dark:bg-black">
       <form
         onSubmit={onLogin}
-        class="w-full md:w-1/2 lg:w-1/4 mx-auto mt-20 p-4 rounded-md border border-slate-400 dark:bg-custom-dark"
+        class="w-full md:w-1/2 lg:w-1/4 mx-auto mt-20 p-4 rounded-md border border-slate-400 dark:bg-black"
       >
-        <h3 class="dark:text-white text-lg mb-3">Login</h3>
+        <h3 class="text-custom-primary text-xl font-bold mb-3">Login</h3>
 
         <div class="mb-5">
-          <label for="email" class="block mb-2 text-sm font-medium text-white">
+          <label
+            for="email"
+            class="block mb-2 text-sm font-medium dark:text-white"
+          >
             Your email
           </label>
           <input
@@ -202,8 +204,8 @@ const LoginPage = () => {
               })
             }
             classList={{
-              "invalid-input": formState().email.hasError,
-              "valid-input": !formState().email.hasError,
+              "invalid-input w-full h-10": formState().email.hasError,
+              "valid-input w-full h-10": !formState().email.hasError,
             }}
             placeholder="youremail@example.com"
             required
@@ -217,7 +219,7 @@ const LoginPage = () => {
         <div class="mb-5">
           <label
             for="password"
-            class="block mb-2 text-sm font-medium text-white"
+            class="block mb-2 text-sm font-medium dark:text-white"
           >
             Your password
           </label>
@@ -240,8 +242,8 @@ const LoginPage = () => {
               })
             }
             classList={{
-              "invalid-input": formState().password.hasError,
-              "valid-input": !formState().password.hasError,
+              "invalid-input w-full h-10": formState().password.hasError,
+              "valid-input w-full h-10": !formState().password.hasError,
             }}
             placeholder="********"
             required
@@ -271,11 +273,13 @@ const LoginPage = () => {
           }}
         />
 
-        <Show when={!isButtonHidden()}>
-          <button type="submit" class="button my-2">
-            Submit
-          </button>
-        </Show>
+        <div class="flex justify-center">
+          <Show when={!isButtonHidden()}>
+            <button type="submit" class="button my-2">
+              Submit
+            </button>
+          </Show>
+        </div>
       </form>
     </div>
   );

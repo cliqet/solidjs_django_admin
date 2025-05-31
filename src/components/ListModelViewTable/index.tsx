@@ -67,7 +67,7 @@ const ListModelViewTable: Component<ListModelViewTableProps> = (props) => {
         }
 
         return <A 
-                class="cursor-pointer underline font-semibold" 
+                class="cursor-pointer underline font-semibold text-green-700 dark:text-green-300" 
                 href={`${initialLink}/${pk}/change`}
               >{ fieldData }</A>
       }

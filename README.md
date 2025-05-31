@@ -41,38 +41,38 @@ Modify the directories according to your environments.
 
 ### Screenshots
 #### Login
-<img width="1335" alt="login_page" src="https://github.com/user-attachments/assets/225a4225-cbac-45de-bcdd-28d82391c93c" />
+<img width="1382" alt="login" src="https://github.com/user-attachments/assets/45e0a0a3-94a5-4319-a487-fdb8abf1bbbe" />
+
+#### App Search
+<img width="1404" alt="app_search" src="https://github.com/user-attachments/assets/c8bfbf68-0476-438f-b91d-6142164d0c17" />
 
 #### Forms
-<img width="1335" alt="add_form" src="https://github.com/user-attachments/assets/f36bca66-e6bd-4873-a13c-4331106ea7e4" />
+<img width="1395" alt="add_form1" src="https://github.com/user-attachments/assets/fbf9dadc-96e4-4126-8dcb-773c809d7ab5" />
+<img width="1395" alt="add_form2" src="https://github.com/user-attachments/assets/2ec7c3e4-f604-4cc8-bf9f-7e55c1f6ad0c" />
 
 ### Inlines
-<img width="1376" alt="inlines" src="https://github.com/user-attachments/assets/a3bcac9b-752a-49d5-939d-b0d8aa123604" />
-
-### Change Inline row
-<img width="1376" alt="change_inline" src="https://github.com/user-attachments/assets/58b8fed7-c3e0-4f6a-8eee-2c38b72b9c29" />
+<img width="1395" alt="inlines" src="https://github.com/user-attachments/assets/ed429279-5e55-40cf-bc9a-cc3fe6b8e3d2" />
 
 #### Listview
-<img width="1376" alt="listview1" src="https://github.com/user-attachments/assets/70a8a45c-3834-4729-a9a3-ddd6ad5e3ebf" />
-<img width="1376" alt="listview2" src="https://github.com/user-attachments/assets/d0e56849-51aa-452c-82e1-5a14acb8b275" />
+<img width="1395" alt="listview1" src="https://github.com/user-attachments/assets/ab0e9071-2057-45bd-9473-9ef39cdd48ef" />
+<img width="1395" alt="listview2" src="https://github.com/user-attachments/assets/8035ca39-8e83-451e-a2d4-5f8b35610b20" />
 
 #### Documentation 
-<img width="1335" alt="doc_page" src="https://github.com/user-attachments/assets/2a1fd52a-6ea3-4c52-b58a-0434f5826e11" />
+<img width="1395" alt="docs" src="https://github.com/user-attachments/assets/abaad498-0a1a-4535-b6b5-07b9b2a21b4f" />
 
 ### Queue Management
-<img width="1350" alt="Screenshot 2025-02-14 at 2 34 46 PM" src="https://github.com/user-attachments/assets/6b4f3471-faf0-4a65-a479-add2261885c8" />
+<img width="1395" alt="queue_management" src="https://github.com/user-attachments/assets/01faa26c-1b9d-4bc4-ac25-778d371b8151" />
 
 ### Query Builder Reports
-<img width="1350" alt="Screenshot 2025-02-14 at 2 25 39 PM" src="https://github.com/user-attachments/assets/f6f173a3-a6ed-4963-96a7-e8aa2dbf47e2" />
+<img width="1396" alt="query_builder" src="https://github.com/user-attachments/assets/33c0ed54-5368-4214-8d85-93941d28833d" />
 
 ### Raw SQL Query Reports
-<img width="1350" alt="Screenshot 2025-02-14 at 2 26 09 PM" src="https://github.com/user-attachments/assets/252cfb7b-562a-4d09-826f-ad02b2d21d78" />
+<img width="1372" alt="raw_query" src="https://github.com/user-attachments/assets/708f0569-8169-4e55-beda-c91b0b2ea796" />
 
 ### Lightmode
-<img width="1376" alt="lightmode" src="https://github.com/user-attachments/assets/b6224e77-eb7e-4693-8ec5-77f8157834c9" />
+<img width="1405" alt="lightmode" src="https://github.com/user-attachments/assets/438bda14-ef8b-4eaa-80bd-fe5c9ebcf467" />
 
 ### Mobile
-<img width="323" alt="mobile" src="https://github.com/user-attachments/assets/56740b2c-cbd0-4217-9012-0d07d3750c62" />
-
+<img width="328" alt="mobile" src="https://github.com/user-attachments/assets/0408f42f-8cf3-46f1-a4ac-e14060c92f19" />
 
 

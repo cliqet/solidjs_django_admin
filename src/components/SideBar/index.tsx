@@ -99,12 +99,12 @@ const SideBar = () => {
                   <span class="font-bold">{app.name}</span>
                   <Show when={appsIsOpen()[i()]}>
                     <span class="cursor-pointer">
-                      <AngleUpIcon class="w-5 h-5 dark:text-white" />
+                      <AngleUpIcon class="w-3 h-3 dark:text-white" />
                     </span>
                   </Show>
                   <Show when={!appsIsOpen()[i()]}>
                     <span class="cursor-pointer">
-                      <AngleDownIcon class="w-5 h-5 dark:text-white" />
+                      <AngleDownIcon class="w-3 h-3 dark:text-white" />
                     </span>
                   </Show>
                 </div>

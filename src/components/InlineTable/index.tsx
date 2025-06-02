@@ -387,12 +387,12 @@ const InlineTable: Component<InlineTableProps> = (props) => {
           </h3>
           <Show when={isTableOpen()}>
             <span class="cursor-pointer" onClick={() => setIsTableOpen(false)}>
-              <AngleUpIcon class="w-5 h-5 dark:text-white" />
+              <AngleUpIcon class="w-4 h-4 dark:text-white" />
             </span>
           </Show>
           <Show when={!isTableOpen()}>
             <span class="cursor-pointer" onClick={() => setIsTableOpen(true)}>
-              <AngleDownIcon class="w-5 h-5 dark:text-white" />
+              <AngleDownIcon class="w-4 h-4 dark:text-white" />
             </span>
           </Show>
         </div>
@@ -448,7 +448,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                                   tableRowsFormState()[i()]?.isOpen
                                 }
                               >
-                                <AngleUpIcon class="w-5 h-5 dark:text-white"/>
+                                <AngleUpIcon class="w-3 h-3 dark:text-white"/>
                               </Show>
                               <Show
                                 when={
@@ -456,7 +456,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                                   !tableRowsFormState()[i()]?.isOpen
                                 }
                               >
-                                <AngleDownIcon class="w-5 h-5 dark:text-white" />
+                                <AngleDownIcon class="w-3 h-3 dark:text-white" />
                               </Show>
                             </span>
                           </div>

@@ -211,7 +211,7 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
                       }}
                       class="cursor-pointer"
                     >
-                      <AngleUpIcon class="w-5 h-5 text-white" />
+                      <AngleUpIcon class="w-4 h-4 text-white" />
                     </span>
                   </Show>
                   <Show when={!fieldsetSectionsIsOpen()[i()]}>
@@ -223,7 +223,7 @@ const ChangeModelForm: Component<ChangeModelFormProps> = (props) => {
                       }}
                       class="cursor-pointer"
                     >
-                      <AngleDownIcon class="w-5 h-5 text-white" />
+                      <AngleDownIcon class="w-4 h-4 text-white" />
                     </span>
                   </Show>
                 </div>

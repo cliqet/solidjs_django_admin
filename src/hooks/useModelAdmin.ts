@@ -5,7 +5,7 @@ import {
   FieldsInFormStateType,
   ModelAdminSettingsType,
   ModelFieldsObjType,
-  SelectedOptionsType
+  SelectedOptionsType,
 } from "src/models/django-admin";
 import { UserPermissionsType } from "src/models/user";
 
@@ -19,7 +19,7 @@ export const useModelAdmin = () => {
     }
     return false;
   };
-  
+
   const hasAppPermission = (
     userPermissions: UserPermissionsType,
     appLabel: string
@@ -29,7 +29,7 @@ export const useModelAdmin = () => {
     }
     return false;
   };
-  
+
   const hasModelPermission = (
     userPermissions: UserPermissionsType,
     appLabel: string,
@@ -40,7 +40,7 @@ export const useModelAdmin = () => {
     }
     return false;
   };
-  
+
   const hasAddModelPermission = (
     userPermissions: UserPermissionsType,
     appLabel: string,
@@ -52,7 +52,7 @@ export const useModelAdmin = () => {
       "add" in userPermissions[appLabel][modelName]["perms"]
     );
   };
-  
+
   const hasViewModelPermission = (
     userPermissions: UserPermissionsType,
     appLabel: string,
@@ -64,7 +64,7 @@ export const useModelAdmin = () => {
       "view" in userPermissions[appLabel][modelName]["perms"]
     );
   };
-  
+
   const hasChangeModelPermission = (
     userPermissions: UserPermissionsType,
     appLabel: string,
@@ -76,7 +76,7 @@ export const useModelAdmin = () => {
       "change" in userPermissions[appLabel][modelName]["perms"]
     );
   };
-  
+
   const hasDeleteModelPermission = (
     userPermissions: UserPermissionsType,
     appLabel: string,
@@ -88,7 +88,7 @@ export const useModelAdmin = () => {
       "delete" in userPermissions[appLabel][modelName]["perms"]
     );
   };
-  
+
   const hasViewOnlyModelPermission = (
     userPermissions: UserPermissionsType,
     appLabel: string,
@@ -103,10 +103,10 @@ export const useModelAdmin = () => {
       !hasDeleteModelPermission(userPermissions, appLabel, modelName)
     );
   };
-  
+
   const formatDateString = (dateString: string): string => {
     const date = new Date(dateString);
-  
+
     // match local timezone here with backend timezone
     return date.toLocaleTimeString("en-US", {
       year: "numeric",
@@ -119,7 +119,7 @@ export const useModelAdmin = () => {
       timeZoneName: "short",
     });
   };
-  
+
   const splitDateTimeString = (
     dateTimeString: string
   ): { date: string; time: string } => {
@@ -129,34 +129,34 @@ export const useModelAdmin = () => {
         time: "",
       };
     }
-  
+
     // Create a Date object from the datetime string
     const date = new Date(dateTimeString);
-  
+
     // Extract the date
     const dateValue = date.toISOString().split("T")[0]; // YYYY-MM-DD
-  
+
     // Extract the time including seconds
     const timeValue = date.toTimeString().split(" ")[0]; // HH:MM:SS
-  
+
     return {
       date: dateValue,
       time: timeValue,
     };
   };
-  
+
   const formatTimeForInput = (timeString: string): string => {
     try {
       // Split the string by ':'
       const [hours, minutes] = timeString.split(":");
-  
+
       // Return the formatted time as HH:MM
       return `${hours}:${minutes}`;
     } catch (err) {
       return "";
     }
   };
-  
+
   const getFilefieldLimits = (
     helpText: string
   ): { fileType: string; fileSize: number | null } => {
@@ -166,10 +166,10 @@ export const useModelAdmin = () => {
       fileSize: null,
     };
     const [filetypePhrase, filesizePhrase] = helpText.split("|");
-  
+
     // Regular expression to match content within square brackets
     const regexPattern = /\[(.*?)\]/;
-  
+
     // Extract the match for file types
     const filetypeMatch = filetypePhrase.match(regexPattern);
     if (filetypeMatch) {
@@ -180,16 +180,16 @@ export const useModelAdmin = () => {
         limits.fileType = filetypes.join(",");
       }
     }
-  
+
     const filesizeMatch = filesizePhrase.match(regexPattern);
     if (filesizeMatch) {
       const value = filesizeMatch[1].trim();
       limits.fileSize = parseInt(value, 10);
     }
-  
+
     return limits;
   };
-  
+
   /**
    *
    * @param dbFields
@@ -206,9 +206,13 @@ export const useModelAdmin = () => {
     let formData = new FormData(form);
     Object.keys(modelFields).forEach((fieldName) => {
       let fieldValue;
-  
+
       // Handle values for file related fields
-      if ([FIELDTYPE.FileField, FIELDTYPE.ImageField].includes(modelFields[fieldName].type)) {
+      if (
+        [FIELDTYPE.FileField, FIELDTYPE.ImageField].includes(
+          modelFields[fieldName].type
+        )
+      ) {
         const fileMetadata = fieldsInFormState?.[fieldName].metadata;
         if (fileMetadata && fileMetadata.file) {
           fieldValue = fileMetadata.file;
@@ -217,7 +221,10 @@ export const useModelAdmin = () => {
           formData.append(fieldName, fieldValue);
         }
       } else if (modelFields[fieldName].type === FIELDTYPE.JSONField) {
-        formData.append(fieldName, JSON.stringify(fieldsInFormState?.[fieldName as string]?.value))
+        formData.append(
+          fieldName,
+          JSON.stringify(fieldsInFormState?.[fieldName as string]?.value)
+        );
       } else {
         const value = fieldsInFormState?.[fieldName as string]?.value;
         if (typeof value === "string") {
@@ -226,15 +233,15 @@ export const useModelAdmin = () => {
           fieldValue = value;
         }
       }
-  
+
       if (fieldValue !== undefined && fieldValue !== null) {
         formData.append(fieldName, fieldValue);
       }
     });
-  
+
     return formData;
   };
-  
+
   /**
    *
    * @param fieldsInFormState
@@ -251,10 +258,10 @@ export const useModelAdmin = () => {
       newFieldsState[fieldNameError].errorMsg =
         err.validation_error[fieldNameError][0];
     });
-  
+
     return newFieldsState;
   };
-  
+
   /**
    *
    * @param fieldsInFormState
@@ -272,10 +279,10 @@ export const useModelAdmin = () => {
     let newFieldsState = { ...fieldsInFormState };
     newFieldsState[fieldName].value = value;
     newFieldsState[fieldName].metadata = metadata;
-  
+
     return newFieldsState;
   };
-  
+
   /**
    *
    * @param id
@@ -295,7 +302,7 @@ export const useModelAdmin = () => {
     newFieldsState[id].isInvalid = true;
     newFieldsState[id].errorMsg = validationMessage;
     setFieldsInFormState(newFieldsState);
-  
+
     // Handle special case for password2 field not equal to password. Assign the error message to password field
     // since password2 is not really one of the fields of a model
     if (
@@ -312,7 +319,7 @@ export const useModelAdmin = () => {
         setFieldsInFormState({ ...newFieldsState });
       }
     }
-  
+
     // Handle special case of datetime field where -date and -time is appended to id for the
     // date and time fields used
     if (
@@ -327,7 +334,7 @@ export const useModelAdmin = () => {
       setFieldsInFormState({ ...newFieldsState });
     }
   };
-  
+
   /**
    *
    * @param fieldsInFormState
@@ -343,7 +350,7 @@ export const useModelAdmin = () => {
     newFieldsState[field].errorMsg = "";
     return newFieldsState;
   };
-  
+
   const handleFetchError = (
     err: any
   ): {
@@ -352,7 +359,7 @@ export const useModelAdmin = () => {
   } => {
     let message = "";
     let shouldNavigate = false;
-  
+
     if (err.status === 401) {
       shouldNavigate = true;
     } else if (err.status === 403) {
@@ -362,13 +369,13 @@ export const useModelAdmin = () => {
     } else {
       message = "Something went wrong. Please refresh the page";
     }
-  
+
     return {
       shouldNavigate,
-      message
+      message,
     };
   };
-  
+
   const updateModelFieldsWithDbValues = (
     modelFields: ModelFieldsObjType,
     modelRecord: ModelFieldsObjType
@@ -377,12 +384,12 @@ export const useModelAdmin = () => {
     Object.keys(newModelFields).forEach((fieldName) => {
       const record: any = modelRecord;
       const dbValue = record[fieldName];
-  
+
       // Handle JSON field value on initialization
       if (newModelFields[fieldName].type === "JSONField") {
         newModelFields[fieldName].initial = dbValue;
       }
-  
+
       // Handle CharFields that have text choices
       if (
         newModelFields[fieldName].type === "CharField" &&
@@ -395,11 +402,11 @@ export const useModelAdmin = () => {
             return { ...option, selected: false };
           }
         });
-  
+
         // Update model fields for foreign key selected item
         newModelFields[fieldName].choices = textChoices;
       }
-  
+
       // Handle ForeignKey fields and set dropdown to current value
       if (newModelFields[fieldName].type === FIELDTYPE.ForeignKey) {
         const newForeignKeyChoices = newModelFields[
@@ -411,152 +418,207 @@ export const useModelAdmin = () => {
             return { ...option, selected: false };
           }
         });
-  
+
         // Update model fields for foreign key selected item
         newModelFields[fieldName].foreignkey_choices = newForeignKeyChoices;
       }
     });
-  
+
     return newModelFields;
   };
-  
+
+  const buildFormFieldsOnChangeForm = (
+    formFields: FieldsInFormStateType,
+    modelFields: ModelFieldsObjType,
+    modelRecord: ModelFieldsObjType,
+    field: string
+  ) => {
+    const record: any = modelRecord;
+    const dbValue = record[field];
+
+    // Handle datetime fields by adding the id with suffix time for its time field
+    if (modelFields[field].type === FIELDTYPE.DateTimeField) {
+      formFields[`${field}-time`] = {
+        fieldName: field,
+        value: dbValue,
+        isInvalid: false,
+        errorMsg: "",
+      };
+    }
+
+    // Add the actual field
+    formFields[field] = {
+      fieldName: field,
+      value: dbValue,
+      isInvalid: false,
+      errorMsg: "",
+      metadata: {},
+    };
+
+    // Handle the password2 field
+    if (field === "password") {
+      formFields["password2"] = {
+        fieldName: field,
+        value: "",
+        isInvalid: false,
+        errorMsg: "",
+      };
+    }
+
+    // Handle many to many field value as list of ids selected
+    if (modelFields[field].type === FIELDTYPE.ManyToManyField) {
+      const initialSelected = dbValue.map(
+        (item: { pk: string | number; string_value: string }) => {
+          return item.pk;
+        }
+      );
+
+      formFields[field].value = initialSelected;
+    }
+
+    // Handle file and image fields which uses metadata
+    if (
+      [FIELDTYPE.FileField, FIELDTYPE.ImageField].includes(
+        modelFields[field].type
+      )
+    ) {
+      formFields[field].metadata = {
+        currentFilePathValue: dbValue,
+        hasChanged: false,
+        isValid: true, // on change mode, isValid is true
+        file: "",
+      };
+    }
+
+    return formFields;
+  };
+
   const initializeChangeFormFieldState = (
     modelAdminSettings: ModelAdminSettingsType,
     modelRecord: ModelFieldsObjType,
     modelFields: ModelFieldsObjType
   ) => {
     let formFields: FieldsInFormStateType = {};
-  
+
     modelAdminSettings.fieldsets.forEach((fieldset: FieldsetType) => {
       fieldset.fields.forEach((field) => {
-        const record: any = modelRecord;
-        const dbValue = record[field];
-  
-        // Handle datetime fields by adding the id with suffix time for its time field
-        if (modelFields[field].type === FIELDTYPE.DateTimeField) {
-          formFields[`${field}-time`] = {
-            fieldName: field,
-            value: dbValue,
-            isInvalid: false,
-            errorMsg: "",
-          };
-        }
-  
-        // Add the actual field
-        formFields[field] = {
-          fieldName: field,
-          value: dbValue,
-          isInvalid: false,
-          errorMsg: "",
-          metadata: {},
-        };
-  
-        // Handle the password2 field
-        if (field === "password") {
-          formFields["password2"] = {
-            fieldName: field,
-            value: "",
-            isInvalid: false,
-            errorMsg: "",
-          };
-        }
-  
-        // Handle many to many field value as list of ids selected
-        if (modelFields[field].type === FIELDTYPE.ManyToManyField) {
-          const initialSelected = dbValue.map(
-            (item: { pk: string | number; string_value: string }) => {
-              return item.pk;
-            }
+        if (typeof field === "string") {
+          formFields = buildFormFieldsOnChangeForm(
+            formFields,
+            modelFields,
+            modelRecord,
+            field
           );
-  
-          formFields[field].value = initialSelected;
         }
-  
-        // Handle file and image fields which uses metadata
-        if (
-          [FIELDTYPE.FileField, FIELDTYPE.ImageField].includes(
-            modelFields[field].type
-          )
-        ) {
-          formFields[field].metadata = {
-            currentFilePathValue: dbValue,
-            hasChanged: false,
-            isValid: true, // on change mode, isValid is true
-            file: "",
-          };
+
+        if (Array.isArray(field)) {
+          field.forEach((nestedField) => {
+            formFields = buildFormFieldsOnChangeForm(
+              formFields,
+              modelFields,
+              modelRecord,
+              nestedField
+            );
+          });
         }
       });
     });
-  
+
     return formFields;
   };
-  
+
+  const buildFormFieldsOnAddForm = (
+    formFields: FieldsInFormStateType,
+    modelFields: ModelFieldsObjType,
+    field: string
+  ) => {
+    // Handle datetime fields by adding the id with suffix time for its time field
+    if (modelFields[field].type === FIELDTYPE.DateTimeField) {
+      formFields[`${field}-time`] = {
+        fieldName: field,
+        value: modelFields[field].initial,
+        isInvalid: false,
+        errorMsg: "",
+      };
+    }
+
+    // Add the actual field
+    formFields[field] = {
+      fieldName: field,
+      value: modelFields[field].initial,
+      isInvalid: false,
+      errorMsg: "",
+    };
+
+    // Handle the password2 field
+    if (field === "password") {
+      formFields["password2"] = {
+        fieldName: field,
+        value: "",
+        isInvalid: false,
+        errorMsg: "",
+      };
+    }
+
+    // Handle many to many field value as list of ids selected
+    if (modelFields[field].type === FIELDTYPE.ManyToManyField) {
+      formFields[field].value = [];
+    }
+
+    // Handle file and image fields which uses metadata
+    if (
+      [FIELDTYPE.FileField, FIELDTYPE.ImageField].includes(
+        modelFields[field].type
+      )
+    ) {
+      formFields[field].metadata = {
+        currentFilePathValue: "",
+        hasChanged: false,
+        isValid: false,
+        file: "",
+      };
+    }
+
+    // Handle ForeignKey field value and set first choice
+    if (
+      [FIELDTYPE.ForeignKey, FIELDTYPE.OneToOneField].includes(
+        modelFields[field].type
+      )
+    ) {
+      const choices = modelFields[field]
+        .foreignkey_choices as SelectedOptionsType[];
+      if (choices.length > 0) {
+        formFields[field].value = choices[0].value;
+      }
+    }
+
+    return formFields;
+  };
+
   const initializeAddFormFieldState = (
     modelAdminSettings: ModelAdminSettingsType,
     modelFields: ModelFieldsObjType
   ) => {
     let formFields: FieldsInFormStateType = {};
-  
+
     modelAdminSettings.fieldsets.forEach((fieldset: FieldsetType) => {
       fieldset.fields.forEach((field) => {
-        // Handle datetime fields by adding the id with suffix time for its time field
-        if (modelFields[field].type === FIELDTYPE.DateTimeField) {
-          formFields[`${field}-time`] = {
-            fieldName: field,
-            value: modelFields[field].initial,
-            isInvalid: false,
-            errorMsg: "",
-          };
+        if (typeof field === "string") {
+          formFields = buildFormFieldsOnAddForm(formFields, modelFields, field);
         }
-  
-        // Add the actual field
-        formFields[field] = {
-          fieldName: field,
-          value: modelFields[field].initial,
-          isInvalid: false,
-          errorMsg: "",
-        };
-  
-        // Handle the password2 field
-        if (field === "password") {
-          formFields["password2"] = {
-            fieldName: field,
-            value: "",
-            isInvalid: false,
-            errorMsg: "",
-          };
-        }
-  
-        // Handle many to many field value as list of ids selected
-        if (modelFields[field].type === FIELDTYPE.ManyToManyField) {
-          formFields[field].value = [];
-        }
-  
-        // Handle file and image fields which uses metadata
-        if (
-          [FIELDTYPE.FileField, FIELDTYPE.ImageField].includes(
-            modelFields[field].type
-          )
-        ) {
-          formFields[field].metadata = {
-            currentFilePathValue: "",
-            hasChanged: false,
-            isValid: false,
-            file: "",
-          };
-        }
-  
-        // Handle ForeignKey field value and set first choice
-        if ([FIELDTYPE.ForeignKey, FIELDTYPE.OneToOneField].includes(modelFields[field].type)) {
-          const choices = modelFields[field]
-            .foreignkey_choices as SelectedOptionsType[];
-          if (choices.length > 0) {
-            formFields[field].value = choices[0].value;
-          }
+
+        if (Array.isArray(field)) {
+          field.forEach((nestedField) => {
+            formFields = buildFormFieldsOnAddForm(
+              formFields,
+              modelFields,
+              nestedField
+            );
+          });
         }
       });
     });
-  
+
     return formFields;
   };
 
@@ -569,10 +631,7 @@ export const useModelAdmin = () => {
     fieldsInFormState: FieldsInFormStateType,
     setFieldsInFormState: Setter<FieldsInFormStateType>
   ) => {
-    const newFieldsState = buildFieldStateOnFocus(
-      fieldsInFormState,
-      field
-    );
+    const newFieldsState = buildFieldStateOnFocus(fieldsInFormState, field);
     setFieldsInFormState(newFieldsState);
   };
 
@@ -581,7 +640,7 @@ export const useModelAdmin = () => {
     id: string,
     validationMessage: string,
     fieldsInFormState: FieldsInFormStateType,
-    setFieldsInFormState: Setter<FieldsInFormStateType>,
+    setFieldsInFormState: Setter<FieldsInFormStateType>
   ) => {
     // prevent default error of browser for field
     e.preventDefault();
@@ -600,7 +659,7 @@ export const useModelAdmin = () => {
     fieldName: string,
     fieldsInFormState: FieldsInFormStateType,
     setFieldsInFormState: Setter<FieldsInFormStateType>,
-    metadata?: any,
+    metadata?: any
   ) => {
     const newFieldsState = buildFieldStateOnFieldChange(
       fieldsInFormState,
@@ -611,7 +670,6 @@ export const useModelAdmin = () => {
 
     setFieldsInFormState(newFieldsState);
   };
-
 
   return {
     isReadOnlyField,
@@ -639,7 +697,5 @@ export const useModelAdmin = () => {
     handleOnFocus,
     handleInvalidFields,
     handleFieldChangeValue,
-  }
-}
-
-
+  };
+};

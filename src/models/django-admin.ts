@@ -37,7 +37,7 @@ export type ModelFieldsObjType = {
 
 export type FieldsetType = {
   title: string;
-  fields: string[];
+  fields: (string | string[])[];
 };
 
 export type FieldStateType = {

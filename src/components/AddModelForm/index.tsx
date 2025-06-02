@@ -1,7 +1,4 @@
 import { Component, createSignal, For, onMount, Setter, Show } from "solid-js";
-import Label from "../form_fields/Label";
-import DynamicFormField from "../form_fields/DynamicFormField";
-import FieldErrorMessage from "../form_fields/FieldErrorMessage";
 import { useModelAdmin } from "src/hooks/useModelAdmin";
 import {
   FieldsInFormStateType,
@@ -10,12 +7,11 @@ import {
 } from "src/models/django-admin";
 import { useAppContext } from "src/context/sessionContext";
 import { addRecord } from "src/services/django-admin";
-import PlusIcon from "src/assets/icons/plus-icon";
 import { useNavigate } from "@solidjs/router";
-import { FIELDTYPE } from "src/constants/django-admin";
 import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import AngleDownIcon from "src/assets/icons/angle-down-icon";
 import { useUI } from "src/hooks/useUI";
+import Fieldset from "../Fieldset";
 
 type AddModelFormProps = {
   appLabel: string;
@@ -28,30 +24,27 @@ type AddModelFormProps = {
 };
 
 const AddModeOptions = {
-  DEFAULT: 'DEFAULT',
-  ADD_ANOTHER: 'ADD_ANOTHER',
-  ADD_CONTINUE: 'ADD_CONTINUE'
-}
+  DEFAULT: "DEFAULT",
+  ADD_ANOTHER: "ADD_ANOTHER",
+  ADD_CONTINUE: "ADD_CONTINUE",
+};
 
 const AddModelForm: Component<AddModelFormProps> = (props) => {
   const { appState, setAppState } = useAppContext();
-  const [ addMode, setAddMode ] = createSignal(AddModeOptions.DEFAULT);
+  const [addMode, setAddMode] = createSignal(AddModeOptions.DEFAULT);
   const navigate = useNavigate();
   const { scrollToTopForm } = useUI();
   const {
     buildFieldStateOnError,
     buildModelFormData,
-    isReadOnlyField,
-    handleInvalidFields,
-    helpTextPrefix,
-    handleOnFocus,
-    handleFieldChangeValue,
   } = useModelAdmin();
-  const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<boolean[]>([]);
+  const [fieldsetSectionsIsOpen, setFieldsetSectionsIsOpen] = createSignal<
+    boolean[]
+  >([]);
   const [isDataReady, setIsDataReady] = createSignal(false);
 
   onMount(() => {
-    props.modelAdminSettings.fieldsets.forEach(fieldset => {
+    props.modelAdminSettings.fieldsets.forEach((fieldset) => {
       fieldsetSectionsIsOpen().push(true);
     });
     setIsDataReady(true);
@@ -89,10 +82,10 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
           navigate(`/dashboard/${props.appLabel}/${props.modelName}/add`);
         }, 100);
       } else {
-        navigate(`/dashboard/${props.appLabel}/${props.modelName}/${response.pk}/change`);
+        navigate(
+          `/dashboard/${props.appLabel}/${props.modelName}/${response.pk}/change`
+        );
       }
-
-      
     } catch (err: any) {
       if (err.validation_error) {
         const newFieldsState = buildFieldStateOnError(
@@ -156,120 +149,22 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
                   </Show>
                 </div>
 
-                <div 
-                  class="w-full sm:w-3/4 lg:w-1/2"
+                <div
+                  class="w-full"
                   classList={{
-                    "hidden": !fieldsetSectionsIsOpen()[i()],
-                    "": fieldsetSectionsIsOpen()[i()]
+                    hidden: !fieldsetSectionsIsOpen()[i()],
+                    "": fieldsetSectionsIsOpen()[i()],
                   }}
                 >
                   <For each={fieldset.fields}>
                     {(field, j) => (
-                      <>
-                        <div class="p-1 my-2">
-                          <div class="flex">
-                            <Label
-                              for={field}
-                              text={props.modelFields[field].label}
-                            />
-                            <Show
-                              when={[
-                                FIELDTYPE.ForeignKey,
-                                FIELDTYPE.OneToOneField,
-                              ].includes(props.modelFields[field].type)}
-                            >
-                              <span class="ml-3 cursor-pointer">
-                                <a
-                                  href={`/dashboard/${
-                                    props.modelFields[field].foreignkey_app
-                                  }/${props.modelFields[
-                                    field
-                                  ].foreignkey_model?.toLowerCase()}/add`}
-                                  target="_blank"
-                                >
-                                  <PlusIcon class="w-5 h-5 text-orange-500" />
-                                </a>
-                              </span>
-                            </Show>
-                          </div>
-                          <DynamicFormField
-                            onFocus={() => handleOnFocus(
-                              field, 
-                              props.fieldsInFormState as FieldsInFormStateType, 
-                              props.setFieldsInFormState as Setter<FieldsInFormStateType>
-                            )}
-                            // onFocus={() => handleOnFocus(field)}
-                            onInvalid={(
-                              e: Event,
-                              id: string,
-                              validationMessage: string
-                            ) => {
-                              handleInvalidFields(
-                                e, 
-                                id, 
-                                validationMessage,
-                                props.fieldsInFormState as FieldsInFormStateType,
-                                props.setFieldsInFormState as Setter<FieldsInFormStateType>
-                              );
-                              scrollToTopForm("add-model-form");
-                            }}
-                            onFieldChangeValue={(
-                              value,
-                              fieldName,
-                              metadata
-                            ) => {
-                              handleFieldChangeValue(
-                                value,
-                                fieldName,
-                                props.fieldsInFormState as FieldsInFormStateType,
-                                props.setFieldsInFormState as Setter<FieldsInFormStateType>,
-                                metadata
-                              );
-                            }}
-                            isInvalid={
-                              props.fieldsInFormState?.[field]
-                                .isInvalid as boolean
-                            }
-                            field={props.modelFields[field]}
-                            isReadonly={isReadOnlyField(
-                              field,
-                              props.modelAdminSettings.readonly_fields
-                            )}
-                            modelAdminSettings={props.modelAdminSettings}
-                          />
-
-                          <Show when={props.modelFields[field].help_text}>
-                            <div class="px-1 py-1 text-xs text-slate-500 dark:text-slate-300 leading-tight">
-                              <span
-                                innerHTML={
-                                  `${helpTextPrefix(
-                                    props.modelFields[field].required
-                                  )}${props.modelFields[field].help_text}`
-                                }
-                              >
-                              </span>
-                            </div>
-                          </Show>
-
-                          <Show
-                            when={
-                              !props.modelAdminSettings.readonly_fields.includes(
-                                field
-                              )
-                            }
-                          >
-                            <div class="px-1">
-                              <FieldErrorMessage
-                                message={
-                                  props.fieldsInFormState?.[field]
-                                    .errorMsg as string
-                                }
-                              />
-                            </div>
-                          </Show>
-                        </div>
-                        <hr class="border-t-1 border-slate-400 mb-3" />
-                      </>
+                      <Fieldset 
+                        field={field}
+                        modelFields={props.modelFields}
+                        fieldsInFormState={props.fieldsInFormState}
+                        setFieldsInFormState={props.setFieldsInFormState}
+                        modelAdminSettings={props.modelAdminSettings}
+                      />
                     )}
                   </For>
                 </div>
@@ -279,13 +174,25 @@ const AddModelForm: Component<AddModelFormProps> = (props) => {
 
           <Show when={props.canAdd}>
             <div>
-              <button type="submit" class="button" onClick={() => setAddMode(AddModeOptions.DEFAULT)}>
+              <button
+                type="submit"
+                class="button"
+                onClick={() => setAddMode(AddModeOptions.DEFAULT)}
+              >
                 Add
               </button>
-              <button type="submit" class="button" onClick={() => setAddMode(AddModeOptions.ADD_ANOTHER)}>
+              <button
+                type="submit"
+                class="button"
+                onClick={() => setAddMode(AddModeOptions.ADD_ANOTHER)}
+              >
                 Add and Add Another
               </button>
-              <button type="submit" class="button" onClick={() => setAddMode(AddModeOptions.ADD_CONTINUE)}>
+              <button
+                type="submit"
+                class="button"
+                onClick={() => setAddMode(AddModeOptions.ADD_CONTINUE)}
+              >
                 Add and Continue
               </button>
             </div>

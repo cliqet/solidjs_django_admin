@@ -47,7 +47,9 @@ const DocumentationPage = () => {
 
   return (
     <div class="dark:bg-black">
-      <h1 class="text-lg dark:text-white my-2">Documentation Records: {docs().length}</h1>
+      <h1 class="text-lg dark:text-white my-2">
+        Documentation Records: {docs().length}
+      </h1>
 
       <Show when={accordionDocs().length > 0}>
         <div>

@@ -482,7 +482,7 @@ const ListModelViewPage = () => {
                   onClick={() => setIsFilterOpen(false)}
                   class="cursor-pointer"
                 >
-                  <AngleUpIcon class="w-5 h-5 dark:text-white" />
+                  <AngleUpIcon class="w-4 h-4 dark:text-white" />
                 </span>
               </Show>
               <Show when={!isFilterOpen()}>
@@ -490,7 +490,7 @@ const ListModelViewPage = () => {
                   onClick={() => setIsFilterOpen(true)}
                   class="cursor-pointer"
                 >
-                  <AngleDownIcon class="w-5 h-5 dark:text-white" />
+                  <AngleDownIcon class="w-4 h-4 dark:text-white" />
                 </span>
               </Show>
             </div>
@@ -555,7 +555,7 @@ const ListModelViewPage = () => {
                   class="cursor-pointer"
                   onClick={() => setIsParentTableOpen(false)}
                 >
-                  <AngleUpIcon class="w-5 h-5 dark:text-white" />
+                  <AngleUpIcon class="w-4 h-4 dark:text-white" />
                 </span>
               </Show>
               <Show when={!isParentTableOpen()}>
@@ -563,7 +563,7 @@ const ListModelViewPage = () => {
                   class="cursor-pointer"
                   onClick={() => setIsParentTableOpen(true)}
                 >
-                  <AngleDownIcon class="w-5 h-5 dark:text-white" />
+                  <AngleDownIcon class="w-4 h-4 dark:text-white" />
                 </span>
               </Show>
             </div>

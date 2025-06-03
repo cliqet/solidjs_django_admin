@@ -377,7 +377,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
         <Show when={props.inline.table_header && isTableOpen()}>
           <div class="bg-white dark:bg-black rounded-sm p-2 mt-2 mb-5">
             <DynamicInlineTableHeader
-              componentName="sample_table_header"
+              componentName={props.inline.table_header}
               parentAppLabel={props.parentAppLabel}
               parentModelName={props.parentModelName}
               parentPk={props.parentPk}

@@ -1,3 +1,5 @@
+import { table } from "console";
+
 export type SelectedOptionsType = {
   selected: boolean;
   value: any;
@@ -97,6 +99,7 @@ export type ModelAdminSettingsType = {
   custom_inlines: CustomInlineType[];
   extra_inlines: string[];
   custom_change_link: string;
+  table_header: string;
 };
 
 export const initialModelAdminSettings = {
@@ -116,7 +119,8 @@ export const initialModelAdminSettings = {
   table_filters: [],
   custom_inlines: [],
   extra_inlines: [],
-  custom_change_link: ''
+  custom_change_link: '',
+  table_header: ''
 };
 
 

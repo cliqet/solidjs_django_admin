@@ -29,6 +29,7 @@ import AngleDownIcon from "src/assets/icons/angle-down-icon";
 import AngleUpIcon from "src/assets/icons/angle-up-icon";
 import ActionModalMessage from "src/components/ActionModalMessage";
 import ListModelViewTable from "src/components/ListModelViewTable";
+import DynamicListviewTableHeader from "src/components/listview_table_headers/DynamicListviewTableHeader";
 
 const NO_ACTION = "-";
 
@@ -545,6 +546,18 @@ const ListModelViewPage = () => {
 
         {/** Table */}
         <div class="flex-col p-2 rounded-md mb-2 bg-green-100 dark:bg-gray-700">
+          <Show when={modelAdminSettings().table_header && isParentTableOpen()}>
+            <div class="bg-white dark:bg-black rounded-sm p-2 mt-2 mb-5">
+              <DynamicListviewTableHeader
+                componentName={modelAdminSettings().table_header}
+                appLabel={params.appLabel}
+                modelName={params.modelName}
+                modelFields={modelFields() as ModelFieldsObjType}
+                listviewData={listviewData() as ListviewDataType}
+                userPermissions={userPermissions() as UserPermissionsType}
+              />
+            </div>
+          </Show>
           <div class="flex-col mb-2">
             <div class="flex justify-between">
               <h3 class="text-lg dark:text-green-400">

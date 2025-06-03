@@ -76,6 +76,7 @@ export type CustomInlineType = {
   custom_change_link: string;
   list_per_page: number;
   class_name: string;
+  table_header: string;
 }
 
 export type ModelAdminSettingsType = {

@@ -31,6 +31,7 @@ import { UserPermissionsType } from "src/models/user";
 import { useModelAdmin } from "src/hooks/useModelAdmin";
 import InlineRowAddForm from "../InlineRowAddForm";
 import EllipsisIcon from "src/assets/icons/ellipsis-icon";
+import DynamicInlineTableHeader from "../inline_table_headers/DynamicInlineTableHeader";
 
 export type ListviewDataType = {
   count: number;
@@ -136,22 +137,16 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       setPageLimit(props.inline.list_per_page);
       const parentPk = props.parentPk;
 
-      const [
-        listviewResponse,
-        modelFieldsData,
-        modelAdminSettingsData
-      ] = await Promise.all([
-        getListviewData(props.inline.list_per_page),
-        getModelFields(
-          props.inline.app_label,
-          props.inline.model_name
-        ),
-        getModelAdminSettings(
-          props.inline.app_label,
-          props.inline.model_name,
-          parentPk,
-        )
-      ]);
+      const [listviewResponse, modelFieldsData, modelAdminSettingsData] =
+        await Promise.all([
+          getListviewData(props.inline.list_per_page),
+          getModelFields(props.inline.app_label, props.inline.model_name),
+          getModelAdminSettings(
+            props.inline.app_label,
+            props.inline.model_name,
+            parentPk
+          ),
+        ]);
 
       setListviewData(listviewResponse as ListviewDataType);
 
@@ -344,7 +339,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
         props.inline.app_label,
         props.inline.model_name,
         pk as string
-      )
+      );
 
       // Get paginated data
       const listviewResponse = await getListviewData();
@@ -361,28 +356,46 @@ const InlineTable: Component<InlineTableProps> = (props) => {
         type: "danger",
       });
     }
-  }
+  };
 
   const addText = () => {
     return isRowAddFormOpen() ? "Close" : "Add";
   };
 
   return (
-    <Show when={
-      isTableRowFormsReady() && hasViewModelPermission(
-        props.userPermissions, props.inline.app_label, props.inline.model_name
-      )}
+    <Show
+      when={
+        isTableRowFormsReady() &&
+        hasViewModelPermission(
+          props.userPermissions,
+          props.inline.app_label,
+          props.inline.model_name
+        )
+      }
     >
       <div class="relative overflow-x-auto shadow-md sm:rounded-lg pb-5">
+        <Show when={props.inline.table_header && isTableOpen()}>
+          <div class="bg-white dark:bg-black rounded-sm p-2 mt-2 mb-5">
+            <DynamicInlineTableHeader
+              componentName="sample_table_header"
+              parentAppLabel={props.parentAppLabel}
+              parentModelName={props.parentModelName}
+              parentPk={props.parentPk}
+              inline={props.inline}
+              userPermissions={props.userPermissions}
+            />
+          </div>
+        </Show>
+        
         <div class="flex justify-between my-2">
           <h3 class="text-lg dark:text-white">
-            Inline: 
-            <a 
+            Inline:
+            <a
               href={`/dashboard/${props.inline.app_label}/${props.inline.model_name}`}
-              target="_blank" 
-              class="text-custom-primary-lighter cursor-pointer underline"
+              target="_blank"
+              class="text-custom-primary-lighter cursor-pointer underline ml-2"
             >
-              {props.inline.model_name_label} 
+              {props.inline.model_name_label}
             </a>
           </h3>
           <Show when={isTableOpen()}>
@@ -448,7 +461,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                                   tableRowsFormState()[i()]?.isOpen
                                 }
                               >
-                                <AngleUpIcon class="w-3 h-3 dark:text-white"/>
+                                <AngleUpIcon class="w-3 h-3 dark:text-white" />
                               </Show>
                               <Show
                                 when={
@@ -486,7 +499,9 @@ const InlineTable: Component<InlineTableProps> = (props) => {
                           <div class="absolute right-0 top-full z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
                             <div class="py-1">
                               <span
-                                onClick={() => onDeleteInlineRow(i(), record.pk)}
+                                onClick={() =>
+                                  onDeleteInlineRow(i(), record.pk)
+                                }
                                 class="cursor-pointer block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                               >
                                 Delete
@@ -540,7 +555,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
               onClick={() => setIsRowAddFormOpen((prev) => !prev)}
             >
               <Show when={!isRowAddFormOpen()}>
-                <PlusIcon class="w-5 h-5 text-custom-primary-lighter"  />
+                <PlusIcon class="w-5 h-5 text-custom-primary-lighter" />
               </Show>
               <Show when={isRowAddFormOpen()}>
                 <CloseCircleIcon class="w-6 h-6 text-gray-800" />

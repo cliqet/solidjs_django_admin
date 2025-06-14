@@ -18,8 +18,6 @@ type FieldsetPropsType = {
 
 const Fieldset: Component<FieldsetPropsType> = (props) => {
   const {
-      buildFieldStateOnError,
-      buildModelFormData,
       isReadOnlyField,
       handleInvalidFields,
       helpTextPrefix,
@@ -64,7 +62,6 @@ const Fieldset: Component<FieldsetPropsType> = (props) => {
                 props.setFieldsInFormState as Setter<FieldsInFormStateType>
               )
             }
-            // onFocus={() => handleOnFocus(field)}
             onInvalid={(e: Event, id: string, validationMessage: string) => {
               handleInvalidFields(
                 e,
@@ -162,7 +159,6 @@ const Fieldset: Component<FieldsetPropsType> = (props) => {
                       props.setFieldsInFormState as Setter<FieldsInFormStateType>
                     )
                   }
-                  // onFocus={() => handleOnFocus(field)}
                   onInvalid={(
                     e: Event,
                     id: string,

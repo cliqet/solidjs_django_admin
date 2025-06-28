@@ -1,3 +1,5 @@
+import { table } from "console";
+
 export type SelectedOptionsType = {
   selected: boolean;
   value: any;
@@ -37,7 +39,7 @@ export type ModelFieldsObjType = {
 
 export type FieldsetType = {
   title: string;
-  fields: string[];
+  fields: (string | string[])[];
 };
 
 export type FieldStateType = {
@@ -76,6 +78,7 @@ export type CustomInlineType = {
   custom_change_link: string;
   list_per_page: number;
   class_name: string;
+  table_header: string;
 }
 
 export type ModelAdminSettingsType = {
@@ -96,6 +99,7 @@ export type ModelAdminSettingsType = {
   custom_inlines: CustomInlineType[];
   extra_inlines: string[];
   custom_change_link: string;
+  table_header: string;
 };
 
 export const initialModelAdminSettings = {
@@ -115,7 +119,8 @@ export const initialModelAdminSettings = {
   table_filters: [],
   custom_inlines: [],
   extra_inlines: [],
-  custom_change_link: ''
+  custom_change_link: '',
+  table_header: ''
 };
 
 

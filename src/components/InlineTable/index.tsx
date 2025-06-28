@@ -31,6 +31,7 @@ import { UserPermissionsType } from "src/models/user";
 import { useModelAdmin } from "src/hooks/useModelAdmin";
 import InlineRowAddForm from "../InlineRowAddForm";
 import EllipsisIcon from "src/assets/icons/ellipsis-icon";
+import DynamicInlineTableHeader from "../inline_table_headers/DynamicInlineTableHeader";
 
 export type ListviewDataType = {
   count: number;
@@ -136,22 +137,16 @@ const InlineTable: Component<InlineTableProps> = (props) => {
       setPageLimit(props.inline.list_per_page);
       const parentPk = props.parentPk;
 
-      const [
-        listviewResponse,
-        modelFieldsData,
-        modelAdminSettingsData
-      ] = await Promise.all([
-        getListviewData(props.inline.list_per_page),
-        getModelFields(
-          props.inline.app_label,
-          props.inline.model_name
-        ),
-        getModelAdminSettings(
-          props.inline.app_label,
-          props.inline.model_name,
-          parentPk,
-        )
-      ]);
+      const [listviewResponse, modelFieldsData, modelAdminSettingsData] =
+        await Promise.all([
+          getListviewData(props.inline.list_per_page),
+          getModelFields(props.inline.app_label, props.inline.model_name),
+          getModelAdminSettings(
+            props.inline.app_label,
+            props.inline.model_name,
+            parentPk
+          ),
+        ]);
 
       setListviewData(listviewResponse as ListviewDataType);
 
@@ -344,7 +339,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
         props.inline.app_label,
         props.inline.model_name,
         pk as string
-      )
+      );
 
       // Get paginated data
       const listviewResponse = await getListviewData();
@@ -361,38 +356,56 @@ const InlineTable: Component<InlineTableProps> = (props) => {
         type: "danger",
       });
     }
-  }
+  };
 
   const addText = () => {
     return isRowAddFormOpen() ? "Close" : "Add";
   };
 
   return (
-    <Show when={
-      isTableRowFormsReady() && hasViewModelPermission(
-        props.userPermissions, props.inline.app_label, props.inline.model_name
-      )}
+    <Show
+      when={
+        isTableRowFormsReady() &&
+        hasViewModelPermission(
+          props.userPermissions,
+          props.inline.app_label,
+          props.inline.model_name
+        )
+      }
     >
-      <div class="relative overflow-x-auto shadow-md sm:rounded-lg pb-5">
+      <div class="relative shadow-md sm:rounded-lg pb-5">
+        <Show when={props.inline.table_header && isTableOpen()}>
+          <div class="bg-white dark:bg-black rounded-sm p-2 mt-2 mb-5">
+            <DynamicInlineTableHeader
+              componentName={props.inline.table_header}
+              parentAppLabel={props.parentAppLabel}
+              parentModelName={props.parentModelName}
+              parentPk={props.parentPk}
+              inline={props.inline}
+              userPermissions={props.userPermissions}
+            />
+          </div>
+        </Show>
+
         <div class="flex justify-between my-2">
           <h3 class="text-lg dark:text-white">
-            Inline: 
-            <a 
+            Inline:
+            <a
               href={`/dashboard/${props.inline.app_label}/${props.inline.model_name}`}
-              target="_blank" 
-              class="text-custom-primary-lighter cursor-pointer underline"
+              target="_blank"
+              class="text-custom-primary-lighter cursor-pointer underline ml-2"
             >
-              {props.inline.model_name_label} 
+              {props.inline.model_name_label}
             </a>
           </h3>
           <Show when={isTableOpen()}>
             <span class="cursor-pointer" onClick={() => setIsTableOpen(false)}>
-              <AngleUpIcon class="w-5 h-5 dark:text-white" />
+              <AngleUpIcon class="w-4 h-4 dark:text-white" />
             </span>
           </Show>
           <Show when={!isTableOpen()}>
             <span class="cursor-pointer" onClick={() => setIsTableOpen(true)}>
-              <AngleDownIcon class="w-5 h-5 dark:text-white" />
+              <AngleDownIcon class="w-4 h-4 dark:text-white" />
             </span>
           </Show>
         </div>
@@ -403,134 +416,138 @@ const InlineTable: Component<InlineTableProps> = (props) => {
             visible: isTableOpen(),
           }}
         >
-          <table class="w-full text-sm text-left rtl:text-right table-auto">
-            <thead class="text-xs text-white uppercase bg-custom-primary">
-              <tr>
-                <th scope="col" class="p-4">
-                  <div class="flex items-center"></div>
-                </th>
-                <For each={props.inline.list_display}>
-                  {(fieldName, fieldIndex) => (
-                    <th scope="col" class="px-6 py-3">
-                      {fieldName.toUpperCase()}
-                    </th>
-                  )}
-                </For>
-                <th scope="col" class="p-4">
-                  <div class="flex items-center"></div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <For each={listviewData()?.results}>
-                {(record, i) => (
-                  <>
-                    <tr class="border-b bg-white dark:bg-gray-800 border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
-                      {/** Dropdown to open change form */}
-                      <Show
-                        when={hasChangeModelPermission(
-                          props.userPermissions,
-                          props.inline.app_label,
-                          props.inline.model_name
-                        )}
-                      >
-                        <td class="w-4 px-4 py-2">
-                          <div class="flex items-center">
-                            <span
-                              onClick={() => {
-                                onRowClick(i(), record.pk);
-                              }}
-                              class="cursor-pointer"
-                            >
-                              <Show
-                                when={
-                                  tableRowsFormState().length > 0 &&
-                                  tableRowsFormState()[i()]?.isOpen
-                                }
-                              >
-                                <AngleUpIcon class="w-5 h-5 dark:text-white"/>
-                              </Show>
-                              <Show
-                                when={
-                                  tableRowsFormState().length > 0 &&
-                                  !tableRowsFormState()[i()]?.isOpen
-                                }
-                              >
-                                <AngleDownIcon class="w-5 h-5 dark:text-white" />
-                              </Show>
-                            </span>
-                          </div>
-                        </td>
-                      </Show>
-
-                      {/** Actual table data */}
-                      <For each={props.inline.list_display}>
-                        {(fieldName, fieldIndex) => (
-                          <td class="px-6 py-2 dark:text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
-                            {renderTableData(
-                              fieldName,
-                              record,
-                              props.inline.list_display_links,
-                              props.inline.custom_change_link
-                            )}
-                          </td>
-                        )}
-                      </For>
-
-                      {/** Row actions */}
-                      <td class="relative px-6 py-2 dark:text-white flex justify-end">
-                        <button onClick={() => onActionOpenOrClose(i())}>
-                          <EllipsisIcon class="w-5 h-5 dark:text-white" />
-                        </button>
-                        <Show when={tableRowsActionState()[i()].isOpen}>
-                          <div class="absolute right-0 top-full z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
-                            <div class="py-1">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left rtl:text-right table-auto">
+              <thead class="text-xs text-white uppercase bg-custom-primary">
+                <tr>
+                  <th scope="col" class="p-4">
+                    <div class="flex items-center"></div>
+                  </th>
+                  <For each={props.inline.list_display}>
+                    {(fieldName, fieldIndex) => (
+                      <th scope="col" class="px-6 py-3">
+                        {fieldName.toUpperCase()}
+                      </th>
+                    )}
+                  </For>
+                  <th scope="col" class="p-4">
+                    <div class="flex items-center"></div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <For each={listviewData()?.results}>
+                  {(record, i) => (
+                    <>
+                      <tr class="border-b bg-white dark:bg-gray-800 border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
+                        {/** Dropdown to open change form */}
+                        <Show
+                          when={hasChangeModelPermission(
+                            props.userPermissions,
+                            props.inline.app_label,
+                            props.inline.model_name
+                          )}
+                        >
+                          <td class="w-4 px-4 py-2">
+                            <div class="flex items-center">
                               <span
-                                onClick={() => onDeleteInlineRow(i(), record.pk)}
-                                class="cursor-pointer block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                                onClick={() => {
+                                  onRowClick(i(), record.pk);
+                                }}
+                                class="cursor-pointer"
                               >
-                                Delete
+                                <Show
+                                  when={
+                                    tableRowsFormState().length > 0 &&
+                                    tableRowsFormState()[i()]?.isOpen
+                                  }
+                                >
+                                  <AngleUpIcon class="w-3 h-3 dark:text-white" />
+                                </Show>
+                                <Show
+                                  when={
+                                    tableRowsFormState().length > 0 &&
+                                    !tableRowsFormState()[i()]?.isOpen
+                                  }
+                                >
+                                  <AngleDownIcon class="w-3 h-3 dark:text-white" />
+                                </Show>
                               </span>
                             </div>
-                          </div>
+                          </td>
                         </Show>
-                      </td>
-                    </tr>
 
-                    {/** Inline row change form */}
-                    <Show
-                      when={
-                        tableRowsFormState().length > 0 &&
-                        tableRowsFormState()[i()]?.isOpen
-                      }
-                    >
-                      <tr
-                        ref={tableRowForms[i()]}
-                        class="border-b border-gray-700 w-full"
-                      >
-                        <td
-                          colspan={props.inline.list_display.length + 3}
-                          class="w-full"
-                        >
-                          <div class="p-2 rounded-md mb-2">
-                            <InlineRowChangeForm
-                              appLabel={props.inline.app_label}
-                              modelName={props.inline.model_name}
-                              pk={record.pk}
-                              modelAdminSettings={modelAdminSettings()}
-                              onSave={() => {
-                                onSaveRowForm(i(), record.pk);
-                              }}
-                            />
-                          </div>
+                        {/** Actual table data */}
+                        <For each={props.inline.list_display}>
+                          {(fieldName, fieldIndex) => (
+                            <td class="px-6 py-2 dark:text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
+                              {renderTableData(
+                                fieldName,
+                                record,
+                                props.inline.list_display_links,
+                                props.inline.custom_change_link
+                              )}
+                            </td>
+                          )}
+                        </For>
+
+                        {/** Row actions */}
+                        <td class="relative px-6 py-2 dark:text-white flex justify-end">
+                          <button onClick={() => onActionOpenOrClose(i())}>
+                            <EllipsisIcon class="w-5 h-5 dark:text-white" />
+                          </button>
+                          <Show when={tableRowsActionState()[i()].isOpen}>
+                            <div class="absolute right-0 top-full z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                              <div class="py-1">
+                                <span
+                                  onClick={() =>
+                                    onDeleteInlineRow(i(), record.pk)
+                                  }
+                                  class="cursor-pointer block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                                >
+                                  Delete
+                                </span>
+                              </div>
+                            </div>
+                          </Show>
                         </td>
                       </tr>
-                    </Show>
-                  </>
-                )}
-              </For>
-            </tbody>
-          </table>
+
+                      {/** Inline row change form */}
+                      <Show
+                        when={
+                          tableRowsFormState().length > 0 &&
+                          tableRowsFormState()[i()]?.isOpen
+                        }
+                      >
+                        <tr
+                          ref={tableRowForms[i()]}
+                          class="border-b border-gray-700 w-full"
+                        >
+                          <td
+                            colspan={props.inline.list_display.length + 3}
+                            class="w-full"
+                          >
+                            <div class="p-2 rounded-md mb-2">
+                              <InlineRowChangeForm
+                                appLabel={props.inline.app_label}
+                                modelName={props.inline.model_name}
+                                pk={record.pk}
+                                modelAdminSettings={modelAdminSettings()}
+                                onSave={() => {
+                                  onSaveRowForm(i(), record.pk);
+                                }}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      </Show>
+                    </>
+                  )}
+                </For>
+              </tbody>
+            </table>
+          </div>
 
           {/** Add row form section */}
           <div class="flex items-center my-2 gap-2 p-2 rounded-md bg-white dark:bg-black">
@@ -540,7 +557,7 @@ const InlineTable: Component<InlineTableProps> = (props) => {
               onClick={() => setIsRowAddFormOpen((prev) => !prev)}
             >
               <Show when={!isRowAddFormOpen()}>
-                <PlusIcon class="w-5 h-5 text-custom-primary-lighter"  />
+                <PlusIcon class="w-5 h-5 text-custom-primary-lighter" />
               </Show>
               <Show when={isRowAddFormOpen()}>
                 <CloseCircleIcon class="w-6 h-6 text-gray-800" />

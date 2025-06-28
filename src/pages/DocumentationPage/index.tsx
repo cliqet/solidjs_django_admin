@@ -47,7 +47,9 @@ const DocumentationPage = () => {
 
   return (
     <div class="dark:bg-black">
-      <h1 class="text-lg dark:text-white my-2">Documentation {docs().length}</h1>
+      <h1 class="text-lg dark:text-white my-2">
+        Documentation Records: {docs().length}
+      </h1>
 
       <Show when={accordionDocs().length > 0}>
         <div>
@@ -62,10 +64,10 @@ const DocumentationPage = () => {
                   >
                     <span class="text-orange-500 text-sm">{doc.appModelName.toUpperCase()}</span>
                     <Show when={accordionDocs()[i()].isOpen}>
-                      <AngleUpIcon class="w-5 h-5 dark:text-white" />
+                      <AngleUpIcon class="w-4 h-4 dark:text-white" />
                     </Show>
                     <Show when={!accordionDocs()[i()].isOpen}>
-                      <AngleDownIcon class="w-5 h-5 dark:text-white" />
+                      <AngleDownIcon class="w-4 h-4 dark:text-white" />
                     </Show>
                   </button>
                 </h2>
